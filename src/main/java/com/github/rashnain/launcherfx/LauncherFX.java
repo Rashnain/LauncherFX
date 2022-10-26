@@ -19,10 +19,11 @@ public class LauncherFX extends Application {
 
     @Override
     public void start(Stage primaryStage) throws IOException {
-    	// TODO: stores data in some way and load them here
+    	// TODO stores data in some way and load them here
 
     	this.primaryStage = primaryStage;
         FXMLLoader loader = new FXMLLoader(LauncherFX.class.getResource("view/loginScreen.fxml"));
+        // TODO need de use the user selected language
         Locale locale = new Locale(Locale.getDefault().toLanguageTag());
         loader.setResources(ResourceBundle.getBundle("main.java.com.github.rashnain.launcherfx.locales.lang", locale));
         Scene scene = new Scene(loader.load(), 880, 550);
@@ -31,8 +32,4 @@ public class LauncherFX extends Application {
         this.primaryStage.setScene(scene);
         this.primaryStage.show();
     }
-
-	public Stage getPrimaryStage() {
-		return this.primaryStage;
-	}
 }
