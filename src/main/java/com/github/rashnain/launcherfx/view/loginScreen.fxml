@@ -9,7 +9,7 @@
 
 <BorderPane prefHeight="550.0" prefWidth="880.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="main.java.com.github.rashnain.launcherfx.view.LoginScreenController">
    <bottom>
-      <Button fx:id="guestButton" onAction="#onLoginGuestButtonClick" text="%guest.button" BorderPane.alignment="CENTER">
+      <Button fx:id="guestButton" onAction="#guestLogging" text="%guest.button" BorderPane.alignment="CENTER">
          <BorderPane.margin>
             <Insets />
          </BorderPane.margin></Button>
@@ -34,6 +34,6 @@
       </HBox>
    </center>
    <top>
-      <Button mnemonicParsing="false" onAction="#onLoginMicrosoftButtonClick" text="%microsoft.button" BorderPane.alignment="CENTER" />
+      <Button mnemonicParsing="false" onAction="#microsoftLogging" text="%microsoft.button" BorderPane.alignment="CENTER" />
    </top>
 </BorderPane>

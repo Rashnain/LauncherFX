@@ -33,15 +33,15 @@ public class LoginScreenController implements Initializable {
     }
 
     @FXML
-    protected void onLoginMicrosoftButtonClick() {
+    protected void microsoftLogging() {
         Alert dialog = new Alert(AlertType.INFORMATION);
-        dialog.setTitle("Microsoft account login");
-        dialog.setHeaderText("Not yet implemented");
+        dialog.setTitle("Microsoft account logging");
+        dialog.setHeaderText("Not yet implemented.");
         dialog.show();
     }
 
     @FXML
-    protected void onLoginGuestButtonClick(ActionEvent event) throws IOException {
+    protected void guestLogging(ActionEvent event) throws IOException {
     	Util.changeRoot("selectProfile", event);
     }
 }
