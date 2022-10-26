@@ -1,10 +1,107 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ChoiceBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.ProgressBar?>
+<?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
 
 <BorderPane prefHeight="550.0" prefWidth="880.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="main.java.com.github.rashnain.launcherfx.view.SelectProfileController">
-   <top>
-      <Button mnemonicParsing="false" onAction="#onGoToLoginScreenClick" text="%login.screen.button" BorderPane.alignment="CENTER" />
-   </top>
+   <left>
+      <ListView fx:id="listViewVersions" onMouseClicked="#onClickOnViewList" prefWidth="440.0" BorderPane.alignment="CENTER" />
+   </left>
+   <right>
+      <VBox fx:id="profileData" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefWidth="440.0" visible="false" BorderPane.alignment="CENTER">
+         <children>
+            <HBox prefHeight="100.0" prefWidth="200.0">
+               <children>
+                  <Label alignment="CENTER" contentDisplay="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" prefWidth="440.0" text="Profile editor" textAlignment="CENTER">
+                     <font>
+                        <Font name="System Bold" size="14.0" />
+                     </font>
+                  </Label>
+               </children>
+            </HBox>
+            <HBox prefHeight="100.0" prefWidth="200.0">
+               <children>
+                  <Label text="Name :" />
+                  <Label />
+               </children>
+            </HBox>
+            <HBox prefHeight="100.0" prefWidth="200.0">
+               <children>
+                  <Label text="Directory :" />
+                  <Label />
+               </children>
+            </HBox>
+            <HBox prefHeight="100.0" prefWidth="200.0">
+               <children>
+                  <Label text="Version :" />
+                  <Label />
+               </children>
+            </HBox>
+            <HBox prefHeight="100.0" prefWidth="200.0">
+               <children>
+                  <Label text="Resolutions :" />
+                  <Label />
+               </children>
+            </HBox>
+            <HBox prefHeight="100.0" prefWidth="200.0">
+               <children>
+                  <Label text="Java executable :" />
+                  <Label />
+               </children>
+            </HBox>
+            <HBox prefHeight="100.0" prefWidth="200.0">
+               <children>
+                  <Label text="Java arguments : " />
+                  <Label />
+               </children>
+            </HBox>
+            <HBox prefHeight="100.0" prefWidth="200.0">
+               <children>
+                  <Label text="Icon : " />
+                  <Label />
+               </children>
+            </HBox>
+         </children>
+      </VBox>
+   </right>
+   <bottom>
+      <BorderPane prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+         <top>
+            <ProgressBar maxWidth="1.7976931348623157E308" progress="1.0" BorderPane.alignment="CENTER" />
+         </top>
+         <center>
+            <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#loadGame" text="Play" textAlignment="CENTER" BorderPane.alignment="CENTER">
+               <font>
+                  <Font name="System Bold" size="64.0" />
+               </font>
+            </Button>
+         </center>
+         <right>
+            <VBox BorderPane.alignment="CENTER">
+               <children>
+                  <Label text="Selected version :" />
+                  <ChoiceBox fx:id="choiceVersion" prefWidth="150.0" />
+                  <Button mnemonicParsing="false" onAction="#newProfile" text="New profile" />
+               </children>
+            </VBox>
+         </right>
+         <left>
+            <VBox prefHeight="200.0" prefWidth="100.0" BorderPane.alignment="CENTER">
+               <children>
+                  <Button fx:id="loginScreenButton" mnemonicParsing="false" onAction="#goToLoginScreen" text="%login.screen.button" />
+                  <Label text="Pseudo" />
+                  <TextField />
+               </children>
+            </VBox>
+         </left>
+      </BorderPane>
+   </bottom>
 </BorderPane>
