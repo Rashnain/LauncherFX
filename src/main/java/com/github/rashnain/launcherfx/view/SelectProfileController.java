@@ -2,6 +2,7 @@ package main.java.com.github.rashnain.launcherfx.view;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.Map.Entry;
 import java.util.ResourceBundle;
 
 import com.google.gson.JsonArray;
@@ -54,6 +55,7 @@ public class SelectProfileController implements Initializable {
 		GameProfile ver = new GameProfile("Vanilla 1.18.1", "1.18.1");
 		ver.setExecutable("\"C:/Program Files/Java/Eclipse Temurin/JDK 17/bin/javaw.exe\"");
 		this.listVersions.add(ver);
+		ver.setResolutions(1280, 720);
 		profileData.setVisible(false);
 		this.listViewVersions.setItems(this.listVersions);
 	}
@@ -86,7 +88,7 @@ public class SelectProfileController implements Initializable {
 			GameProfile selectedVer = this.listVersions.get(index);
 			LauncherProfile launcherProfile = LauncherProfile.getProfile();
 			
-			JsonObject versionManifest = Util.downloadJSON(Util.MANIFEST_VERIONS).getAsJsonObject();
+			JsonObject versionManifest = Util.downloadJSON(Util.VERSION_MANIFEST).getAsJsonObject();
 			
 			JsonArray versionsArray = versionManifest.get("versions").getAsJsonArray();
 			
@@ -100,7 +102,8 @@ public class SelectProfileController implements Initializable {
 			}
 
 			if (!versionURL.equals("")) {
-				JsonObject version = Util.downloadJSON(versionURL).getAsJsonObject();
+				Util.downloadFile(versionURL, selectedVer.getId()+".json", launcherProfile.getVersionsDir()+selectedVer.getId()+"/", 0);
+				JsonObject version = Util.loadJSON(launcherProfile.getVersionsDir()+selectedVer.getId()+"/"+selectedVer.getId()+".json").getAsJsonObject();
 				
 				JsonArray game = version.get("arguments").getAsJsonObject().get("game").getAsJsonArray();
 
@@ -109,7 +112,19 @@ public class SelectProfileController implements Initializable {
 				// Natives directory
 				executionCommand += "-Djava.library.path="+launcherProfile.getVersionsDir()+selectedVer.getId()+"/natives/ ";
 				
-				// TODO include -cp
+				// Classpath, TODO download required natives libraries
+				JsonArray libraries = version.get("libraries").getAsJsonArray();
+				for (JsonElement lib : libraries) {
+					lib = lib.getAsJsonObject().get("downloads").getAsJsonObject().get("artifact");
+					String libURL = lib.getAsJsonObject().get("url").getAsString();
+					String libPath = lib.getAsJsonObject().get("path").getAsString();
+					String libName = libPath.split("/")[libPath.split("/").length-1];
+					String libDir = libPath.substring(0, libPath.lastIndexOf("/")+1);
+					int libSize = lib.getAsJsonObject().get("size").getAsInt();
+					Util.downloadFile(libURL, libName, launcherProfile.getLibrariesDir()+"/"+libDir, libSize);
+					executionCommand += launcherProfile.getLibrariesDir()+libDir+libName + ",";
+				}
+
 				// Version JAR
 				JsonObject clientJar = version.get("downloads").getAsJsonObject().get("client").getAsJsonObject();
 				String versionJarURL = clientJar.get("url").getAsString();
@@ -137,6 +152,22 @@ public class SelectProfileController implements Initializable {
 					executionCommand += "--width " + selectedVer.toHashMap().get("--width") + " --height " + selectedVer.toHashMap().get("--height");
 				}
 				
+				// Assets
+				JsonObject assetIndex = version.get("assetIndex").getAsJsonObject();
+				String assetIndexURL = assetIndex.get("url").getAsString();
+				String assetIndexName = assetIndexURL.split("/")[assetIndexURL.split("/").length-1];
+				String assetIndexDir = launcherProfile.getAssetsDir()+"indexes/";
+				int assetIndexSize = assetIndex.get("size").getAsInt();
+				Util.downloadFile(assetIndexURL, assetIndexName, assetIndexDir, assetIndexSize);
+				JsonObject assets = Util.loadJSON(assetIndexDir+assetIndexName).getAsJsonObject().get("objects").getAsJsonObject();
+				for(Entry<String, JsonElement> e : assets.entrySet()) {
+					JsonObject asset = e.getValue().getAsJsonObject();
+					String assetName = asset.get("hash").getAsString();
+					String assetDir = assetName.substring(0, 2)+"/";
+					int assetSize = asset.get("size").getAsInt();
+					Util.downloadFile("https://resources.download.minecraft.net/"+assetDir+assetName, assetName, launcherProfile.getAssetsDir()+"objects/"+assetDir, assetSize);
+				}
+
 				System.out.println(executionCommand);
 				
 				//Process proc = Runtime.getRuntime().exec(executionCommand);

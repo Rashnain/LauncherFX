@@ -81,7 +81,7 @@ public class GameProfile {
 		Map<String, String> map = new HashMap<>();
 		map.put("--version", this.version_id);
 		map.put("--gameDir", "/"+this.version_id+"/");
-		map.put("--assetsDir", "/assets/");
+		map.put("--assetsDir", "/data/assets/");
 		map.put("--assetIndex", "1.18");
 		map.put("--versionType", "release");
 		map.put("--width", String.valueOf(this.resolution[0]));
