@@ -13,10 +13,10 @@
 
 <BorderPane prefHeight="550.0" prefWidth="880.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="main.java.com.github.rashnain.launcherfx.view.SelectProfileController">
    <left>
-      <ListView fx:id="listViewVersions" onMouseClicked="#onClickOnViewList" prefWidth="440.0" BorderPane.alignment="CENTER" />
+      <ListView fx:id="listViewVersions" onKeyReleased="#updateProfileEditor" onMouseClicked="#onClickOnViewList" prefWidth="440.0" BorderPane.alignment="CENTER" />
    </left>
    <right>
-      <VBox fx:id="profileData" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefWidth="440.0" visible="false" BorderPane.alignment="CENTER">
+      <VBox fx:id="profileEditor" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefWidth="440.0" visible="false" BorderPane.alignment="CENTER">
          <children>
             <HBox prefHeight="100.0" prefWidth="200.0">
                <children>
@@ -73,9 +73,9 @@
       </VBox>
    </right>
    <bottom>
-      <BorderPane prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+      <BorderPane prefHeight="117.0" prefWidth="880.0" BorderPane.alignment="CENTER">
          <top>
-            <ProgressBar maxWidth="1.7976931348623157E308" progress="1.0" BorderPane.alignment="CENTER" />
+            <ProgressBar fx:id="loadingBar" maxWidth="1.7976931348623157E308" progress="0.0" visible="false" BorderPane.alignment="CENTER" />
          </top>
          <center>
             <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#loadGame" text="Play" textAlignment="CENTER" BorderPane.alignment="CENTER">
@@ -87,9 +87,11 @@
          <right>
             <VBox BorderPane.alignment="CENTER">
                <children>
-                  <Label text="Selected version :" />
-                  <ChoiceBox fx:id="choiceVersion" prefWidth="150.0" />
+                  <Label disable="true" text="Selected version :" />
+                  <ChoiceBox fx:id="choiceVersion" disable="true" prefWidth="150.0" />
                   <Button mnemonicParsing="false" onAction="#newProfile" text="New profile" />
+                  <Button layoutX="10.0" layoutY="52.0" mnemonicParsing="false" onAction="#deleteProfile" text="Delete profile" />
+                  <Button layoutX="10.0" layoutY="77.0" mnemonicParsing="false" onAction="#duplicateProfile" text="Duplicate profile" />
                </children>
             </VBox>
          </right>

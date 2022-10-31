@@ -1,69 +1,129 @@
 package main.java.com.github.rashnain.launcherfx.types;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.net.URL;
+import java.time.Instant;
+import java.util.Date;
+
+import com.google.gson.JsonObject;
+import com.google.gson.JsonPrimitive;
+
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import main.java.com.github.rashnain.launcherfx.Util;
 
 public class LauncherProfile {
+	
+	private ObservableList<GameProfile> gameProfiles;
+	
+	private JsonObject launcherSettings;
 
 	private String launcherDir;
 	
-	private String assetsDir;
-	
-	private String librariesDir;
+	private String dataDir;
 	
 	private String versionsDir;
 	
+	private String librariesDir;
+	
+	private String assetsDir;
+	
 	private String username;
+
+	private boolean online;
 	
-	private Map<String, String> data;
-	
-	private static LauncherProfile instance = new LauncherProfile();
+	private static final LauncherProfile instance = new LauncherProfile();
 	
 	private LauncherProfile() {
-		this.launcherDir = System.getProperty("user.dir") + "/data/";
-		this.assetsDir = launcherDir + "assets/";
-		this.librariesDir = launcherDir + "libraries/";
-		this.versionsDir = launcherDir + "versions/";
-		this.username = "pseudo";
-		data = new HashMap<>();
-		data.put("--username", this.username);
-		data.put("--uuid", "uuid");
-		data.put("--accessToken", "accessToken");
-		data.put("--clientId", "clientId");
-		data.put("--xuid", "xuid");
-		data.put("--userType", "legacy");
+		try {
+			new URL(Util.VERSION_MANIFEST).openConnection().getInputStream().available();
+			this.online = true;
+			System.out.println("Online mode.");
+		} catch (IOException e) {
+			this.online = false;
+			System.out.println("Offline mode.");
+		}
+		// TODO check if it actually works
+		
+		this.gameProfiles = FXCollections.observableArrayList();
+	}
+	
+	public void loadProfiles() {
+		try {
+			this.launcherSettings = Util.loadJSON(this.dataDir+"launcher_profiles.json");
+			JsonObject profiles = this.launcherSettings.get("profiles").getAsJsonObject();
+			for (String key : profiles.keySet()) {
+				JsonObject profile = profiles.get(key).getAsJsonObject();
+				
+				String name = profile.get("name").getAsString();
+				String versionId = profile.get("lastVersionId").getAsString();
+				String lastUsed = profile.get("lastUsed").getAsString();
+				Date lastUsedDate = Date.from(Instant.parse(lastUsed));
+				
+				GameProfile gameProfile = new GameProfile(name, versionId, lastUsedDate);
+				
+				if (profile.keySet().contains("gameDir")) {
+					gameProfile.setGameDir(profile.get("gameDir").getAsString());
+				}
+				if (profile.keySet().contains("resolution")) {
+					int height = profile.get("resolution").getAsJsonObject().get("height").getAsInt();
+					int width = profile.get("resolution").getAsJsonObject().get("width").getAsInt();
+					gameProfile.setResolutions(width, height);
+				}
+				if (profile.keySet().contains("javaDir")) {
+					gameProfile.setExecutable(profile.get("javaDir").getAsString());
+				}
+				if (profile.keySet().contains("javaArgs")) {
+					gameProfile.setJvmArguments(profile.get("javaArgs").getAsString());
+				}
+				
+				this.gameProfiles.add(gameProfile);
+				
+				System.out.println("Loaded profile " + key);
+			}
+			System.out.println("Successfully loaded launcher profiles.");
+
+		} catch (Exception e) {
+			System.out.println("Error loading launcher profiles.");
+			System.out.println("Ceating empty launcher settings.");
+			this.launcherSettings.add("profiles", new JsonObject());
+			this.launcherSettings.add("settings", new JsonObject());
+			this.launcherSettings.add("version", new JsonPrimitive(1));
+		}
 	}
 
+	public static LauncherProfile getProfile() {
+		return LauncherProfile.instance;
+	}
+	
 	public String getLauncherDir() {
 		return this.launcherDir;
 	}
 
-	public void setLauncherDir(String launcherDir) {
-		this.launcherDir = launcherDir;
+	public void setLauncherDir(String dir) {
+		this.launcherDir = dir;
+		this.dataDir = this.launcherDir + "data/";
+		this.versionsDir = this.dataDir + "versions/";
+		this.librariesDir = this.dataDir + "libraries/";
+		this.assetsDir = this.dataDir + "assets/";
 	}
-
-	public String getAssetsDir() {
-		return this.assetsDir;
+	
+	public String getDataDir() {
+		return this.dataDir;
 	}
-
-	public void setAssetsDir(String assetsDir) {
-		this.assetsDir = assetsDir;
+	
+	public String getVersionsDir() {
+		return this.versionsDir;
 	}
 
 	public String getLibrariesDir() {
 		return this.librariesDir;
 	}
-
-	public void setLibrariesDir(String librariesDir) {
-		this.librariesDir = librariesDir;
-	}
-
-	public String getVersionsDir() {
-		return this.versionsDir;
-	}
-
-	public void setVersionsDir(String versionsDir) {
-		this.versionsDir = versionsDir;
+	
+	public String getAssetsDir() {
+		return this.assetsDir;
 	}
 
 	public String getUsername() {
@@ -74,12 +134,53 @@ public class LauncherProfile {
 		this.username = username;
 	}
 
-	public static LauncherProfile getProfile() {
-		return instance;
+	public boolean isOnline() {
+		return this.online;
 	}
 	
-	public Map<String, String> getData() {
-		return this.data;
+	public void setOnline(boolean status) {
+		this.online = status;
+	}
+	
+	public String getLocale() {
+		if (this.launcherSettings.keySet().contains("settings")) {
+			JsonObject settings = this.launcherSettings.getAsJsonObject("settings");
+			if (!settings.keySet().contains("locale")) {
+				settings.add("locale", new JsonPrimitive("en"));
+			}
+		} else {
+			JsonObject locale = new JsonObject();
+			locale.add("locale", new JsonPrimitive("en"));
+			this.launcherSettings.add("settings", locale);
+		}
+		
+		return this.launcherSettings.getAsJsonObject("settings").get("locale").getAsString();
 	}
 
+	public ObservableList<GameProfile> getGameProfiles() {
+		return this.gameProfiles;
+	}
+
+	public GameProfile lastUsedProfile() {
+		GameProfile lastUsed = this.gameProfiles.get(0);
+		for (GameProfile gp : this.gameProfiles) {
+			if (gp.getLastUsed().getTime() > lastUsed.getLastUsed().getTime()) {
+				lastUsed = gp;
+			}
+		}
+		return lastUsed;
+	}
+	
+	public void saveProfile() throws IOException {
+		System.out.println("Updating launcher_profiles.json.");
+		File file = new File(this.dataDir + "launcher_profiles.json");
+		if (!file.isFile()) {
+			file.createNewFile();
+		}
+		
+		FileOutputStream out = new FileOutputStream(file);
+		out.write(this.launcherSettings.toString().getBytes());
+		out.close();
+		System.out.println("Updated launcher_profiles.json.");
+	}
 }

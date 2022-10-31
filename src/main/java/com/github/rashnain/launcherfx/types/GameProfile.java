@@ -1,47 +1,58 @@
 package main.java.com.github.rashnain.launcherfx.types;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.Date;
 
 public class GameProfile {
-
+	
 	private String name;
+	
+	private String versionId;
+	
+	private String versionType;
 
-	private String directory;
+	private String gameDir;
 	
-	private String version_id;
-	
-	private String version_type;
-	
-	private int[] resolution = new int[2];
+	private int[] resolutions = new int[2];
 	
 	private String executable;
 	
-	private String jvmArgument;
+	private String jvmArguments;
 	
-	public GameProfile(String name, String version_id) {
+	private Date lastUsed;
+	
+	public GameProfile(String name, String versionId, Date lastUsed) {
 		this.name = name;
-		this.version_id = version_id;
+		this.versionId = versionId;
+		this.lastUsed = lastUsed;
+		this.gameDir = LauncherProfile.getProfile().getDataDir();
+		this.resolutions[0] = 854;
+		this.resolutions[1] = 480;
+		this.executable = "java";
+		this.jvmArguments = "-Xmx2G -XX:+UnlockExperimentalVMOptions -XX:+UseG1GC -XX:G1NewSizePercent=20 -XX:G1ReservePercent=20 -XX:MaxGCPauseMillis=50 -XX:G1HeapRegionSize=32M";
 	}
 	
 	public String toString() {
+		if (this.name.equals("")) {
+			return "<unnamed configuration>"; // TODO localize this
+			// TODO if versionId is "latest-release" or "latest-snapshot" then prevent from modifying the name and force a localized name
+		}
 		return name;
+	}
+	
+	public String getName() {
+		return this.name;
 	}
 	
 	public void setName(String name) {
 		this.name = name;
 	}
-
-	public String getName() {
-		return this.name;
+	
+	public String getId() {
+		return this.versionId;
 	}
 	
 	public void setId(String id) {
-		this.version_id = id;
-	}
-
-	public String getId() {
-		return this.version_id;
+		this.versionId = id;
 	}
 
 	public String getExecutable() {
@@ -52,50 +63,44 @@ public class GameProfile {
 		this.executable = executable;
 	}
 
-	public String getVersion_type() {
-		return this.version_type;
+	public String getVersionType() {
+		return this.versionType;
 	}
 
-	public void setVersion_type(String version_type) {
-		this.version_type = version_type;
+	public void setVersionType(String versionType) {
+		this.versionType = versionType;
 	}
 
-	public int[] getResolution() {
-		return this.resolution;
+	public int[] getResolutions() {
+		return this.resolutions;
 	}
 
 	public void setResolutions(int width, int height) {
-		this.resolution[0] = width;
-		this.resolution[1] = height;
+		this.resolutions[0] = width;
+		this.resolutions[1] = height;
 	}
 
-	public String getDirectory() {
-		return this.directory;
+	public String getGameDir() {
+		return this.gameDir;
 	}
 
-	public void setDirectory(String directory) {
-		this.directory = directory;
+	public void setGameDir(String directory) {
+		this.gameDir = directory;
 	}
 
-	public Map<String, String> toHashMap() {
-		Map<String, String> map = new HashMap<>();
-		map.put("--version", this.version_id);
-		map.put("--gameDir", "/"+this.version_id+"/");
-		map.put("--assetsDir", "/data/assets/");
-		map.put("--assetIndex", "1.18");
-		map.put("--versionType", "release");
-		map.put("--width", String.valueOf(this.resolution[0]));
-		map.put("--height", String.valueOf(this.resolution[1]));
-		return map;
+	public String getJvmArguments() {
+		return this.jvmArguments;
 	}
 
-	public String getJvmArgument() {
-		return this.jvmArgument;
+	public void setJvmArguments(String jvmArguments) {
+		this.jvmArguments = jvmArguments;
 	}
 
-	public void setJvm_argument(String jvm_argument) {
-		this.jvmArgument = jvm_argument;
+	public Date getLastUsed() {
+		return this.lastUsed;
 	}
 
+	public void setLastUsed(Date lastUsed) {
+		this.lastUsed = lastUsed;
+	}
 }
-
