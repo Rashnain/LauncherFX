@@ -2,6 +2,8 @@ package main.java.com.github.rashnain.launcherfx.model;
 
 import java.util.Date;
 
+import main.java.com.github.rashnain.launcherfx.LauncherFX;
+
 public class GameProfile {
 	
 	private String name;
@@ -33,8 +35,13 @@ public class GameProfile {
 	
 	public String toString() {
 		if (this.name.equals("")) {
-			return "<unnamed configuration>"; // TODO localize this
 			// TODO recognize "latest-xxxxx" and prevent from changing name or version
+			if (this.versionId.equals("latest-release" )) {
+				return LauncherFX.resources.getString("profile.editor.name.lastest.release");
+			} else if (this.versionId.equals("latest-snapshot" )) {
+				return LauncherFX.resources.getString("profile.editor.name.lastest.snapshot");
+			}
+			return LauncherFX.resources.getString("profile.editor.name.default");
 		}
 		return name;
 	}
