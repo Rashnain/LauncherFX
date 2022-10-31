@@ -34,7 +34,7 @@ public class GameProfile {
 	public String toString() {
 		if (this.name.equals("")) {
 			return "<unnamed configuration>"; // TODO localize this
-			// TODO if versionId is "latest-release" or "latest-snapshot" then prevent from modifying the name and force a localized name
+			// TODO recognize "latest-xxxxx" and prevent from changing name or version
 		}
 		return name;
 	}

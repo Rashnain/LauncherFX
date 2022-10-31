@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane minHeight="-Infinity" minWidth="-Infinity" prefHeight="550.0" prefWidth="880.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="main.java.com.github.rashnain.launcherfx.view.LoginScreenController">
+   <children>
+      <Button fx:id="microsoftButton" layoutX="377.0" layoutY="251.0" mnemonicParsing="false" onAction="#microsoftLogging" text="%microsoft.login.button" />
+      <Button fx:id="guestButton" layoutX="364.0" layoutY="376.0" onAction="#guestLogging" text="%guest.login.button" />
+      <TextField fx:id="guestPseudo" layoutX="353.0" layoutY="338.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" onKeyPressed="#onKeyPressedGuest" prefColumnCount="20" prefHeight="28.0" prefWidth="175.0" promptText="%guest.login.pseudo" />
+      <Label alignment="CENTER" contentDisplay="CENTER" layoutX="384.0" layoutY="148.0" text="%microsoft.login.title" textAlignment="CENTER">
+         <font>
+            <Font size="14.0" />
+         </font></Label>
+      <TextField fx:id="microsoftEmail" layoutX="340.0" layoutY="178.0" onKeyPressed="#onKeyPressedMicrosoft" prefWidth="200.0" promptText="%microsoft.login.email" />
+      <TextField fx:id="microsoftPassword" layoutX="340.0" layoutY="214.0" onKeyPressed="#onKeyPressedMicrosoft" prefWidth="200.0" promptText="%microsoft.login.password" />
+      <Label layoutX="433.0" layoutY="299.0" text="%login.or" />
+   </children>
+</AnchorPane>

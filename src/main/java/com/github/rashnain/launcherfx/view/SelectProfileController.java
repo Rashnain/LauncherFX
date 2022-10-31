@@ -22,9 +22,12 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
 import javafx.scene.control.ListView;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.control.Alert.AlertType;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
@@ -39,24 +42,42 @@ public class SelectProfileController implements Initializable {
 	private ResourceBundle resources;
 	
 	private List<GameInstance> instances;
-
+	
 	@FXML
-	private Button loginScreenButton;
+	private Label pseudo;
 
 	@FXML
 	private ListView<GameProfile> listViewVersions;
 
 	@FXML
-	private Button newProfile;
-	
-	@FXML
-	private VBox profileEditor;
+	private ChoiceBox<GameProfile> choiceBoxVersion;
 	
 	@FXML
 	private ProgressBar loadingBar;
 	
 	@FXML
-	private ChoiceBox<GameProfile> choiceVersion;
+	private VBox profileEditor;
+	
+	@FXML
+	private TextField name;
+	
+	@FXML
+	private TextField version;
+	
+	@FXML
+	private TextField gameDir;
+	
+	@FXML
+	private TextField width;
+	
+	@FXML
+	private TextField height;
+	
+	@FXML
+	private TextField java;
+	
+	@FXML
+	private TextField jvmArgs;
 	
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
@@ -64,18 +85,30 @@ public class SelectProfileController implements Initializable {
 		this.instances = new ArrayList<>();
 		
 		this.listViewVersions.setItems(LauncherProfile.getProfile().getGameProfiles());
-		this.choiceVersion.setItems(this.listViewVersions.getItems());
+		this.choiceBoxVersion.setItems(this.listViewVersions.getItems());
 		
 		this.listViewVersions.getSelectionModel().select(LauncherProfile.getProfile().lastUsedProfile());
-		//this.choiceVersion.getSelectionModel().select(LauncherProfile.getProfile().lastUsedProfile());
+		this.choiceBoxVersion.getSelectionModel().select(LauncherProfile.getProfile().lastUsedProfile());
 		updateProfileEditor();
 	}
 	
 	@FXML
-	private void onClickOnViewList(MouseEvent mouseEvent) {
-		if (mouseEvent.getButton().equals(MouseButton.PRIMARY)) {
-			updateProfileEditor();
+	private void onClickOnViewList(MouseEvent event) throws Exception {
+		if (event.getButton().equals(MouseButton.PRIMARY)) {
+			if (event.getClickCount() > 1) {
+				loadGame();
+			} else {
+				updateProfileEditor();
+			}
 		}
+	}
+	
+	@FXML
+	private void onKeyPressedViewList(KeyEvent event) {
+		if (event.getCode().equals(KeyCode.DELETE)) {
+			deleteProfile();
+		}
+		// TODO add CTRL+D for duplication and CTRL+N for creation
 	}
 	
 	@FXML
@@ -84,9 +117,13 @@ public class SelectProfileController implements Initializable {
 
 		if (selectedVer != null) {
 			profileEditor.setVisible(true);
-			((Label)((HBox)profileEditor.getChildren().get(1)).getChildren().get(1)).setText(selectedVer.getName());
-			
-			((Label)((HBox)profileEditor.getChildren().get(3)).getChildren().get(1)).setText(selectedVer.getId());
+			name.setText(selectedVer.getName());
+			version.setText(selectedVer.getId());
+			gameDir.setText(selectedVer.getGameDir());
+			width.setText(String.valueOf(selectedVer.getResolutions()[0]));
+			height.setText(String.valueOf(selectedVer.getResolutions()[1]));
+			java.setText(selectedVer.getExecutable());
+			jvmArgs.setText(selectedVer.getJvmArguments());
 		} else {
 			this.profileEditor.setVisible(false);
 		}
@@ -276,7 +313,7 @@ public class SelectProfileController implements Initializable {
 
 	@FXML
 	private void goToLoginScreen(ActionEvent event) throws IOException {
-		Util.changeRoot("loginScreen", event);
+		Util.changeRoot("LoginScreen", event);
 	}
 
 	@FXML

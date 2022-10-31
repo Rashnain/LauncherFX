@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ChoiceBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.ProgressBar?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<BorderPane prefHeight="550.0" prefWidth="880.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="main.java.com.github.rashnain.launcherfx.view.SelectProfileController">
+   <left>
+      <ListView fx:id="listViewVersions" onKeyPressed="#onKeyPressedViewList" onKeyReleased="#updateProfileEditor" onMouseClicked="#onClickOnViewList" prefWidth="440.0" BorderPane.alignment="CENTER" />
+   </left>
+   <right>
+      <VBox fx:id="profileEditor" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefWidth="440.0" visible="false" BorderPane.alignment="CENTER">
+         <children>
+            <Label alignment="CENTER" contentDisplay="CENTER" maxHeight="-Infinity" maxWidth="1.7976931348623157E308" minHeight="-Infinity" prefHeight="50.0" text="%profile.editor.title" textAlignment="CENTER">
+               <font>
+                  <Font name="System Bold" size="14.0" />
+               </font>
+            </Label>
+            <AnchorPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="100.0">
+               <children>
+                  <Label layoutX="50.0" layoutY="20.0" text="%profile.editor.name" />
+                  <TextField fx:id="name" layoutX="169.0" layoutY="16.0" prefWidth="200.0" promptText="%profile.editor.name.default" />
+               </children>
+            </AnchorPane>
+            <AnchorPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="100.0">
+               <children>
+                  <Label layoutX="50.0" layoutY="20.0" text="%profile.editor.version" />
+                  <TextField fx:id="version" layoutX="169.0" layoutY="16.0" prefWidth="200.0" />
+               </children>
+            </AnchorPane>
+            <AnchorPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="100.0">
+               <children>
+                  <Label layoutX="50.0" layoutY="20.0" text="%profile.editor.dir" />
+                  <TextField fx:id="gameDir" layoutX="169.0" layoutY="16.0" prefWidth="200.0" promptText="%profile.editor.default" />
+               </children>
+            </AnchorPane>
+            <AnchorPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="100.0">
+               <children>
+                  <Label layoutX="50.0" layoutY="20.0" text="%profile.editor.resolution" />
+                  <TextField fx:id="width" alignment="CENTER" layoutX="170.0" layoutY="17.0" prefWidth="100.0" promptText="%profile.editor.default" />
+                  <TextField fx:id="height" alignment="CENTER" layoutX="270.0" layoutY="17.0" prefWidth="100.0" promptText="%profile.editor.default" />
+               </children>
+            </AnchorPane>
+            <AnchorPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="100.0">
+               <children>
+                  <Label layoutX="50.0" layoutY="20.0" text="%profile.editor.java" />
+                  <TextField fx:id="java" layoutX="169.0" layoutY="16.0" prefWidth="200.0" promptText="%profile.editor.default" />
+               </children>
+            </AnchorPane>
+            <AnchorPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="100.0">
+               <children>
+                  <Label layoutX="50.0" layoutY="20.0" text="%profile.editor.jvmargs" />
+                  <TextField fx:id="jvmArgs" layoutX="169.0" layoutY="16.0" prefWidth="200.0" />
+               </children>
+            </AnchorPane>
+         </children>
+      </VBox>
+   </right>
+   <bottom>
+      <BorderPane prefHeight="117.0" prefWidth="880.0" BorderPane.alignment="CENTER">
+         <top>
+            <ProgressBar fx:id="loadingBar" maxWidth="1.7976931348623157E308" progress="0.0" visible="false" BorderPane.alignment="CENTER" />
+         </top>
+         <center>
+            <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#loadGame" text="%profile.launch" textAlignment="CENTER" BorderPane.alignment="CENTER">
+               <font>
+                  <Font name="System Bold" size="64.0" />
+               </font>
+            </Button>
+         </center>
+         <left>
+            <AnchorPane prefHeight="200.0" prefWidth="100.0" BorderPane.alignment="CENTER">
+               <children>
+                  <Button layoutX="22.0" layoutY="77.0" mnemonicParsing="false" onAction="#goToLoginScreen" text="%login.screen.button" />
+                  <Label fx:id="pseudo" layoutX="28.0" layoutY="36.0" text="Pseudo">
+                     <font>
+                        <Font size="14.0" />
+                     </font>
+                  </Label>
+               </children>
+            </AnchorPane>
+         </left>
+         <right>
+            <AnchorPane prefHeight="200.0" prefWidth="175.0" BorderPane.alignment="CENTER">
+               <children>
+                  <Label disable="true" layoutX="41.0" text="%profile.selection" />
+                  <ChoiceBox fx:id="choiceBoxVersion" disable="true" layoutX="13.0" layoutY="17.0" prefWidth="150.0" />
+                  <Button layoutX="45.0" layoutY="47.0" mnemonicParsing="false" onAction="#newProfile" text="%profile.new" />
+                  <Button layoutX="40.0" layoutY="78.0" mnemonicParsing="false" onAction="#deleteProfile" text="%profile.delete" />
+                  <Button layoutX="32.0" layoutY="108.0" mnemonicParsing="false" onAction="#duplicateProfile" text="%profile.duplicate" />
+               </children>
+            </AnchorPane>
+         </right>
+      </BorderPane>
+   </bottom>
+</BorderPane>
