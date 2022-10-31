@@ -33,9 +33,9 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import main.java.com.github.rashnain.launcherfx.Util;
-import main.java.com.github.rashnain.launcherfx.types.LauncherProfile;
-import main.java.com.github.rashnain.launcherfx.types.GameInstance;
-import main.java.com.github.rashnain.launcherfx.types.GameProfile;
+import main.java.com.github.rashnain.launcherfx.model.GameInstance;
+import main.java.com.github.rashnain.launcherfx.model.GameProfile;
+import main.java.com.github.rashnain.launcherfx.model.LauncherProfile;
 
 public class SelectProfileController implements Initializable {
 

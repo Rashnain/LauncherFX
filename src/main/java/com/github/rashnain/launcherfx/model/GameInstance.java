@@ -1,4 +1,4 @@
-package main.java.com.github.rashnain.launcherfx.types;
+package main.java.com.github.rashnain.launcherfx.model;
 
 import java.io.IOException;
 

@@ -17,7 +17,7 @@ import com.google.gson.JsonParser;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
-import main.java.com.github.rashnain.launcherfx.types.LauncherProfile;
+import main.java.com.github.rashnain.launcherfx.model.LauncherProfile;
 
 public class Util {
 	

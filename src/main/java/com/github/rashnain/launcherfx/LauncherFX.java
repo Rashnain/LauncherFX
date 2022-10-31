@@ -4,7 +4,7 @@ import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-import main.java.com.github.rashnain.launcherfx.types.LauncherProfile;
+import main.java.com.github.rashnain.launcherfx.model.LauncherProfile;
 
 import java.io.File;
 import java.io.IOException;
