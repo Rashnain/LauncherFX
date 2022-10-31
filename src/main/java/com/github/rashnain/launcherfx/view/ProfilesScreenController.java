@@ -31,6 +31,7 @@ import main.java.com.github.rashnain.launcherfx.LauncherFX;
 import main.java.com.github.rashnain.launcherfx.Util;
 import main.java.com.github.rashnain.launcherfx.model.GameInstance;
 import main.java.com.github.rashnain.launcherfx.model.GameProfile;
+import main.java.com.github.rashnain.launcherfx.model.GameProfile.VERSIONTYPE;
 import main.java.com.github.rashnain.launcherfx.model.LauncherProfile;
 
 public class ProfilesScreenController {
@@ -118,17 +119,24 @@ public class ProfilesScreenController {
 	
 	@FXML
 	private void updateProfileEditor() {
-		GameProfile selectedVer = this.listViewVersions.getSelectionModel().getSelectedItem();
+		GameProfile profile = this.listViewVersions.getSelectionModel().getSelectedItem();
 
-		if (selectedVer != null) {
+		if (profile != null) {
 			profileEditor.setVisible(true);
-			name.setText(selectedVer.getName());
-			version.setText(selectedVer.getId());
-			gameDir.setText(selectedVer.getGameDir());
-			width.setText(String.valueOf(selectedVer.getResolutions()[0]));
-			height.setText(String.valueOf(selectedVer.getResolutions()[1]));
-			java.setText(selectedVer.getExecutable());
-			jvmArgs.setText(selectedVer.getJvmArguments());
+			name.setText(profile.getName());
+			version.setText(profile.getId());
+			gameDir.setText(profile.getGameDir());
+			width.setText(profile.getWitdth());
+			height.setText(profile.getHeight());
+			java.setText(profile.getExecutable());
+			jvmArgs.setText(profile.getJvmArguments());
+			if (profile.getVersionType() == VERSIONTYPE.CUSTOM) {
+				name.setDisable(false);
+				version.setDisable(false);
+			} else {
+				name.setDisable(true);
+				version.setDisable(true);
+			}
 		} else {
 			this.profileEditor.setVisible(false);
 		}
@@ -201,8 +209,6 @@ public class ProfilesScreenController {
 			if (manifestExists) {
 				JsonObject version = Util.loadJSON(versionJsonURI);
 				
-				selectedVer.setVersionType(version.get("type").getAsString());
-				
 				GameInstance instance = new GameInstance(selectedVer.getGameDir());
 				
 				// Java executable + JVM arguments
@@ -273,9 +279,9 @@ public class ProfilesScreenController {
 				instance.addCommand("--uuid " + "uuid");
 				instance.addCommand("--accessToken " + "accessToken");
 				instance.addCommand("--userType " + "legacy");
-				instance.addCommand("--versionType " + selectedVer.getVersionType());
-				instance.addCommand("--width " + selectedVer.getResolutions()[0]);
-				instance.addCommand("--height " + selectedVer.getResolutions()[1]);
+				instance.addCommand("--versionType " + version.get("type").getAsString());
+				instance.addCommand("--width " + selectedVer.getResolution()[0]);
+				instance.addCommand("--height " + selectedVer.getResolution()[1]);
 				
 				this.loadingBar.setProgress(0.5);
 				
@@ -323,7 +329,7 @@ public class ProfilesScreenController {
 
 	@FXML
 	private void newProfile() {
-		GameProfile newProfile = new GameProfile("", "latest-release", new Date());
+		GameProfile newProfile = new GameProfile("", "latest-release", new Date(), VERSIONTYPE.CUSTOM);
 		
 		this.listViewVersions.getItems().add(newProfile);
 		
@@ -360,12 +366,11 @@ public class ProfilesScreenController {
 		GameProfile selectedVer = this.listViewVersions.getSelectionModel().getSelectedItem();
 		
 		if (selectedVer != null) {
-			GameProfile newProfile = new GameProfile(selectedVer.getName()+" copy", selectedVer.getId(), selectedVer.getLastUsed());
+			GameProfile newProfile = new GameProfile(selectedVer.getName()+" copy", selectedVer.getId(), selectedVer.getLastUsed(), VERSIONTYPE.CUSTOM);
 			newProfile.setGameDir(selectedVer.getGameDir());
 			newProfile.setExecutable(selectedVer.getExecutable());
 			newProfile.setJvmArguments(selectedVer.getJvmArguments());
-			newProfile.setVersionType(selectedVer.getVersionType());
-			newProfile.setResolutions(selectedVer.getResolutions()[0], selectedVer.getResolutions()[1]);
+			newProfile.setResolution(selectedVer.getResolution()[0], selectedVer.getResolution()[1]);
 			this.listViewVersions.getItems().add(newProfile);
 			this.listViewVersions.getSelectionModel().select(newProfile);
 			updateProfileEditor();

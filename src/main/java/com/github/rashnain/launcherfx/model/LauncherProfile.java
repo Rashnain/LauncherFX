@@ -14,6 +14,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import main.java.com.github.rashnain.launcherfx.LauncherFX;
 import main.java.com.github.rashnain.launcherfx.Util;
+import main.java.com.github.rashnain.launcherfx.model.GameProfile.VERSIONTYPE;
 
 public class LauncherProfile {
 	
@@ -60,10 +61,20 @@ public class LauncherProfile {
 				
 				String name = profile.get("name").getAsString();
 				String versionId = profile.get("lastVersionId").getAsString();
+				String versionType = profile.get("type").getAsString();
 				String lastUsed = profile.get("lastUsed").getAsString();
 				Date lastUsedDate = Date.from(Instant.parse(lastUsed));
 				
-				GameProfile gameProfile = new GameProfile(name, versionId, lastUsedDate);
+				VERSIONTYPE type = VERSIONTYPE.CUSTOM;
+				switch (versionType) {
+				case ("latest-release"):
+					type = VERSIONTYPE.LATEST_RELEASE;
+					break;
+				case ("latest-snapshot"):
+					type = VERSIONTYPE.LATEST_SNAPSHOT;
+				}
+				
+				GameProfile gameProfile = new GameProfile(name, versionId, lastUsedDate, type);
 				
 				if (profile.keySet().contains("gameDir")) {
 					gameProfile.setGameDir(profile.get("gameDir").getAsString());
@@ -71,7 +82,7 @@ public class LauncherProfile {
 				if (profile.keySet().contains("resolution")) {
 					int height = profile.get("resolution").getAsJsonObject().get("height").getAsInt();
 					int width = profile.get("resolution").getAsJsonObject().get("width").getAsInt();
-					gameProfile.setResolutions(width, height);
+					gameProfile.setResolution(width, height);
 				}
 				if (profile.keySet().contains("javaDir")) {
 					gameProfile.setExecutable(profile.get("javaDir").getAsString());
