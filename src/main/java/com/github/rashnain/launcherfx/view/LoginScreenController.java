@@ -1,21 +1,19 @@
 package main.java.com.github.rashnain.launcherfx.view;
 
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.Initializable;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
-import main.java.com.github.rashnain.launcherfx.Util;
+import main.java.com.github.rashnain.launcherfx.LauncherFX;
+import main.java.com.github.rashnain.launcherfx.model.LauncherProfile;
 
 import java.io.IOException;
-import java.net.URL;
 import java.util.ResourceBundle;
 
-public class LoginScreenController implements Initializable {
+public class LoginScreenController {
 	
 	private ResourceBundle resources;
 	
@@ -34,9 +32,8 @@ public class LoginScreenController implements Initializable {
 	@FXML
 	private Button guestButton;
 	
-	@Override
-	public void initialize(URL location, ResourceBundle resources) {
-		this.resources = resources;
+	public void initializeView() {
+		this.resources = LauncherFX.resources;
 	}
 	
 	@FXML
@@ -50,9 +47,10 @@ public class LoginScreenController implements Initializable {
 	}
 	
 	@FXML
-	private void guestLogging(ActionEvent event) throws IOException {
+	private void guestLogging() throws IOException {
 		if (checkGuest()) {
-			Util.changeRoot("ProfilesScreen", event);
+			LauncherProfile.getProfile().setUsername(guestPseudo.getText());
+			LauncherFX.switchView();
 		}
 	}
 	

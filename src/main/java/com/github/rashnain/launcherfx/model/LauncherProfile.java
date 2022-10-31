@@ -12,6 +12,7 @@ import com.google.gson.JsonPrimitive;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import main.java.com.github.rashnain.launcherfx.LauncherFX;
 import main.java.com.github.rashnain.launcherfx.Util;
 
 public class LauncherProfile {
@@ -38,7 +39,7 @@ public class LauncherProfile {
 	
 	private LauncherProfile() {
 		try {
-			new URL(Util.VERSION_MANIFEST).openConnection().getInputStream().available();
+			new URL(LauncherFX.VERSION_MANIFEST).openConnection().getInputStream().available();
 			this.online = true;
 			System.out.println("Online mode.");
 		} catch (IOException e) {
@@ -162,6 +163,8 @@ public class LauncherProfile {
 	}
 
 	public GameProfile lastUsedProfile() {
+		if (this.gameProfiles.size() == 0) { return null; };
+		
 		GameProfile lastUsed = this.gameProfiles.get(0);
 		for (GameProfile gp : this.gameProfiles) {
 			if (gp.getLastUsed().getTime() > lastUsed.getLastUsed().getTime()) {

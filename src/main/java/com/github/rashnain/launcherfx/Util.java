@@ -7,28 +7,12 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.net.URLConnection;
-import java.util.Locale;
-import java.util.ResourceBundle;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
-import javafx.event.ActionEvent;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Node;
-import main.java.com.github.rashnain.launcherfx.model.LauncherProfile;
-
 public class Util {
-	
-	public static final String VERSION_MANIFEST = "https://piston-meta.mojang.com/mc/game/version_manifest_v2.json";
-
-	public static void changeRoot(String file, ActionEvent event) throws IOException {
-		FXMLLoader loader = new FXMLLoader(LauncherFX.class.getResource("view/" + file + ".fxml"));
-		Locale locale = new Locale(LauncherProfile.getProfile().getLocale());
-		loader.setResources(ResourceBundle.getBundle("main.java.com.github.rashnain.launcherfx.locales.lang", locale));
-		((Node) event.getSource()).getScene().setRoot(loader.load());
-	}
 	
 	/**
 	 * Download file at URL if dir/filename doesn't already exist
@@ -69,7 +53,7 @@ public class Util {
 			out.close();
 		}
 	}
-
+	
 	public static JsonObject loadJSON(String path) throws IOException {
 		FileInputStream in = new FileInputStream(path);
 		StringBuilder sb = new StringBuilder();
@@ -134,7 +118,7 @@ public class Util {
 		
 		return false;
 	}
-
+	
 	public static String getNativesString(JsonObject lib) throws Exception {
 		String nativesString = "";
 		

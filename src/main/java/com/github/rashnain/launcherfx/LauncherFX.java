@@ -2,9 +2,12 @@ package main.java.com.github.rashnain.launcherfx;
 
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import main.java.com.github.rashnain.launcherfx.model.LauncherProfile;
+import main.java.com.github.rashnain.launcherfx.view.LoginScreenController;
+import main.java.com.github.rashnain.launcherfx.view.ProfilesScreenController;
 
 import java.io.File;
 import java.io.IOException;
@@ -13,8 +16,20 @@ import java.util.ResourceBundle;
 
 public class LauncherFX extends Application {
 	
-	private Stage primaryStage;
+	public static final String VERSION_MANIFEST = "https://piston-meta.mojang.com/mc/game/version_manifest_v2.json";
+
+	private static Stage primaryStage;
 	
+	private static Parent loginScreenView;
+
+	private static LoginScreenController loginScreenController;
+	
+	private static Parent profilesScreenView;
+
+	private static ProfilesScreenController profilesScreenController;
+
+	public static ResourceBundle resources;
+
 	public static void main(String[] args) throws IOException {
 		LauncherProfile launcher = LauncherProfile.getProfile();
 		
@@ -47,14 +62,35 @@ public class LauncherFX extends Application {
 
 	@Override
 	public void start(Stage primaryStage) throws IOException {
-		this.primaryStage = primaryStage;
-		FXMLLoader loader = new FXMLLoader(LauncherFX.class.getResource("view/loginScreen.fxml"));
+		LauncherFX.primaryStage = primaryStage;
+		
 		Locale locale = new Locale(LauncherProfile.getProfile().getLocale());
-		loader.setResources(ResourceBundle.getBundle("main.java.com.github.rashnain.launcherfx.locales.lang", locale));
-		Scene scene = new Scene(loader.load(), 880, 550);
-		this.primaryStage.setTitle("LauncherFX");
-		this.primaryStage.setResizable(false);
-		this.primaryStage.setScene(scene);
-		this.primaryStage.show();
+		resources = ResourceBundle.getBundle("main.java.com.github.rashnain.launcherfx.resources.locales.lang", locale);
+		
+		FXMLLoader loginScreen = new FXMLLoader(LauncherFX.class.getResource("view/LoginScreen.fxml"));
+		loginScreen.setResources(resources);
+		loginScreenView = loginScreen.load();
+		loginScreenController = loginScreen.getController();
+		loginScreenController.initializeView();
+		
+		FXMLLoader profilesScreen = new FXMLLoader(LauncherFX.class.getResource("view/ProfilesScreen.fxml"));
+		profilesScreen.setResources(resources);
+		profilesScreenView = profilesScreen.load();
+		profilesScreenController = profilesScreen.getController();
+		
+		primaryStage.setTitle("LauncherFX");
+		primaryStage.setResizable(false);
+		primaryStage.setScene(new Scene(loginScreenView, 880, 550));
+		primaryStage.show();
+	}
+	
+	public static void switchView() {
+		Scene scene = primaryStage.getScene();
+		if (scene.getRoot() == loginScreenView) {
+			profilesScreenController.initializeView();
+			scene.setRoot(profilesScreenView);
+		} else {
+			scene.setRoot(loginScreenView);
+		}
 	}
 }

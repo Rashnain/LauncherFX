@@ -2,7 +2,6 @@ package main.java.com.github.rashnain.launcherfx.view;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
@@ -14,11 +13,8 @@ import java.util.ResourceBundle;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.Initializable;
 import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
@@ -30,25 +26,30 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import main.java.com.github.rashnain.launcherfx.LauncherFX;
 import main.java.com.github.rashnain.launcherfx.Util;
 import main.java.com.github.rashnain.launcherfx.model.GameInstance;
 import main.java.com.github.rashnain.launcherfx.model.GameProfile;
 import main.java.com.github.rashnain.launcherfx.model.LauncherProfile;
 
-public class SelectProfileController implements Initializable {
-
+public class ProfilesScreenController {
+	
+	public boolean initialized;
+	
 	private ResourceBundle resources;
 	
 	private List<GameInstance> instances;
 	
 	@FXML
 	private Label pseudo;
-
+	
+	@FXML
+	private Label pseudoStatus;
+	
 	@FXML
 	private ListView<GameProfile> listViewVersions;
-
+	
 	@FXML
 	private ChoiceBox<GameProfile> choiceBoxVersion;
 	
@@ -79,17 +80,21 @@ public class SelectProfileController implements Initializable {
 	@FXML
 	private TextField jvmArgs;
 	
-	@Override
-	public void initialize(URL location, ResourceBundle resources) {
-		this.resources = resources;
-		this.instances = new ArrayList<>();
-		
-		this.listViewVersions.setItems(LauncherProfile.getProfile().getGameProfiles());
-		this.choiceBoxVersion.setItems(this.listViewVersions.getItems());
-		
-		this.listViewVersions.getSelectionModel().select(LauncherProfile.getProfile().lastUsedProfile());
-		this.choiceBoxVersion.getSelectionModel().select(LauncherProfile.getProfile().lastUsedProfile());
-		updateProfileEditor();
+	public void initializeView() {
+		if (!initialized) {
+			this.resources = LauncherFX.resources;
+			this.instances = new ArrayList<>();
+			
+			this.listViewVersions.setItems(LauncherProfile.getProfile().getGameProfiles());
+			this.choiceBoxVersion.setItems(this.listViewVersions.getItems());
+			
+			this.listViewVersions.getSelectionModel().select(LauncherProfile.getProfile().lastUsedProfile());
+			this.choiceBoxVersion.getSelectionModel().select(LauncherProfile.getProfile().lastUsedProfile());
+			updateProfileEditor();
+			
+			initialized = true;
+		}
+		pseudo.setText(LauncherProfile.getProfile().getUsername());
 	}
 	
 	@FXML
@@ -175,7 +180,7 @@ public class SelectProfileController implements Initializable {
 			boolean manifestExists = false;
 			
 			if (launcher.isOnline()) {
-				Util.downloadFile(Util.VERSION_MANIFEST, "version_manifest_v2.json", launcher.getVersionsDir(), 0);
+				Util.downloadFile(LauncherFX.VERSION_MANIFEST, "version_manifest_v2.json", launcher.getVersionsDir(), 0);
 				JsonObject versionManifest = Util.loadJSON(launcher.getVersionsDir()+"version_manifest_v2.json");;
 				JsonArray versionArray = versionManifest.get("versions").getAsJsonArray();
 				for (JsonElement entry : versionArray) {
@@ -312,8 +317,8 @@ public class SelectProfileController implements Initializable {
 	}
 
 	@FXML
-	private void goToLoginScreen(ActionEvent event) throws IOException {
-		Util.changeRoot("LoginScreen", event);
+	private void goToLoginScreen() throws IOException {
+		LauncherFX.switchView();
 	}
 
 	@FXML
