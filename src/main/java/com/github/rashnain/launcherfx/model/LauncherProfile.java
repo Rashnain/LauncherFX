@@ -215,8 +215,8 @@ public class LauncherProfile {
 			profile.add("name", new JsonPrimitive(gp.getName()));
 			if (!(gp.getEditableWidth().equals("") && gp.getEditableHeight().equals(""))) {
 				profile.add("resolution", new JsonObject());
-				profile.getAsJsonObject("resolution").add("width", new JsonPrimitive(Integer.valueOf(gp.getWidth())));
-				profile.getAsJsonObject("resolution").add("height", new JsonPrimitive(Integer.valueOf(gp.getHeight())));
+				profile.getAsJsonObject("resolution").add("width", new JsonPrimitive(Integer.valueOf(gp.getWidthOrDefault())));
+				profile.getAsJsonObject("resolution").add("height", new JsonPrimitive(Integer.valueOf(gp.getHeightOrDefault())));
 			}
 			profile.add("type", new JsonPrimitive(VERSION_TYPE.getAsString(gp.getVersionType())));
 		}

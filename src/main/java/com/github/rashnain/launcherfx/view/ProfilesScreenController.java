@@ -159,6 +159,7 @@ public class ProfilesScreenController {
 			profile.getWidthProperty().bind(width.textProperty());
 			height.setText(profile.getEditableHeight());
 			profile.getHeightProperty().bind(height.textProperty());
+			checkResolution();
 			java.setText(profile.getEditableExecutable());
 			profile.getExecutableProperty().bind(java.textProperty());
 			jvmArgs.setText(profile.getJvmArguments());
@@ -178,6 +179,7 @@ public class ProfilesScreenController {
 		
 		// checks if there isn't another instance running in the same directory
 		if (selectedVer != null) {
+			checkResolution();
 			launcher.saveProfile();
 			ignoreConflicts = true;
 			Iterator<GameInstance> it = this.instances.iterator();
@@ -413,6 +415,15 @@ public class ProfilesScreenController {
 			dialog.setTitle(this.resources.getString("launch.error"));
 			dialog.setHeaderText(this.resources.getString("launch.error.desc"));
 			dialog.show();
+		}
+	}
+	
+	private void checkResolution() {
+		if (!width.getText().matches("^[1-9][0-9]{2,3}$")) {
+			width.setText("");
+		}
+		if (!height.getText().matches("^[1-9][0-9]{2,3}$")) {
+			height.setText("");
 		}
 	}
 }
