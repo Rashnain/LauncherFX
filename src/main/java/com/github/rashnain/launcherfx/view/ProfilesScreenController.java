@@ -37,7 +37,7 @@ import main.java.com.github.rashnain.launcherfx.model.VERSION_TYPE;
 
 public class ProfilesScreenController {
 	
-	public boolean initialized;
+	private boolean initialized;
 	
 	private ResourceBundle resources;
 	
@@ -101,7 +101,7 @@ public class ProfilesScreenController {
 			
 			initialized = true;
 		}
-		pseudo.setText(launcher.getUsername());
+		pseudo.setText(launcher.getGuestUsername());
 	}
 	
 	@FXML
@@ -299,12 +299,12 @@ public class ProfilesScreenController {
 				instance.addCommand(version.get("mainClass").getAsString());
 				
 				// Parameters
-				instance.addCommand("--username " + launcher.getUsername());
+				instance.addCommand("--username " + launcher.getGuestUsername());
 				instance.addCommand("--version " + selectedVer.getVersionId());
 				instance.addCommand("--gameDir " + selectedVer.getGameDirOrDefault());
 				instance.addCommand("--assetsDir " + launcher.getAssetsDir());
 				instance.addCommand("--assetIndex " + version.get("assetIndex").getAsJsonObject().get("id").getAsString());
-				instance.addCommand("--uuid " + UUID.nameUUIDFromBytes(("OfflinePlayer:"+launcher.getUsername()).getBytes()));
+				instance.addCommand("--uuid " + UUID.nameUUIDFromBytes(("OfflinePlayer:"+launcher.getGuestUsername()).getBytes()));
 				instance.addCommand("--accessToken " + "accessToken");
 				instance.addCommand("--userType " + "legacy");
 				instance.addCommand("--versionType " + version.get("type").getAsString());

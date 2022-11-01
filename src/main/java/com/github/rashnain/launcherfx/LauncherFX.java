@@ -4,6 +4,7 @@ import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import main.java.com.github.rashnain.launcherfx.model.LauncherProfile;
 import main.java.com.github.rashnain.launcherfx.view.LoginScreenController;
@@ -76,7 +77,6 @@ public class LauncherFX extends Application {
 		loginScreen.setResources(resources);
 		loginScreenView = loginScreen.load();
 		loginScreenController = loginScreen.getController();
-		loginScreenController.initializeView();
 		
 		FXMLLoader profilesScreen = new FXMLLoader(LauncherFX.class.getResource("view/ProfilesScreen.fxml"));
 		profilesScreen.setResources(resources);
@@ -85,17 +85,20 @@ public class LauncherFX extends Application {
 		
 		primaryStage.setTitle("LauncherFX");
 		primaryStage.setResizable(false);
-		primaryStage.setScene(new Scene(loginScreenView, 880, 550));
+		primaryStage.setScene(new Scene(new Pane(), 880, 550));
 		primaryStage.show();
+		
+		switchView();
 	}
 	
 	public static void switchView() {
 		Scene scene = primaryStage.getScene();
 		if (scene.getRoot() == loginScreenView) {
-			profilesScreenController.initializeView();
 			scene.setRoot(profilesScreenView);
+			profilesScreenController.initializeView();
 		} else {
 			scene.setRoot(loginScreenView);
+			loginScreenController.initializeView();
 		}
 	}
 	

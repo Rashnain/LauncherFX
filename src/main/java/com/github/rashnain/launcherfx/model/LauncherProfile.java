@@ -173,7 +173,7 @@ public class LauncherProfile {
 		return this.locale;
 	}
 	
-	public String getUsername() {
+	public String getGuestUsername() {
 		return this.guestUsername;
 	}
 	

@@ -15,6 +15,8 @@ import java.util.ResourceBundle;
 
 public class LoginScreenController {
 	
+	private boolean initialized;
+	
 	private ResourceBundle resources;
 	
 	private LauncherProfile launcher;
@@ -35,8 +37,16 @@ public class LoginScreenController {
 	private Button guestButton;
 	
 	public void initializeView() {
-		this.resources = LauncherFX.getResources();
-		this.launcher = LauncherProfile.getProfile();
+		if (!initialized) {
+			this.resources = LauncherFX.getResources();
+			this.launcher = LauncherProfile.getProfile();
+			
+			initialized = true;
+		}
+		if (!launcher.getGuestUsername().equals("")) {
+			guestPseudo.setText(launcher.getGuestUsername());
+			guestButton.requestFocus();
+		}
 	}
 	
 	@FXML
