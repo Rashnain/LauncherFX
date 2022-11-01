@@ -133,7 +133,7 @@ public class LauncherProfile {
 	
 	private void loadSettings() throws Exception {
 		JsonObject json = Util.loadJSON(this.dataDir+"launcher_profiles.json");
-		JsonObject settings = json.getAsJsonObject("settings");
+		JsonObject settings = json.getAsJsonObject("launcherfx");
 		this.locale = new Locale(settings.get("locale").getAsString());
 		this.guestUsername = settings.get("guestUsername").getAsString();
 	}
@@ -225,9 +225,9 @@ public class LauncherProfile {
 			profile.add("type", new JsonPrimitive(VERSION_TYPE.getAsString(gp.getVersionType())));
 		}
 		
-		this.settings.add("settings", new JsonObject());
-		this.settings.getAsJsonObject("settings").add("guestUsername", new JsonPrimitive(this.guestUsername));
-		this.settings.getAsJsonObject("settings").add("locale", new JsonPrimitive(this.locale.getLanguage()));
+		this.settings.add("launcherfx", new JsonObject());
+		this.settings.getAsJsonObject("launcherfx").add("guestUsername", new JsonPrimitive(this.guestUsername));
+		this.settings.getAsJsonObject("launcherfx").add("locale", new JsonPrimitive(this.locale.getLanguage()));
 	}
 	
 	public void saveProfile() throws IOException {
