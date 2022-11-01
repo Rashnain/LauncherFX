@@ -32,7 +32,7 @@
             <AnchorPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="100.0">
                <children>
                   <Label layoutX="50.0" layoutY="20.0" maxWidth="-Infinity" prefWidth="115.0" text="%profile.editor.version" />
-                  <TextField fx:id="version" layoutX="169.0" layoutY="16.0" prefWidth="200.0" />
+                  <ChoiceBox fx:id="version" layoutX="169.0" layoutY="15.0" prefWidth="200.0" />
                </children>
             </AnchorPane>
             <AnchorPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="100.0">

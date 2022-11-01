@@ -3,7 +3,6 @@ package main.java.com.github.rashnain.launcherfx.model;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.net.URL;
 import java.time.Instant;
 import java.util.Locale;
 
@@ -40,16 +39,6 @@ public class LauncherProfile {
 	private static final LauncherProfile instance = new LauncherProfile();
 	
 	private LauncherProfile() {
-		try {
-			new URL(LauncherFX.VERSION_MANIFEST).openConnection().getInputStream().available();
-			this.online = true;
-			System.out.println("Online mode.");
-		} catch (IOException e) {
-			this.online = false;
-			System.out.println("Offline mode.");
-		}
-		// TODO check if it actually works
-		
 		this.gson = new GsonBuilder().setPrettyPrinting().disableHtmlEscaping().create();
 		this.gameProfiles = FXCollections.observableArrayList();
 	}
@@ -161,6 +150,10 @@ public class LauncherProfile {
 	
 	public boolean isOnline() {
 		return this.online;
+	}
+
+	public void setOnline(boolean online) {
+		this.online = online;
 	}
 	
 	public String getLocale() {

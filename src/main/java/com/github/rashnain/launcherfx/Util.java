@@ -22,11 +22,11 @@ public class Util {
 	 * @throws IOException 
 	 */
 	public static void downloadFile(String url, String filename, String dir, int size) throws IOException {
-		System.out.println("Downloading " + filename + " to " + dir);
 		File pathFile = new File(dir);
 		pathFile.mkdirs();
 		File file = new File(dir+filename);
-		if (file.createNewFile()) {// || file.getTotalSpace() != size) {
+		if (file.createNewFile() || size == 0) {
+			System.out.println("Downloading " + filename + " to " + dir);
 			URLConnection conn = new URL(url).openConnection();
 			conn.setRequestProperty("User-Agent", "Wget/1.21.3 (linux-gnu)");
 
