@@ -28,6 +28,8 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
+import javafx.stage.DirectoryChooser;
+import javafx.stage.FileChooser;
 import main.java.com.github.rashnain.launcherfx.LauncherFX;
 import main.java.com.github.rashnain.launcherfx.Util;
 import main.java.com.github.rashnain.launcherfx.model.GameInstance;
@@ -424,6 +426,24 @@ public class ProfilesScreenController {
 		}
 		if (!height.getText().matches("^[1-9][0-9]{2,3}$")) {
 			height.setText("");
+		}
+	}
+	
+	@FXML
+	private void selectDir() {
+		DirectoryChooser fc = new DirectoryChooser();
+		File f = fc.showDialog(LauncherFX.primaryStage);
+		if (f != null) {
+			gameDir.setText(f.getAbsolutePath());
+		}
+	}
+
+	@FXML
+	private void selectExe() {
+		FileChooser fc = new FileChooser();
+		File f = fc.showOpenDialog(LauncherFX.primaryStage);
+		if (f != null) {
+			java.setText(f.getAbsolutePath());
 		}
 	}
 }

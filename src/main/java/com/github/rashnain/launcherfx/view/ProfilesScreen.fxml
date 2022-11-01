@@ -39,6 +39,7 @@
                <children>
                   <Label layoutX="50.0" layoutY="20.0" maxWidth="-Infinity" prefWidth="115.0" text="%profile.editor.dir" />
                   <TextField fx:id="gameDir" layoutX="169.0" layoutY="16.0" prefWidth="200.0" promptText="%profile.editor.default" />
+                  <Button layoutX="369.0" layoutY="16.0" mnemonicParsing="false" onAction="#selectDir" text="📁" />
                </children>
             </AnchorPane>
             <AnchorPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="100.0">
@@ -52,6 +53,7 @@
                <children>
                   <Label layoutX="50.0" layoutY="20.0" maxWidth="-Infinity" prefWidth="115.0" text="%profile.editor.java" />
                   <TextField fx:id="java" layoutX="169.0" layoutY="16.0" prefWidth="200.0" promptText="%profile.editor.default" />
+                  <Button layoutX="369.0" layoutY="16.0" mnemonicParsing="false" onAction="#selectExe" text="📁" />
                </children>
             </AnchorPane>
             <AnchorPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="100.0">

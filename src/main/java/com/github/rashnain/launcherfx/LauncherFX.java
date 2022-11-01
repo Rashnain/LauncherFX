@@ -19,7 +19,7 @@ public class LauncherFX extends Application {
 	
 	public static final String VERSION_MANIFEST = "https://piston-meta.mojang.com/mc/game/version_manifest_v2.json";
 
-	private static Stage primaryStage;
+	public static Stage primaryStage;
 	
 	private static Parent loginScreenView;
 
