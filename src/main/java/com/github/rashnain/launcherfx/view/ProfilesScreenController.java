@@ -340,6 +340,8 @@ public class ProfilesScreenController {
 				instance.runInstance();
 				
 				this.instances.add(instance);
+				
+				selectedVer.setLastUsed(Instant.now());
 
 			} else {
 				Alert dialog = new Alert(AlertType.ERROR);
