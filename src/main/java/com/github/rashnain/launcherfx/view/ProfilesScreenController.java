@@ -449,4 +449,11 @@ public class ProfilesScreenController {
 			java.setText(f.getAbsolutePath());
 		}
 	}
+	
+	@FXML
+	private void updateListView() {
+		GameProfile gp = this.listViewVersions.getSelectionModel().getSelectedItem();
+		int index = this.listViewVersions.getItems().indexOf(gp);
+		this.listViewVersions.getItems().set(index, gp);
+	}
 }

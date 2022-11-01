@@ -26,7 +26,7 @@
             <AnchorPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="100.0">
                <children>
                   <Label layoutX="50.0" layoutY="20.0" maxWidth="-Infinity" prefWidth="115.0" text="%profile.editor.name" />
-                  <TextField fx:id="name" layoutX="169.0" layoutY="16.0" prefWidth="200.0" promptText="%profile.editor.name.default" />
+                  <TextField fx:id="name" layoutX="169.0" layoutY="16.0" onKeyReleased="#updateListView" prefWidth="200.0" promptText="%profile.editor.name.default" />
                </children>
             </AnchorPane>
             <AnchorPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="100.0">
