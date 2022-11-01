@@ -343,9 +343,9 @@ public class ProfilesScreenController {
 		
 		if (selectedVer != null) {
 			Alert dialog = new Alert(AlertType.CONFIRMATION);
-			dialog.setTitle("Delete profile");
-			dialog.setHeaderText("This profile will be removed.\r\nAll concerned data won't be affected.");
-			dialog.setContentText("Do you want to procede ?");
+			dialog.setTitle(this.resources.getString("profile.delete.title"));
+			dialog.setHeaderText(this.resources.getString("profile.delete.header"));
+			dialog.setContentText(this.resources.getString("profile.delete.content"));
 			dialog.getButtonTypes().set(0, ButtonType.YES);
 			dialog.getButtonTypes().set(1, ButtonType.NO);
 			Optional<ButtonType> choice = dialog.showAndWait();
