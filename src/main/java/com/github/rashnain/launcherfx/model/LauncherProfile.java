@@ -110,7 +110,8 @@ public class LauncherProfile {
 			if (profile.keySet().contains("resolution")) {
 				int height = profile.getAsJsonObject("resolution").get("height").getAsInt();
 				int width = profile.getAsJsonObject("resolution").get("width").getAsInt();
-				gameProfile.setResolution(width, height);
+				gameProfile.setWidth(width);
+				gameProfile.setHeight(height);
 			}
 			if (profile.keySet().contains("javaDir")) {
 				gameProfile.setExecutable(profile.get("javaDir").getAsString());
@@ -200,22 +201,22 @@ public class LauncherProfile {
 			profiles.add(gp.getIdentifier(), new JsonObject());
 			JsonObject profile = profiles.getAsJsonObject(gp.getIdentifier());
 			
-			if (!gp.getGameDir().equals("")) {
+			if (!gp.getEditableGameDir().equals("")) {
 				profile.add("gameDir", new JsonPrimitive(gp.getGameDir()));
 			}
-			if (!gp.getJvmArguments().equals("")) {
+			if (!gp.getEditableJvmArguments().equals("")) {
 				profile.add("javaArgs", new JsonPrimitive(gp.getJvmArguments()));
 			}
-			if (!gp.getExecutable().equals("")) {
+			if (!gp.getEditableExecutable().equals("")) {
 				profile.add("javaDir", new JsonPrimitive(gp.getExecutable()));
 			}
 			profile.add("lastUsed", new JsonPrimitive(gp.getLastUsed().toString()));
 			profile.add("lastVersionId", new JsonPrimitive(gp.getVersionId()));
 			profile.add("name", new JsonPrimitive(gp.getName()));
-			if (!(gp.getWitdth().equals("") || gp.getHeight().equals(""))) {
+			if (!(gp.getEditableWidth().equals("") && gp.getEditableHeight().equals(""))) {
 				profile.add("resolution", new JsonObject());
-				profile.getAsJsonObject("resolution").add("width", new JsonPrimitive(gp.getResolution()[0]));
-				profile.getAsJsonObject("resolution").add("height", new JsonPrimitive(gp.getResolution()[1]));
+				profile.getAsJsonObject("resolution").add("width", new JsonPrimitive(Integer.valueOf(gp.getWidth())));
+				profile.getAsJsonObject("resolution").add("height", new JsonPrimitive(Integer.valueOf(gp.getHeight())));
 			}
 			profile.add("type", new JsonPrimitive(VERSION_TYPE.getAsString(gp.getVersionType())));
 		}
@@ -231,17 +232,20 @@ public class LauncherProfile {
 		try {
 			System.out.println("Saving settings into launcher_profiles.json.");
 			
+			JsonObject settings = generatedJson();
+			
 			File file = new File(this.dataDir + "launcher_profiles.json");
 			if (!file.isFile()) {
 				file.createNewFile();
 			}
 			FileOutputStream out = new FileOutputStream(file);
-			out.write(gson.toJson(generatedJson()).getBytes());
+			out.write(gson.toJson(settings).getBytes());
 			out.close();
 			System.out.println("Saved settings.");
-		} catch (IOException e) {
+		} catch (Exception e) {
 			System.out.println("Couldn't save profile");
 			e.printStackTrace();
+			Runtime.getRuntime().exit(1);
 		}
 	}
 }
