@@ -27,6 +27,8 @@ public class LauncherFX extends Application {
 	private static Parent profilesScreenView;
 
 	private static ProfilesScreenController profilesScreenController;
+	
+	private static final String[] availableLocales = {"en", "fr"};
 
 	public static ResourceBundle resources;
 
@@ -53,8 +55,8 @@ public class LauncherFX extends Application {
 		
 		System.out.println("Working directory : " + launcher.getLauncherDir());
 		
-		// Load settings and profiles
-		launcher.loadProfiles();
+		// Load launcher settings
+		launcher.loadProfile();
 		
 		// Launch
 		launch();
@@ -64,7 +66,7 @@ public class LauncherFX extends Application {
 	public void start(Stage primaryStage) throws IOException {
 		LauncherFX.primaryStage = primaryStage;
 		
-		Locale locale = new Locale(LauncherProfile.getProfile().getLocale());
+		Locale locale = LauncherProfile.getProfile().getLocale();
 		resources = ResourceBundle.getBundle("main.java.com.github.rashnain.launcherfx.resources.locales.lang", locale);
 		
 		FXMLLoader loginScreen = new FXMLLoader(LauncherFX.class.getResource("view/LoginScreen.fxml"));
@@ -92,5 +94,14 @@ public class LauncherFX extends Application {
 		} else {
 			scene.setRoot(loginScreenView);
 		}
+	}
+	
+	public static boolean isAvailableLocale(String locale) {
+		for (String availableLocale : availableLocales) {
+			if (locale.equals(availableLocale)) {
+				return true;
+			}
+		}
+		return false;
 	}
 }

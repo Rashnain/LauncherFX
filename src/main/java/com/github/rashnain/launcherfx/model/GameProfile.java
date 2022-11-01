@@ -1,6 +1,7 @@
 package main.java.com.github.rashnain.launcherfx.model;
 
 import java.util.Date;
+import java.util.Random;
 
 import main.java.com.github.rashnain.launcherfx.LauncherFX;
 
@@ -12,15 +13,13 @@ public class GameProfile {
 	
 	public static final String defaultJava = "java";
 	
-	public enum VERSIONTYPE {
-		CUSTOM, LATEST_RELEASE, LATEST_SNAPSHOT
-	}
+	public static final String defaultJvmArgs = "-Xmx2G -XX:+UnlockExperimentalVMOptions -XX:+UseG1GC -XX:G1NewSizePercent=20 -XX:G1ReservePercent=20 -XX:MaxGCPauseMillis=50 -XX:G1HeapRegionSize=32M";
 	
 	private String name;
 	
 	private String versionId;
 	
-	private VERSIONTYPE versionType;
+	private VERSION_TYPE versionType;
 
 	private String gameDir;
 	
@@ -32,7 +31,9 @@ public class GameProfile {
 	
 	private Date lastUsed;
 	
-	public GameProfile(String name, String versionId, Date lastUsed, VERSIONTYPE type) {
+	private String identifier;
+	
+	public GameProfile(String name, String versionId, Date lastUsed, VERSION_TYPE type) {
 		this.name = name;
 		this.versionId = versionId;
 		this.lastUsed = lastUsed;
@@ -40,25 +41,47 @@ public class GameProfile {
 		this.gameDir = defaultGameDir;
 		this.resolution = defaultResolution;
 		this.executable = defaultJava;
-		this.jvmArguments = "-Xmx2G -XX:+UnlockExperimentalVMOptions -XX:+UseG1GC -XX:G1NewSizePercent=20 -XX:G1ReservePercent=20 -XX:MaxGCPauseMillis=50 -XX:G1HeapRegionSize=32M";
+		this.jvmArguments = defaultJvmArgs;
+		this.identifier = getUniqueIdentifier();
 	}
 	
 	public String toString() {
 		if (this.name.equals("")) {
-			if (this.versionType == VERSIONTYPE.LATEST_RELEASE) {
+			if (this.versionType == VERSION_TYPE.LATEST_RELEASE) {
 				return LauncherFX.resources.getString("profile.editor.name.lastest.release");
-			} else if (this.versionType == VERSIONTYPE.LATEST_SNAPSHOT) {
+			} else if (this.versionType == VERSION_TYPE.LATEST_SNAPSHOT) {
 				return LauncherFX.resources.getString("profile.editor.name.lastest.snapshot");
 			}
 			return LauncherFX.resources.getString("profile.editor.name.default");
 		}
 		return this.name;
 	}
-	
-	public String getName() {
-		if (this.versionType != VERSIONTYPE.CUSTOM) {
+
+	private String getUniqueIdentifier() {
+		String identifier;
+		do {
+			identifier = String.valueOf(new Random().nextInt());
+		} while (!isAvailable(identifier));
+		return identifier;
+	}
+
+	private boolean isAvailable(String identifier) {
+		for (GameProfile e : LauncherProfile.getProfile().getGameProfiles()) {
+			if (e.getIdentifier().equals(identifier)) {
+				return false;
+			}
+		}
+		return true;
+	}
+
+	public String getEditableName() {
+		if (this.versionType != VERSION_TYPE.CUSTOM) {
 			return toString();
 		}
+		return this.name;
+	}
+	
+	public String getName() {
 		return this.name;
 	}
 	
@@ -66,15 +89,19 @@ public class GameProfile {
 		this.name = name;
 	}
 	
-	public String getId() {
+	public String getVersionId() {
 		return this.versionId;
 	}
 	
-	public void setId(String id) {
+	public void setVersionId(String id) {
 		this.versionId = id;
 	}
 
-	public VERSIONTYPE getVersionType() {
+	public VERSION_TYPE getVersionType() {
+		return this.versionType;
+	}
+	
+	public VERSION_TYPE getVersionTypeAsString() {
 		return this.versionType;
 	}
 
@@ -90,9 +117,6 @@ public class GameProfile {
 	}
 
 	public int[] getResolution() {
-		if (this.resolution == defaultResolution) {
-			return new int[2];
-		}
 		return this.resolution;
 	}
 
@@ -126,10 +150,17 @@ public class GameProfile {
 		this.executable = executable;
 	}
 
-	public String getJvmArguments() {
+	public String getEditableJvmArguments() {
 		return this.jvmArguments;
 	}
 
+	public String getJvmArguments() {
+		if (this.jvmArguments == defaultJvmArgs) {
+			return "";
+		}
+		return this.jvmArguments;
+	}
+	
 	public void setJvmArguments(String jvmArguments) {
 		this.jvmArguments = jvmArguments;
 	}
@@ -140,5 +171,13 @@ public class GameProfile {
 
 	public void setLastUsed(Date lastUsed) {
 		this.lastUsed = lastUsed;
+	}
+
+	public String getIdentifier() {
+		return identifier;
+	}
+	
+	public void setIdentifier(String identifier) {
+		this.identifier = identifier;
 	}
 }
