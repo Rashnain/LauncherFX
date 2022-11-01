@@ -55,7 +55,7 @@ public class LauncherProfile {
 		}
 		// TODO check if it actually works
 		
-		this.gson = new GsonBuilder().setPrettyPrinting().create();
+		this.gson = new GsonBuilder().setPrettyPrinting().disableHtmlEscaping().create();
 		this.settings = new JsonObject();
 		this.gameProfiles = FXCollections.observableArrayList();
 	}
@@ -205,25 +205,24 @@ public class LauncherProfile {
 			profiles.add(gp.getIdentifier(), new JsonObject());
 			JsonObject profile = profiles.getAsJsonObject(gp.getIdentifier());
 			
-			profile.add("name", new JsonPrimitive(gp.getName()));
-			profile.add("lastVersionId", new JsonPrimitive(gp.getVersionId()));
-			profile.add("lastUsed", new JsonPrimitive(gp.getLastUsed().toInstant().toString()));
-			profile.add("type", new JsonPrimitive(VERSION_TYPE.getAsString(gp.getVersionType())));
-			
 			if (!gp.getGameDir().equals("")) {
 				profile.add("gameDir", new JsonPrimitive(gp.getGameDir()));
 			}
+			if (!gp.getJvmArguments().equals("")) {
+				profile.add("javaArgs", new JsonPrimitive(gp.getJvmArguments()));
+			}
+			if (!gp.getExecutable().equals("")) {
+				profile.add("javaDir", new JsonPrimitive(gp.getExecutable()));
+			}
+			profile.add("lastUsed", new JsonPrimitive(gp.getLastUsed().toInstant().toString()));
+			profile.add("lastVersionId", new JsonPrimitive(gp.getVersionId()));
+			profile.add("name", new JsonPrimitive(gp.getName()));
 			if (!(gp.getWitdth().equals("") || gp.getHeight().equals(""))) {
 				profile.add("resolution", new JsonObject());
 				profile.getAsJsonObject("resolution").add("width", new JsonPrimitive(gp.getResolution()[0]));
 				profile.getAsJsonObject("resolution").add("height", new JsonPrimitive(gp.getResolution()[1]));
 			}
-			if (!gp.getExecutable().equals("")) {
-				profile.add("javaDir", new JsonPrimitive(gp.getExecutable()));
-			}
-			if (!gp.getJvmArguments().equals("")) {
-				profile.add("javaArgs", new JsonPrimitive(gp.getJvmArguments()));
-			}
+			profile.add("type", new JsonPrimitive(VERSION_TYPE.getAsString(gp.getVersionType())));
 		}
 		
 		this.settings.add("settings", new JsonObject());
@@ -239,7 +238,6 @@ public class LauncherProfile {
 		if (!file.isFile()) {
 			file.createNewFile();
 		}
-		
 		FileOutputStream out = new FileOutputStream(file);
 		out.write(gson.toJson(settings).getBytes());
 		out.close();
