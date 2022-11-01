@@ -1,6 +1,6 @@
 package main.java.com.github.rashnain.launcherfx.model;
 
-import java.util.Date;
+import java.time.Instant;
 import java.util.Random;
 
 import main.java.com.github.rashnain.launcherfx.LauncherFX;
@@ -29,11 +29,11 @@ public class GameProfile {
 	
 	private String jvmArguments;
 	
-	private Date lastUsed;
+	private Instant lastUsed;
 	
 	private String identifier;
 	
-	public GameProfile(String name, String versionId, Date lastUsed, VERSION_TYPE type) {
+	public GameProfile(String name, String versionId, Instant lastUsed, VERSION_TYPE type) {
 		this.name = name;
 		this.versionId = versionId;
 		this.lastUsed = lastUsed;
@@ -166,11 +166,11 @@ public class GameProfile {
 		this.jvmArguments = jvmArguments;
 	}
 
-	public Date getLastUsed() {
+	public Instant getLastUsed() {
 		return this.lastUsed;
 	}
 
-	public void setLastUsed(Date lastUsed) {
+	public void setLastUsed(Instant lastUsed) {
 		this.lastUsed = lastUsed;
 	}
 

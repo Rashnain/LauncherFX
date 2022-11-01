@@ -5,7 +5,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.URL;
 import java.time.Instant;
-import java.util.Date;
 import java.util.Locale;
 
 import com.google.gson.Gson;
@@ -71,7 +70,7 @@ public class LauncherProfile {
 		} catch (Exception e) {
 			System.out.println("Error loading launcher profiles.");
 			System.out.println("Ceating default profile.");
-			GameProfile latest = new GameProfile("", "latest-release", new Date(), VERSION_TYPE.LATEST_RELEASE);
+			GameProfile latest = new GameProfile("", "latest-release", Instant.EPOCH, VERSION_TYPE.LATEST_RELEASE);
 			gameProfiles.add(latest);
 		}
 		
@@ -101,7 +100,7 @@ public class LauncherProfile {
 			String name = profile.get("name").getAsString();
 			String versionId = profile.get("lastVersionId").getAsString();
 			String lastUsed = profile.get("lastUsed").getAsString();
-			Date lastUsedDate = Date.from(Instant.parse(lastUsed));
+			Instant lastUsedDate = Instant.parse(lastUsed);
 			
 			String versionType = profile.get("type").getAsString();
 			VERSION_TYPE type = VERSION_TYPE.getAsType(versionType);
@@ -191,7 +190,7 @@ public class LauncherProfile {
 		
 		GameProfile lastUsed = this.gameProfiles.get(0);
 		for (GameProfile gp : this.gameProfiles) {
-			if (gp.getLastUsed().getTime() > lastUsed.getLastUsed().getTime()) {
+			if (gp.getLastUsed().isAfter(lastUsed.getLastUsed())) {
 				lastUsed = gp;
 			}
 		}
@@ -214,7 +213,7 @@ public class LauncherProfile {
 			if (!gp.getExecutable().equals("")) {
 				profile.add("javaDir", new JsonPrimitive(gp.getExecutable()));
 			}
-			profile.add("lastUsed", new JsonPrimitive(gp.getLastUsed().toInstant().toString()));
+			profile.add("lastUsed", new JsonPrimitive(gp.getLastUsed().toString()));
 			profile.add("lastVersionId", new JsonPrimitive(gp.getVersionId()));
 			profile.add("name", new JsonPrimitive(gp.getName()));
 			if (!(gp.getWitdth().equals("") || gp.getHeight().equals(""))) {

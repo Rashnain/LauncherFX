@@ -2,8 +2,8 @@ package main.java.com.github.rashnain.launcherfx.view;
 
 import java.io.File;
 import java.io.IOException;
+import java.time.Instant;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map.Entry;
@@ -329,7 +329,7 @@ public class ProfilesScreenController {
 
 	@FXML
 	private void newProfile() {
-		GameProfile newProfile = new GameProfile("", "latest-release", new Date(), VERSION_TYPE.CUSTOM);
+		GameProfile newProfile = new GameProfile("", "latest-release", Instant.EPOCH, VERSION_TYPE.CUSTOM);
 		
 		this.listViewVersions.getItems().add(newProfile);
 		
