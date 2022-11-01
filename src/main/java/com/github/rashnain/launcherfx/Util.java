@@ -55,6 +55,7 @@ public class Util {
 	}
 	
 	public static JsonObject loadJSON(String path) throws IOException {
+		System.out.println(path);
 		FileInputStream in = new FileInputStream(path);
 		StringBuilder sb = new StringBuilder();
 		

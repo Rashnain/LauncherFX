@@ -244,13 +244,13 @@ public class ProfilesScreenController {
 				GameInstance instance = new GameInstance(selectedVer.getGameDir());
 				
 				// Java executable + JVM arguments
-				instance.addCommand(selectedVer.getExecutableOrDefault());
+				instance.addCommand("\""+selectedVer.getExecutableOrDefault()+"\"");
 				instance.addCommand(selectedVer.getJvmArguments());
 				
 				this.loadingBar.setProgress(0.1);
 				
 				// Library path
-				instance.addCommand("-Djava.library.path="+launcher.getVersionsDir()+selectedVer.getVersionId()+"/natives/");
+				instance.addCommand("-Djava.library.path=\""+launcher.getVersionsDir()+selectedVer.getVersionId()+"/natives/\"");
 				
 				// Classpath, TODO download only required libraries
 				instance.addCommand("-cp");
@@ -279,7 +279,7 @@ public class ProfilesScreenController {
 						if (!new File(launcher.getLibrariesDir()+libDir+libName).isFile()) {
 							Util.downloadFile(libURL, libName, launcher.getLibrariesDir()+libDir, libSize);
 						}
-						instance.addCommand(launcher.getLibrariesDir()+libDir+libName, ";");
+						instance.addCommand("\""+launcher.getLibrariesDir()+libDir+libName, "\";");
 					}
 				}
 				
@@ -295,7 +295,7 @@ public class ProfilesScreenController {
 					int versionJarSize = clientJar.get("size").getAsInt();
 					Util.downloadFile(versionJarURL, versionJarName, versionJarDir, versionJarSize);
 				}
-				instance.addCommand(versionJarDir+versionJarName);
+				instance.addCommand("\""+versionJarDir+versionJarName+"\"");
 				
 				this.loadingBar.setProgress(0.4);
 				
@@ -305,8 +305,8 @@ public class ProfilesScreenController {
 				// Parameters
 				instance.addCommand("--username " + launcher.getGuestUsername());
 				instance.addCommand("--version " + selectedVer.getVersionId());
-				instance.addCommand("--gameDir " + selectedVer.getGameDirOrDefault());
-				instance.addCommand("--assetsDir " + launcher.getAssetsDir());
+				instance.addCommand("--gameDir " + "\""+selectedVer.getGameDirOrDefault()+"\"");
+				instance.addCommand("--assetsDir " + "\""+launcher.getAssetsDir()+"\"");
 				instance.addCommand("--assetIndex " + version.get("assetIndex").getAsJsonObject().get("id").getAsString());
 				instance.addCommand("--uuid " + UUID.nameUUIDFromBytes(("OfflinePlayer:"+launcher.getGuestUsername()).getBytes()));
 				instance.addCommand("--accessToken " + "accessToken");

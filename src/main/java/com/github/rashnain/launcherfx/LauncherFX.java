@@ -41,22 +41,21 @@ public class LauncherFX extends Application {
 		// Working directory
 		if (args.length >= 2 && args[0].equals("--workDir")) {
 			if (new File(args[1]).isAbsolute()) {
-				launcher.setLauncherDir(args[1] + "/");
+				launcher.setWorkDir(args[1]);
 			} else {
-				launcher.setLauncherDir(System.getProperty("user.dir") + "/" + args[1] + "/");
+				launcher.setWorkDir(System.getProperty("user.dir") + "/" + args[1]);
 			}
 		} else {
-			launcher.setLauncherDir(System.getProperty("user.dir") + "/");
+			launcher.setWorkDir(System.getProperty("user.dir") + "/data");
 		}
-		
-		File workDir = new File(launcher.getLauncherDir());
+		File workDir = new File(launcher.getWorkDir());
 		workDir.mkdirs();
 		if (!workDir.isDirectory()) {
-			launcher.setLauncherDir(System.getProperty("user.dir") + "/");
-			System.out.println("Could not use custom work directory, will use default directory as such.");
+			launcher.setWorkDir(System.getProperty("user.dir"));
+			System.out.println("Could not use custom work directory, will use default directory instead.");
 		}
 		
-		System.out.println("Working directory : " + launcher.getLauncherDir());
+		System.out.println("Working directory : " + launcher.getWorkDir());
 		
 		// Load launcher settings
 		launcher.loadProfile();

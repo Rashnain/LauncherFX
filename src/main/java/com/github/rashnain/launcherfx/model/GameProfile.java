@@ -9,7 +9,7 @@ import main.java.com.github.rashnain.launcherfx.LauncherFX;
 
 public class GameProfile {
 	
-	private static final String defaultGameDir = LauncherProfile.getProfile().getDataDir();
+	private static final String defaultGameDir = LauncherProfile.getProfile().getWorkDir();
 	
 	private static final String defaultWidth = "880";
 	

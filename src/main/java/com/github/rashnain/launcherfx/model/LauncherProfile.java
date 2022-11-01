@@ -21,9 +21,7 @@ public class LauncherProfile {
 	
 	private Gson gson;
 	
-	private String launcherDir;
-	
-	private String dataDir;
+	private String workDir;
 	
 	private String versionsDir;
 	
@@ -87,7 +85,7 @@ public class LauncherProfile {
 	}
 	
 	private void loadProfiles() throws Exception {
-		JsonObject json = Util.loadJSON(this.dataDir+"launcher_profiles.json");
+		JsonObject json = Util.loadJSON(this.workDir+"launcher_profiles.json");
 		JsonObject profiles = json.get("profiles").getAsJsonObject();
 		for (String key : profiles.keySet()) {
 			JsonObject profile = profiles.get(key).getAsJsonObject();
@@ -127,26 +125,21 @@ public class LauncherProfile {
 	}
 	
 	private void loadSettings() throws Exception {
-		JsonObject json = Util.loadJSON(this.dataDir+"launcher_profiles.json");
+		JsonObject json = Util.loadJSON(this.workDir+"launcher_profiles.json");
 		JsonObject settings = json.getAsJsonObject("launcherfx");
 		this.locale = new Locale(settings.get("locale").getAsString());
 		this.guestUsername = settings.get("guestUsername").getAsString();
 	}
 	
-	public String getLauncherDir() {
-		return this.launcherDir;
+	public void setWorkDir(String dir) {
+		this.workDir = dir + "/";
+		this.versionsDir = this.workDir + "versions/";
+		this.librariesDir = this.workDir + "libraries/";
+		this.assetsDir = this.workDir + "assets/";
 	}
 	
-	public void setLauncherDir(String dir) {
-		this.launcherDir = dir;
-		this.dataDir = this.launcherDir + "data/";
-		this.versionsDir = this.dataDir + "versions/";
-		this.librariesDir = this.dataDir + "libraries/";
-		this.assetsDir = this.dataDir + "assets/";
-	}
-	
-	public String getDataDir() {
-		return this.dataDir;
+	public String getWorkDir() {
+		return this.workDir;
 	}
 	
 	public String getVersionsDir() {
@@ -234,7 +227,7 @@ public class LauncherProfile {
 			
 			JsonObject settings = generatedJson();
 			
-			File file = new File(this.dataDir + "launcher_profiles.json");
+			File file = new File(this.workDir + "launcher_profiles.json");
 			if (!file.isFile()) {
 				file.createNewFile();
 			}
