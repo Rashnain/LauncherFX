@@ -16,7 +16,7 @@
       <ListView fx:id="listViewVersions" onKeyPressed="#onKeyPressedViewList" onKeyReleased="#updateProfileEditor" onMouseClicked="#onClickOnViewList" prefWidth="440.0" BorderPane.alignment="CENTER" />
    </left>
    <right>
-      <VBox fx:id="profileEditor" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefWidth="440.0" visible="false" BorderPane.alignment="CENTER">
+      <VBox fx:id="profileEditor" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefWidth="440.0" BorderPane.alignment="CENTER">
          <children>
             <Label alignment="CENTER" contentDisplay="CENTER" maxHeight="-Infinity" maxWidth="1.7976931348623157E308" minHeight="-Infinity" prefHeight="50.0" text="%profile.editor.title" textAlignment="CENTER">
                <font>
@@ -25,38 +25,38 @@
             </Label>
             <AnchorPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="100.0">
                <children>
-                  <Label layoutX="50.0" layoutY="20.0" text="%profile.editor.name" />
+                  <Label layoutX="50.0" layoutY="20.0" maxWidth="-Infinity" prefWidth="115.0" text="%profile.editor.name" />
                   <TextField fx:id="name" layoutX="169.0" layoutY="16.0" prefWidth="200.0" promptText="%profile.editor.name.default" />
                </children>
             </AnchorPane>
             <AnchorPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="100.0">
                <children>
-                  <Label layoutX="50.0" layoutY="20.0" text="%profile.editor.version" />
+                  <Label layoutX="50.0" layoutY="20.0" maxWidth="-Infinity" prefWidth="115.0" text="%profile.editor.version" />
                   <TextField fx:id="version" layoutX="169.0" layoutY="16.0" prefWidth="200.0" />
                </children>
             </AnchorPane>
             <AnchorPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="100.0">
                <children>
-                  <Label layoutX="50.0" layoutY="20.0" text="%profile.editor.dir" />
+                  <Label layoutX="50.0" layoutY="20.0" maxWidth="-Infinity" prefWidth="115.0" text="%profile.editor.dir" />
                   <TextField fx:id="gameDir" layoutX="169.0" layoutY="16.0" prefWidth="200.0" promptText="%profile.editor.default" />
                </children>
             </AnchorPane>
             <AnchorPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="100.0">
                <children>
-                  <Label layoutX="50.0" layoutY="20.0" text="%profile.editor.resolution" />
+                  <Label layoutX="50.0" layoutY="20.0" maxWidth="-Infinity" prefWidth="115.0" text="%profile.editor.resolution" />
                   <TextField fx:id="width" alignment="CENTER" layoutX="170.0" layoutY="17.0" prefWidth="100.0" promptText="%profile.editor.default" />
                   <TextField fx:id="height" alignment="CENTER" layoutX="270.0" layoutY="17.0" prefWidth="100.0" promptText="%profile.editor.default" />
                </children>
             </AnchorPane>
             <AnchorPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="100.0">
                <children>
-                  <Label layoutX="50.0" layoutY="20.0" text="%profile.editor.java" />
+                  <Label layoutX="50.0" layoutY="20.0" maxWidth="-Infinity" prefWidth="115.0" text="%profile.editor.java" />
                   <TextField fx:id="java" layoutX="169.0" layoutY="16.0" prefWidth="200.0" promptText="%profile.editor.default" />
                </children>
             </AnchorPane>
             <AnchorPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="100.0">
                <children>
-                  <Label layoutX="50.0" layoutY="20.0" text="%profile.editor.jvmargs" />
+                  <Label layoutX="50.0" layoutY="20.0" maxWidth="-Infinity" prefWidth="115.0" text="%profile.editor.jvmargs" />
                   <TextField fx:id="jvmArgs" layoutX="169.0" layoutY="16.0" prefWidth="200.0" />
                </children>
             </AnchorPane>
@@ -78,13 +78,13 @@
          <left>
             <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="137.0" prefWidth="150.0" BorderPane.alignment="CENTER">
                <children>
-                  <Button layoutX="48.0" layoutY="91.0" mnemonicParsing="false" onAction="#goToLoginScreen" text="%login.screen.button" />
-                  <Label fx:id="pseudo" layoutX="26.0" layoutY="49.0" maxWidth="100.0" prefWidth="100.0" text="Pseudo">
+                  <Button layoutX="13.0" layoutY="91.0" maxWidth="-Infinity" mnemonicParsing="false" onAction="#goToLoginScreen" prefWidth="125.0" text="%login.screen.button" />
+                  <Label fx:id="pseudo" alignment="CENTER" layoutX="14.0" layoutY="49.0" maxWidth="-Infinity" prefWidth="125.0" text="Pseudo">
                      <font>
-                        <Font size="14.0" />
+                        <Font name="System Bold" size="14.0" />
                      </font>
                   </Label>
-                  <Label fx:id="pseudoStatus" layoutX="57.0" layoutY="14.0" text="Guest">
+                  <Label fx:id="pseudoStatus" alignment="CENTER" layoutX="13.0" layoutY="14.0" maxWidth="-Infinity" prefWidth="125.0" text="Guest">
                      <font>
                         <Font size="14.0" />
                      </font>
@@ -95,11 +95,11 @@
          <right>
             <AnchorPane prefHeight="137.0" prefWidth="175.0" BorderPane.alignment="CENTER">
                <children>
-                  <Label disable="true" layoutX="41.0" text="%profile.selection" />
-                  <ChoiceBox fx:id="choiceBoxVersion" disable="true" layoutX="13.0" layoutY="17.0" maxWidth="-Infinity" prefWidth="150.0" />
-                  <Button layoutX="45.0" layoutY="47.0" mnemonicParsing="false" onAction="#newProfile" text="%profile.new" />
-                  <Button layoutX="40.0" layoutY="78.0" mnemonicParsing="false" onAction="#deleteProfile" text="%profile.delete" />
-                  <Button layoutX="32.0" layoutY="108.0" mnemonicParsing="false" onAction="#duplicateProfile" text="%profile.duplicate" />
+                  <Label alignment="CENTER" disable="true" layoutX="13.0" layoutY="3.0" maxWidth="-Infinity" prefWidth="150.0" text="%profile.selection" />
+                  <ChoiceBox fx:id="choiceBoxVersion" disable="true" layoutX="13.0" layoutY="23.0" maxWidth="-Infinity" prefWidth="150.0" />
+                  <Button layoutX="25.0" layoutY="55.0" maxWidth="-Infinity" mnemonicParsing="false" onAction="#newProfile" prefWidth="125.0" text="%profile.new" />
+                  <Button layoutX="25.0" layoutY="81.0" maxWidth="-Infinity" mnemonicParsing="false" onAction="#deleteProfile" prefWidth="125.0" text="%profile.delete" />
+                  <Button layoutX="25.0" layoutY="107.0" maxWidth="-Infinity" mnemonicParsing="false" onAction="#duplicateProfile" prefWidth="125.0" text="%profile.duplicate" />
                </children>
             </AnchorPane>
          </right>
