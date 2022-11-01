@@ -396,7 +396,7 @@ public class ProfilesScreenController {
 		GameProfile selectedVer = this.listViewVersions.getSelectionModel().getSelectedItem();
 		
 		if (selectedVer != null) {
-			GameProfile newProfile = new GameProfile(selectedVer.toString()+" copy", selectedVer.getVersionId(), selectedVer.getLastUsed(), VERSION_TYPE.CUSTOM);
+			GameProfile newProfile = new GameProfile(selectedVer.toString()+" "+resources.getString("profile.editor.copy"), selectedVer.getVersionId(), selectedVer.getLastUsed(), VERSION_TYPE.CUSTOM);
 			newProfile.setGameDir(selectedVer.getGameDir());
 			newProfile.setExecutable(selectedVer.getExecutable());
 			newProfile.setJvmArguments(selectedVer.getJvmArguments());
