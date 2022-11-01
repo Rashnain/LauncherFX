@@ -41,6 +41,8 @@ public class ProfilesScreenController {
 	
 	private ResourceBundle resources;
 	
+	private LauncherProfile launcher;
+	
 	private List<GameInstance> instances;
 	
 	@FXML
@@ -84,19 +86,20 @@ public class ProfilesScreenController {
 	
 	public void initializeView() {
 		if (!initialized) {
-			this.resources = LauncherFX.resources;
+			this.resources = LauncherFX.getResources();
+			this.launcher = LauncherProfile.getProfile();
 			this.instances = new ArrayList<>();
 			
-			this.listViewVersions.setItems(LauncherProfile.getProfile().getGameProfiles());
+			this.listViewVersions.setItems(launcher.getGameProfiles());
 			this.choiceBoxVersion.setItems(this.listViewVersions.getItems());
 			
-			this.listViewVersions.getSelectionModel().select(LauncherProfile.getProfile().lastUsedProfile());
-			this.choiceBoxVersion.getSelectionModel().select(LauncherProfile.getProfile().lastUsedProfile());
+			this.listViewVersions.getSelectionModel().select(launcher.lastUsedProfile());
+			this.choiceBoxVersion.getSelectionModel().select(launcher.lastUsedProfile());
 			updateProfileEditor();
 			
 			initialized = true;
 		}
-		pseudo.setText(LauncherProfile.getProfile().getUsername());
+		pseudo.setText(launcher.getUsername());
 	}
 	
 	@FXML
@@ -149,7 +152,9 @@ public class ProfilesScreenController {
 		
 		boolean ignoreConflicts = false;
 		
+		// checks if there isn't another instance running in the same directory
 		if (selectedVer != null) {
+			launcher.saveProfile();
 			ignoreConflicts = true;
 			Iterator<GameInstance> it = this.instances.iterator();
 			while (it.hasNext()) {
@@ -183,8 +188,6 @@ public class ProfilesScreenController {
 		if (ignoreConflicts) {
 			this.loadingBar.setProgress(0);
 			this.loadingBar.setVisible(true);
-			
-			LauncherProfile launcher = LauncherProfile.getProfile();
 			
 			boolean manifestExists = false;
 			
@@ -322,12 +325,12 @@ public class ProfilesScreenController {
 			}
 		}
 	}
-
+	
 	@FXML
 	private void goToLoginScreen() throws IOException {
 		LauncherFX.switchView();
 	}
-
+	
 	@FXML
 	private void newProfile() {
 		GameProfile newProfile = new GameProfile("", "latest-release", Instant.EPOCH, VERSION_TYPE.CUSTOM);
@@ -336,6 +339,7 @@ public class ProfilesScreenController {
 		
 		this.listViewVersions.getSelectionModel().select(newProfile);
 		updateProfileEditor();
+		launcher.saveProfile();
 	}
 	
 	@FXML
@@ -353,6 +357,7 @@ public class ProfilesScreenController {
 			if (choice.get() == ButtonType.YES) {
 				this.listViewVersions.getItems().remove(selectedVer);
 				updateProfileEditor();
+				launcher.saveProfile();
 			}
 		} else {
 			Alert dialog = new Alert(AlertType.ERROR);
@@ -375,6 +380,7 @@ public class ProfilesScreenController {
 			this.listViewVersions.getItems().add(newProfile);
 			this.listViewVersions.getSelectionModel().select(newProfile);
 			updateProfileEditor();
+			launcher.saveProfile();
 		} else {
 			Alert dialog = new Alert(AlertType.ERROR);
 			dialog.setTitle(this.resources.getString("launch.error"));

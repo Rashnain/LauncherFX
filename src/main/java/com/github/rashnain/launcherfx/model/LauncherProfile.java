@@ -21,8 +21,6 @@ public class LauncherProfile {
 	
 	private Gson gson;
 	
-	private JsonObject settings;
-	
 	private String launcherDir;
 	
 	private String dataDir;
@@ -55,7 +53,6 @@ public class LauncherProfile {
 		// TODO check if it actually works
 		
 		this.gson = new GsonBuilder().setPrettyPrinting().disableHtmlEscaping().create();
-		this.settings = new JsonObject();
 		this.gameProfiles = FXCollections.observableArrayList();
 	}
 	
@@ -87,8 +84,6 @@ public class LauncherProfile {
 			}
 			this.guestUsername = "";
 		}
-		
-		saveProfile();
 	}
 	
 	private void loadProfiles() throws Exception {
@@ -197,9 +192,10 @@ public class LauncherProfile {
 		return lastUsed;
 	}
 	
-	private void updateJson() {
-		this.settings.add("profiles", new JsonObject());
-		JsonObject profiles = this.settings.getAsJsonObject("profiles");
+	private JsonObject generatedJson() {
+		JsonObject settings = new JsonObject();
+		settings.add("profiles", new JsonObject());
+		JsonObject profiles = settings.getAsJsonObject("profiles");
 		for (GameProfile gp : this.gameProfiles) {
 			profiles.add(gp.getIdentifier(), new JsonObject());
 			JsonObject profile = profiles.getAsJsonObject(gp.getIdentifier());
@@ -224,22 +220,28 @@ public class LauncherProfile {
 			profile.add("type", new JsonPrimitive(VERSION_TYPE.getAsString(gp.getVersionType())));
 		}
 		
-		this.settings.add("launcherfx", new JsonObject());
-		this.settings.getAsJsonObject("launcherfx").add("guestUsername", new JsonPrimitive(this.guestUsername));
-		this.settings.getAsJsonObject("launcherfx").add("locale", new JsonPrimitive(this.locale.getLanguage()));
+		settings.add("launcherfx", new JsonObject());
+		settings.getAsJsonObject("launcherfx").add("guestUsername", new JsonPrimitive(this.guestUsername));
+		settings.getAsJsonObject("launcherfx").add("locale", new JsonPrimitive(this.locale.getLanguage()));
+		
+		return settings;
 	}
 	
-	public void saveProfile() throws IOException {
-		updateJson();
-		System.out.println("Saving settings into launcher_profiles.json.");
-		
-		File file = new File(this.dataDir + "launcher_profiles.json");
-		if (!file.isFile()) {
-			file.createNewFile();
+	public void saveProfile() {
+		try {
+			System.out.println("Saving settings into launcher_profiles.json.");
+			
+			File file = new File(this.dataDir + "launcher_profiles.json");
+			if (!file.isFile()) {
+				file.createNewFile();
+			}
+			FileOutputStream out = new FileOutputStream(file);
+			out.write(gson.toJson(generatedJson()).getBytes());
+			out.close();
+			System.out.println("Saved settings.");
+		} catch (IOException e) {
+			System.out.println("Couldn't save profile");
+			e.printStackTrace();
 		}
-		FileOutputStream out = new FileOutputStream(file);
-		out.write(gson.toJson(settings).getBytes());
-		out.close();
-		System.out.println("Saved settings.");
 	}
 }

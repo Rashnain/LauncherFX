@@ -17,6 +17,8 @@ public class LoginScreenController {
 	
 	private ResourceBundle resources;
 	
+	private LauncherProfile launcher;
+	
 	@FXML
 	private TextField guestPseudo;
 	
@@ -33,7 +35,8 @@ public class LoginScreenController {
 	private Button guestButton;
 	
 	public void initializeView() {
-		this.resources = LauncherFX.resources;
+		this.resources = LauncherFX.getResources();
+		this.launcher = LauncherProfile.getProfile();
 	}
 	
 	@FXML
@@ -49,7 +52,7 @@ public class LoginScreenController {
 	@FXML
 	private void guestLogging() throws IOException {
 		if (checkGuest()) {
-			LauncherProfile.getProfile().setUsername(guestPseudo.getText());
+			launcher.setUsername(guestPseudo.getText());
 			LauncherFX.switchView();
 		}
 	}

@@ -49,11 +49,11 @@ public class GameProfile {
 	public String toString() {
 		if (this.name.equals("")) {
 			if (this.versionType == VERSION_TYPE.LATEST_RELEASE) {
-				return LauncherFX.resources.getString("profile.editor.name.lastest.release");
+				return LauncherFX.getResources().getString("profile.editor.name.lastest.release");
 			} else if (this.versionType == VERSION_TYPE.LATEST_SNAPSHOT) {
-				return LauncherFX.resources.getString("profile.editor.name.lastest.snapshot");
+				return LauncherFX.getResources().getString("profile.editor.name.lastest.snapshot");
 			}
-			return LauncherFX.resources.getString("profile.editor.name.default");
+			return LauncherFX.getResources().getString("profile.editor.name.default");
 		}
 		return this.name;
 	}

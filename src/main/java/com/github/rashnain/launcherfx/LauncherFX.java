@@ -30,10 +30,12 @@ public class LauncherFX extends Application {
 	
 	private static final String[] availableLocales = {"en", "fr"};
 
-	public static ResourceBundle resources;
+	private static ResourceBundle resources;
+	
+	private static LauncherProfile launcher;
 
 	public static void main(String[] args) throws IOException {
-		LauncherProfile launcher = LauncherProfile.getProfile();
+		launcher = LauncherProfile.getProfile();
 		
 		// Working directory
 		if (args.length >= 2 && args[0].equals("--workDir")) {
@@ -64,9 +66,10 @@ public class LauncherFX extends Application {
 
 	@Override
 	public void start(Stage primaryStage) throws IOException {
+		primaryStage.setOnCloseRequest( e -> launcher.saveProfile() );
 		LauncherFX.primaryStage = primaryStage;
 		
-		Locale locale = LauncherProfile.getProfile().getLocale();
+		Locale locale = launcher.getLocale();
 		resources = ResourceBundle.getBundle("main.java.com.github.rashnain.launcherfx.resources.locales.lang", locale);
 		
 		FXMLLoader loginScreen = new FXMLLoader(LauncherFX.class.getResource("view/LoginScreen.fxml"));
@@ -103,5 +106,9 @@ public class LauncherFX extends Application {
 			}
 		}
 		return false;
+	}
+	
+	public static ResourceBundle getResources() {
+		return resources;
 	}
 }
