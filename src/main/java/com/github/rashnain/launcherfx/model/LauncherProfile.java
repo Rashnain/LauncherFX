@@ -8,6 +8,8 @@ import java.time.Instant;
 import java.util.Date;
 import java.util.Locale;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 
@@ -17,6 +19,8 @@ import main.java.com.github.rashnain.launcherfx.LauncherFX;
 import main.java.com.github.rashnain.launcherfx.Util;
 
 public class LauncherProfile {
+	
+	private Gson gson;
 	
 	private JsonObject settings;
 	
@@ -51,6 +55,7 @@ public class LauncherProfile {
 		}
 		// TODO check if it actually works
 		
+		this.gson = new GsonBuilder().setPrettyPrinting().create();
 		this.settings = new JsonObject();
 		this.gameProfiles = FXCollections.observableArrayList();
 	}
@@ -236,7 +241,7 @@ public class LauncherProfile {
 		}
 		
 		FileOutputStream out = new FileOutputStream(file);
-		out.write(this.settings.toString().getBytes()); // TODO save JSON in a human friendly way
+		out.write(gson.toJson(settings).getBytes());
 		out.close();
 		System.out.println("Saved settings.");
 	}
