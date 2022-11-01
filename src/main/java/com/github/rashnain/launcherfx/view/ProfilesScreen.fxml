@@ -62,49 +62,39 @@
                   <TextField fx:id="jvmArgs" layoutX="169.0" layoutY="16.0" prefWidth="200.0" />
                </children>
             </AnchorPane>
+            <AnchorPane minHeight="-Infinity" prefHeight="30.0" prefWidth="200.0">
+               <children>
+                  <Button layoutX="11.0" layoutY="1.0" maxWidth="-Infinity" mnemonicParsing="false" onAction="#newProfile" prefWidth="125.0" text="%profile.new" />
+                  <Button layoutX="304.0" maxWidth="-Infinity" mnemonicParsing="false" onAction="#deleteProfile" prefWidth="125.0" text="%profile.delete" />
+                  <Button layoutX="158.0" maxWidth="-Infinity" mnemonicParsing="false" onAction="#duplicateProfile" prefWidth="125.0" text="%profile.duplicate" />
+               </children>
+            </AnchorPane>
          </children>
       </VBox>
    </right>
    <bottom>
-      <BorderPane prefHeight="117.0" prefWidth="880.0" BorderPane.alignment="CENTER">
-         <top>
-            <ProgressBar fx:id="loadingBar" maxWidth="1.7976931348623157E308" progress="0.0" visible="false" BorderPane.alignment="CENTER" />
-         </top>
-         <center>
-            <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#loadGame" text="%profile.launch" textAlignment="CENTER" BorderPane.alignment="CENTER">
+      <AnchorPane maxHeight="-Infinity" minHeight="-Infinity" prefHeight="140.0" BorderPane.alignment="CENTER">
+         <children>
+            <ProgressBar fx:id="loadingBar" maxWidth="1.7976931348623157E308" minHeight="-Infinity" prefWidth="880.0" progress="0.0" visible="false" />
+            <Label fx:id="pseudoStatus" alignment="CENTER" layoutX="648.0" layoutY="16.0" maxWidth="-Infinity" prefWidth="125.0" text="Guest">
                <font>
-                  <Font name="System Bold" size="64.0" />
+                  <Font size="14.0" />
+               </font>
+            </Label>
+            <Label fx:id="pseudo" alignment="CENTER" layoutX="648.0" layoutY="55.0" maxWidth="-Infinity" prefWidth="125.0" text="Pseudo">
+               <font>
+                  <Font name="System Bold" size="14.0" />
+               </font>
+            </Label>
+            <Label layoutX="70.0" layoutY="78.0" maxWidth="-Infinity" prefWidth="200.0" text="latest-release" />
+            <ChoiceBox fx:id="choiceBoxVersion" layoutX="70.0" layoutY="52.0" maxWidth="-Infinity" prefWidth="200.0" />
+            <Button layoutX="340.0" layoutY="25.0" maxWidth="-Infinity" mnemonicParsing="false" onAction="#loadGame" prefWidth="200.0" text="%profile.launch" textAlignment="CENTER">
+               <font>
+                  <Font name="Segoe UI Bold" size="48.0" />
                </font>
             </Button>
-         </center>
-         <left>
-            <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="137.0" prefWidth="150.0" BorderPane.alignment="CENTER">
-               <children>
-                  <Button layoutX="13.0" layoutY="91.0" maxWidth="-Infinity" mnemonicParsing="false" onAction="#goToLoginScreen" prefWidth="125.0" text="%login.screen.button" />
-                  <Label fx:id="pseudo" alignment="CENTER" layoutX="14.0" layoutY="49.0" maxWidth="-Infinity" prefWidth="125.0" text="Pseudo">
-                     <font>
-                        <Font name="System Bold" size="14.0" />
-                     </font>
-                  </Label>
-                  <Label fx:id="pseudoStatus" alignment="CENTER" layoutX="13.0" layoutY="14.0" maxWidth="-Infinity" prefWidth="125.0" text="Guest">
-                     <font>
-                        <Font size="14.0" />
-                     </font>
-                  </Label>
-               </children>
-            </AnchorPane>
-         </left>
-         <right>
-            <AnchorPane prefHeight="137.0" prefWidth="175.0" BorderPane.alignment="CENTER">
-               <children>
-                  <Label alignment="CENTER" disable="true" layoutX="13.0" layoutY="3.0" maxWidth="-Infinity" prefWidth="150.0" text="%profile.selection" />
-                  <ChoiceBox fx:id="choiceBoxVersion" disable="true" layoutX="13.0" layoutY="23.0" maxWidth="-Infinity" prefWidth="150.0" />
-                  <Button layoutX="25.0" layoutY="55.0" maxWidth="-Infinity" mnemonicParsing="false" onAction="#newProfile" prefWidth="125.0" text="%profile.new" />
-                  <Button layoutX="25.0" layoutY="81.0" maxWidth="-Infinity" mnemonicParsing="false" onAction="#deleteProfile" prefWidth="125.0" text="%profile.delete" />
-                  <Button layoutX="25.0" layoutY="107.0" maxWidth="-Infinity" mnemonicParsing="false" onAction="#duplicateProfile" prefWidth="125.0" text="%profile.duplicate" />
-               </children>
-            </AnchorPane>
-         </right>
-      </BorderPane>
+            <Button layoutX="648.0" layoutY="99.0" maxWidth="-Infinity" mnemonicParsing="false" onAction="#goToLoginScreen" prefWidth="125.0" text="%login.screen.button" />
+         </children>
+      </AnchorPane>
    </bottom>
 </BorderPane>
