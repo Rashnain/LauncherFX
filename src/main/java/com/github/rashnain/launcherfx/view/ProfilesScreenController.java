@@ -53,7 +53,7 @@ public class ProfilesScreenController {
 	private Label pseudo;
 	
 	@FXML
-	private Label pseudoStatus;
+	private Label selectedProfileVersion;
 	
 	@FXML
 	private ListView<GameProfile> listViewVersions;
@@ -100,6 +100,9 @@ public class ProfilesScreenController {
 			this.listViewVersions.getSelectionModel().select(launcher.lastUsedProfile());
 			this.choiceBoxVersion.getSelectionModel().select(launcher.lastUsedProfile());
 			updateProfileEditor();
+			updateVersionString();
+			
+			this.choiceBoxVersion.setOnAction( e -> updateVersionString() );
 			
 			initialized = true;
 		}
@@ -455,5 +458,10 @@ public class ProfilesScreenController {
 		GameProfile gp = this.listViewVersions.getSelectionModel().getSelectedItem();
 		int index = this.listViewVersions.getItems().indexOf(gp);
 		this.listViewVersions.getItems().set(index, gp);
+	}
+	
+	private void updateVersionString() {
+		String version = this.choiceBoxVersion.getSelectionModel().getSelectedItem().getVersionId();
+		selectedProfileVersion.setText(version);
 	}
 }

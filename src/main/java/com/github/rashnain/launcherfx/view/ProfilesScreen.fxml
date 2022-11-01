@@ -86,7 +86,7 @@
                   <Font name="System Bold" size="14.0" />
                </font>
             </Label>
-            <Label layoutX="70.0" layoutY="78.0" maxWidth="-Infinity" prefWidth="200.0" text="latest-release" />
+            <Label fx:id="selectedProfileVersion" layoutX="70.0" layoutY="78.0" maxWidth="-Infinity" prefWidth="200.0" text="version" />
             <ChoiceBox fx:id="choiceBoxVersion" layoutX="70.0" layoutY="52.0" maxWidth="-Infinity" prefWidth="200.0" />
             <Button layoutX="340.0" layoutY="25.0" maxWidth="-Infinity" mnemonicParsing="false" onAction="#onPlayButtonAction" prefWidth="200.0" text="%profile.launch" textAlignment="CENTER">
                <font>
