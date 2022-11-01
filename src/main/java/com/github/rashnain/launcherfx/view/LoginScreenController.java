@@ -4,6 +4,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
+import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
@@ -36,10 +37,19 @@ public class LoginScreenController {
 	@FXML
 	private Button guestButton;
 	
+	@FXML
+	private ChoiceBox<String> languages;
+	
 	public void initializeView() {
 		if (!initialized) {
 			this.resources = LauncherFX.getResources();
 			this.launcher = LauncherProfile.getProfile();
+			
+			for (String lang : LauncherFX.availableLocales) {
+				languages.getItems().add(lang + " - " + resources.getString("language."+lang));
+			}
+			languages.getSelectionModel().select(LauncherFX.isAvailableLocale(launcher.getLocale()));
+			languages.setOnAction( e -> changeLanguage() );
 			
 			initialized = true;
 		}
@@ -124,5 +134,15 @@ public class LoginScreenController {
 		if (event.getCode() == KeyCode.ENTER) {
 			guestButton.fire();
 		}
+	}
+	
+	private void changeLanguage() {
+		int index = languages.getSelectionModel().getSelectedIndex();
+		launcher.setLocale(LauncherFX.availableLocales[index]);
+		
+		Alert dialog = new Alert(AlertType.INFORMATION);
+		dialog.setTitle(resources.getString("language.change.title"));
+		dialog.setHeaderText(resources.getString("language.change.desc"));
+		dialog.showAndWait();
 	}
 }

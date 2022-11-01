@@ -33,7 +33,7 @@ public class LauncherProfile {
 
 	private ObservableList<GameProfile> gameProfiles;
 	
-	private Locale locale;
+	private String locale;
 	
 	private String guestUsername;
 	
@@ -75,10 +75,11 @@ public class LauncherProfile {
 		} catch (Exception e) {
 			System.out.println("Error loading launcher settings.");
 			System.out.println("Ceating default launcher settings.");
-			if (LauncherFX.isAvailableLocale(Locale.getDefault().getLanguage())) {
-				this.locale = Locale.getDefault();
+			String locale = Locale.getDefault().getLanguage();
+			if (LauncherFX.isAvailableLocale(locale) >= 0) {
+				this.locale = locale;
 			} else {
-				this.locale = new Locale("en");
+				this.locale = "en";
 			}
 			this.guestUsername = "";
 		}
@@ -127,7 +128,7 @@ public class LauncherProfile {
 	private void loadSettings() throws Exception {
 		JsonObject json = Util.loadJSON(this.workDir+"launcher_profiles.json");
 		JsonObject settings = json.getAsJsonObject("launcherfx");
-		this.locale = new Locale(settings.get("locale").getAsString());
+		this.locale = settings.get("locale").getAsString();
 		this.guestUsername = settings.get("guestUsername").getAsString();
 	}
 	
@@ -162,8 +163,12 @@ public class LauncherProfile {
 		return this.online;
 	}
 	
-	public Locale getLocale() {
+	public String getLocale() {
 		return this.locale;
+	}
+
+	public void setLocale(String locale) {
+		this.locale = locale;
 	}
 	
 	public String getGuestUsername() {
@@ -216,7 +221,7 @@ public class LauncherProfile {
 		
 		settings.add("launcherfx", new JsonObject());
 		settings.getAsJsonObject("launcherfx").add("guestUsername", new JsonPrimitive(this.guestUsername));
-		settings.getAsJsonObject("launcherfx").add("locale", new JsonPrimitive(this.locale.getLanguage()));
+		settings.getAsJsonObject("launcherfx").add("locale", new JsonPrimitive(this.locale));
 		
 		return settings;
 	}
