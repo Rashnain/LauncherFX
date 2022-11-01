@@ -1,6 +1,7 @@
 package main.java.com.github.rashnain.launcherfx.model;
 
 import java.io.IOException;
+import java.util.Scanner;
 
 public class GameInstance {
 	
@@ -29,6 +30,18 @@ public class GameInstance {
 	
 	public void runInstance() throws IOException {
 		this.process = Runtime.getRuntime().exec(this.command);
+		
+		Thread t = new Thread() {
+			public void run() {
+				Scanner s = new Scanner(process.getInputStream());
+				while (s.hasNext()) {
+					s.nextLine();
+				}
+				System.out.println("Instance terminated.");
+			}
+		};
+		
+		t.start();
 	}
 	
 	public String getGameDir() {

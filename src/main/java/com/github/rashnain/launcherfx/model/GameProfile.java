@@ -120,6 +120,13 @@ public class GameProfile {
 		return this.gameDir.get();
 	}
 	
+	public String getGameDirOrDefault() {
+		if (this.gameDir.get().equals("")) {
+			return defaultGameDir;
+		}
+		return this.gameDir.get();
+	}
+	
 	public StringProperty getGameDirProperty() {
 		return this.gameDir;
 	}
@@ -139,6 +146,13 @@ public class GameProfile {
 		return this.width.get();
 	}
 	
+	public String getWidthOrDefault() {
+		if (this.width.get().equals("")) {
+			return defaultWidth;
+		}
+		return this.width.get();
+	}
+	
 	public StringProperty getWidthProperty() {
 		return this.width;
 	}
@@ -154,6 +168,13 @@ public class GameProfile {
 	public String getEditableHeight() {
 		if (this.height.get() == defaultHeight) {
 			return "";
+		}
+		return this.height.get();
+	}
+	
+	public String getHeightOrDefault() {
+		if (this.height.get().equals("")) {
+			return defaultHeight;
 		}
 		return this.height.get();
 	}
@@ -181,6 +202,13 @@ public class GameProfile {
 	public String getEditableExecutable() {
 		if (this.executable.get() == defaultExe) {
 			return "";
+		}
+		return this.executable.get();
+	}
+	
+	public String getExecutableOrDefault() {
+		if (this.executable.get().equals("")) {
+			return defaultExe;
 		}
 		return this.executable.get();
 	}

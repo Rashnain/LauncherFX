@@ -66,7 +66,7 @@ public class LauncherFX extends Application {
 
 	@Override
 	public void start(Stage primaryStage) throws IOException {
-		primaryStage.setOnCloseRequest( e -> launcher.saveProfile() );
+		primaryStage.setOnCloseRequest( e -> { launcher.saveProfile(); Runtime.getRuntime().exit(1); } );
 		LauncherFX.primaryStage = primaryStage;
 		
 		Locale locale = launcher.getLocale();

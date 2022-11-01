@@ -240,7 +240,7 @@ public class ProfilesScreenController {
 				GameInstance instance = new GameInstance(selectedVer.getGameDir());
 				
 				// Java executable + JVM arguments
-				instance.addCommand(selectedVer.getExecutable());
+				instance.addCommand(selectedVer.getExecutableOrDefault());
 				instance.addCommand(selectedVer.getJvmArguments());
 				
 				this.loadingBar.setProgress(0.1);
@@ -301,15 +301,15 @@ public class ProfilesScreenController {
 				// Parameters
 				instance.addCommand("--username " + launcher.getUsername());
 				instance.addCommand("--version " + selectedVer.getVersionId());
-				instance.addCommand("--gameDir " + selectedVer.getGameDir());
+				instance.addCommand("--gameDir " + selectedVer.getGameDirOrDefault());
 				instance.addCommand("--assetsDir " + launcher.getAssetsDir());
 				instance.addCommand("--assetIndex " + version.get("assetIndex").getAsJsonObject().get("id").getAsString());
 				instance.addCommand("--uuid " + UUID.nameUUIDFromBytes(("OfflinePlayer:"+launcher.getUsername()).getBytes()));
 				instance.addCommand("--accessToken " + "accessToken");
 				instance.addCommand("--userType " + "legacy");
 				instance.addCommand("--versionType " + version.get("type").getAsString());
-				instance.addCommand("--width " + selectedVer.getWidth());
-				instance.addCommand("--height " + selectedVer.getHeight());
+				instance.addCommand("--width " + selectedVer.getWidthOrDefault());
+				instance.addCommand("--height " + selectedVer.getHeightOrDefault());
 				
 				this.loadingBar.setProgress(0.5);
 				
