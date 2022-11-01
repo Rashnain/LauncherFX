@@ -114,8 +114,8 @@ public class LauncherProfile {
 				gameProfile.setGameDir(profile.get("gameDir").getAsString());
 			}
 			if (profile.keySet().contains("resolution")) {
-				int height = profile.get("resolution").getAsJsonObject().get("height").getAsInt();
-				int width = profile.get("resolution").getAsJsonObject().get("width").getAsInt();
+				int height = profile.getAsJsonObject("resolution").get("height").getAsInt();
+				int width = profile.getAsJsonObject("resolution").get("width").getAsInt();
 				gameProfile.setResolution(width, height);
 			}
 			if (profile.keySet().contains("javaDir")) {
@@ -213,7 +213,7 @@ public class LauncherProfile {
 			if (!gp.getGameDir().equals("")) {
 				profile.add("gameDir", new JsonPrimitive(gp.getGameDir()));
 			}
-			if (gp.getResolution() != GameProfile.defaultResolution) {
+			if (!(gp.getWitdth().equals("") || gp.getHeight().equals(""))) {
 				profile.add("resolution", new JsonObject());
 				profile.getAsJsonObject("resolution").add("width", new JsonPrimitive(gp.getResolution()[0]));
 				profile.getAsJsonObject("resolution").add("height", new JsonPrimitive(gp.getResolution()[1]));

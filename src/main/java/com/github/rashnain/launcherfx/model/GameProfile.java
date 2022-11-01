@@ -39,7 +39,8 @@ public class GameProfile {
 		this.lastUsed = lastUsed;
 		this.versionType = type;
 		this.gameDir = defaultGameDir;
-		this.resolution = defaultResolution;
+		this.resolution[0] = defaultResolution[0];
+		this.resolution[1] = defaultResolution[1];
 		this.executable = defaultJava;
 		this.jvmArguments = defaultJvmArgs;
 		this.identifier = getUniqueIdentifier();
