@@ -1,5 +1,5 @@
 # LauncherFX
- A Miencraft: Java Edition launcher made with Java 8 and JavaFX
+ A Minecraft: Java Edition launcher made with Java 8 and JavaFX
 
 ### Features
 * Launch Minecraft 1.13+
