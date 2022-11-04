@@ -156,7 +156,12 @@ public class ProfilesScreenController {
 		if (event.getCode().equals(KeyCode.DELETE)) {
 			deleteProfile();
 		}
-		// TODO add CTRL+D for duplication and CTRL+N for creation
+		if (event.getCode().equals(KeyCode.N)) {
+			newProfile();
+		}
+		if (event.getCode().equals(KeyCode.D)) {
+			duplicateProfile();
+		}
 	}
 	
 	@FXML
