@@ -5,7 +5,7 @@ import java.util.Random;
 
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
-import main.java.com.github.rashnain.launcherfx.App;
+import main.java.com.github.rashnain.launcherfx.Main;
 import main.java.com.github.rashnain.launcherfx.PROFILE_TYPE;
 
 public class GameProfile {
@@ -56,11 +56,11 @@ public class GameProfile {
 	public String toString() {
 		if (this.name.get().equals("")) {
 			if (this.profileType == PROFILE_TYPE.LATEST_RELEASE) {
-				return App.getResources().getString("profile.editor.name.lastest.release");
+				return Main.getResources().getString("profile.editor.name.lastest.release");
 			} else if (this.profileType == PROFILE_TYPE.LATEST_SNAPSHOT) {
-				return App.getResources().getString("profile.editor.name.lastest.snapshot");
+				return Main.getResources().getString("profile.editor.name.lastest.snapshot");
 			}
-			return App.getResources().getString("profile.editor.name.default");
+			return Main.getResources().getString("profile.editor.name.default");
 		}
 		return this.name.get();
 	}

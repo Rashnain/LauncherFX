@@ -8,7 +8,7 @@ import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
-import main.java.com.github.rashnain.launcherfx.App;
+import main.java.com.github.rashnain.launcherfx.Main;
 import main.java.com.github.rashnain.launcherfx.model.LauncherProfile;
 
 import java.io.IOException;
@@ -42,13 +42,13 @@ public class LoginScreenController {
 	
 	public void initializeView() {
 		if (!initialized) {
-			this.resources = App.getResources();
+			this.resources = Main.getResources();
 			this.launcher = LauncherProfile.getProfile();
 			
-			for (String lang : App.availableLocales) {
+			for (String lang : Main.availableLocales) {
 				languages.getItems().add(lang + " - " + resources.getString("language."+lang));
 			}
-			languages.getSelectionModel().select(App.isAvailableLocale(launcher.getLocale()));
+			languages.getSelectionModel().select(Main.getIndexOfLocale(launcher.getLocale()));
 			languages.setOnAction( e -> changeLanguage() );
 			
 			initialized = true;
@@ -73,7 +73,7 @@ public class LoginScreenController {
 	private void guestLogging() throws IOException {
 		if (checkGuest()) {
 			launcher.setUsername(guestPseudo.getText());
-			App.switchView();
+			Main.switchView();
 		}
 	}
 	
@@ -138,7 +138,7 @@ public class LoginScreenController {
 	
 	private void changeLanguage() {
 		int index = languages.getSelectionModel().getSelectedIndex();
-		launcher.setLocale(App.availableLocales[index]);
+		launcher.setLocale(Main.availableLocales[index]);
 		
 		Alert dialog = new Alert(AlertType.INFORMATION);
 		dialog.setTitle(resources.getString("language.change.title"));

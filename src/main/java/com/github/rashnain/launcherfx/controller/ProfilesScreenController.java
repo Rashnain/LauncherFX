@@ -30,7 +30,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
-import main.java.com.github.rashnain.launcherfx.App;
+import main.java.com.github.rashnain.launcherfx.Main;
 import main.java.com.github.rashnain.launcherfx.PROFILE_TYPE;
 import main.java.com.github.rashnain.launcherfx.model.GameInstance;
 import main.java.com.github.rashnain.launcherfx.model.GameProfile;
@@ -92,12 +92,12 @@ public class ProfilesScreenController {
 	
 	public void initializeView() {
 		if (!initialized) {
-			this.resources = App.getResources();
+			this.resources = Main.getResources();
 			this.launcher = LauncherProfile.getProfile();
 			this.instances = new ArrayList<>();
 			
 			try {
-				FileUtility.download(App.VERSION_MANIFEST, "version_manifest_v2.json", launcher.getVersionsDir(), 0);
+				FileUtility.download(Main.VERSION_MANIFEST, "version_manifest_v2.json", launcher.getVersionsDir(), 0);
 				System.out.println("Online mode.");
 				launcher.setOnline(true);
 				// Initialize version list
@@ -411,7 +411,7 @@ public class ProfilesScreenController {
 	
 	@FXML
 	private void goToLoginScreen() throws IOException {
-		App.switchView();
+		Main.switchView();
 	}
 	
 	@FXML
@@ -485,7 +485,7 @@ public class ProfilesScreenController {
 		GameProfile gp = choiceBoxVersion.getSelectionModel().getSelectedItem();
 		DirectoryChooser dc = new DirectoryChooser();
 		dc.setInitialDirectory(new File(gp.getGameDirOrDefault()));
-		File f = dc.showDialog(App.primaryStage);
+		File f = dc.showDialog(Main.getPrimaryStage());
 		if (f != null) {
 			gameDir.setText(f.getAbsolutePath());
 		}
@@ -494,7 +494,7 @@ public class ProfilesScreenController {
 	@FXML
 	private void selectExe() {
 		FileChooser fc = new FileChooser();
-		File f = fc.showOpenDialog(App.primaryStage);
+		File f = fc.showOpenDialog(Main.getPrimaryStage());
 		if (f != null) {
 			java.setText(f.getAbsolutePath());
 		}

@@ -9,7 +9,7 @@ import com.google.gson.JsonPrimitive;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import main.java.com.github.rashnain.launcherfx.App;
+import main.java.com.github.rashnain.launcherfx.Main;
 import main.java.com.github.rashnain.launcherfx.PROFILE_TYPE;
 import main.java.com.github.rashnain.launcherfx.utility.JsonUtility;
 
@@ -59,7 +59,7 @@ public class LauncherProfile {
 			System.out.println("Error loading launcher settings.");
 			System.out.println("Ceating default launcher settings.");
 			String locale = Locale.getDefault().getLanguage();
-			if (App.isAvailableLocale(locale) >= 0) {
+			if (Main.getIndexOfLocale(locale) != -1) {
 				this.locale = locale;
 			} else {
 				this.locale = "en";
@@ -112,6 +112,9 @@ public class LauncherProfile {
 		JsonObject json = JsonUtility.load(this.workDir+"launcher_profiles.json");
 		JsonObject settings = json.getAsJsonObject("launcherfx");
 		this.locale = settings.get("locale").getAsString();
+		if (Main.getIndexOfLocale(this.locale) == -1) {
+			this.locale = "en";
+		}
 		this.guestUsername = settings.get("guestUsername").getAsString();
 	}
 	

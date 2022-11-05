@@ -15,29 +15,37 @@ import java.io.IOException;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
-public class App extends Application {
-	
+/**
+ * Class initializing the launcher
+ */
+public class Main extends Application {
+
 	public static final String VERSION_MANIFEST = "https://piston-meta.mojang.com/mc/game/version_manifest_v2.json";
 
-	public static Stage primaryStage;
-	
+	public static final String[] availableLocales = {"en", "fr"};
+
+	private static Stage primaryStage;
+
+	private static ResourceBundle resources;
+
 	private static Parent loginScreenView;
 
 	private static LoginScreenController loginScreenController;
-	
+
 	private static Parent profilesScreenView;
 
 	private static ProfilesScreenController profilesScreenController;
-	
-	public static final String[] availableLocales = {"en", "fr"};
 
-	private static ResourceBundle resources;
-	
 	private static LauncherProfile launcher;
 
+	/**
+	 * Load or create settings and launch the app
+	 * @param args Program arguments
+	 * @throws IOException
+	 */
 	public static void main(String[] args) throws IOException {
 		launcher = LauncherProfile.getProfile();
-		
+
 		// Working directory
 		if (args.length >= 2 && args[0].equals("--workDir")) {
 			if (new File(args[1]).isAbsolute()) {
@@ -54,45 +62,48 @@ public class App extends Application {
 			launcher.setWorkDir(System.getProperty("user.dir"));
 			System.out.println("Could not use custom work directory, will use default directory instead.");
 		}
-		
+
 		System.out.println("Working directory : " + launcher.getWorkDir());
-		
-		// Load launcher settings
+
+		// Load launcher's settings
 		launcher.loadProfile();
-		
+
 		// Launch
 		launch();
 	}
 
+	/**
+	 * Initialize views, controllers and the stage
+	 */
 	@Override
 	public void start(Stage primaryStage) throws IOException {
-		primaryStage.setOnCloseRequest( e -> { launcher.saveProfile(); Runtime.getRuntime().exit(1); } );
-		App.primaryStage = primaryStage;
-		
-		if (isAvailableLocale(launcher.getLocale()) == -1) {
-			launcher.setLocale("en");
-		}
+		Main.primaryStage = primaryStage;
+
 		Locale locale = new Locale(launcher.getLocale());
 		resources = ResourceBundle.getBundle("main.java.com.github.rashnain.launcherfx.resources.locale.lang", locale);
-		
-		FXMLLoader loginScreen = new FXMLLoader(App.class.getResource("view/LoginScreen.fxml"));
+
+		FXMLLoader loginScreen = new FXMLLoader(Main.class.getResource("view/LoginScreen.fxml"));
 		loginScreen.setResources(resources);
 		loginScreenView = loginScreen.load();
 		loginScreenController = loginScreen.getController();
-		
-		FXMLLoader profilesScreen = new FXMLLoader(App.class.getResource("view/ProfilesScreen.fxml"));
+
+		FXMLLoader profilesScreen = new FXMLLoader(Main.class.getResource("view/ProfilesScreen.fxml"));
 		profilesScreen.setResources(resources);
 		profilesScreenView = profilesScreen.load();
 		profilesScreenController = profilesScreen.getController();
-		
+
+		primaryStage.setOnCloseRequest( e -> { launcher.saveProfile(); Runtime.getRuntime().exit(1); } );
 		primaryStage.setTitle("LauncherFX");
 		primaryStage.setResizable(false);
 		primaryStage.setScene(new Scene(new Pane(), 880, 550));
 		primaryStage.show();
-		
+
 		switchView();
 	}
-	
+
+	/**
+	 * Switch the scene from a view to the other
+	 */
 	public static void switchView() {
 		Scene scene = primaryStage.getScene();
 		if (scene.getRoot() == loginScreenView) {
@@ -103,8 +114,13 @@ public class App extends Application {
 			loginScreenController.initializeView();
 		}
 	}
-	
-	public static int isAvailableLocale(String locale) {
+
+	/**
+	 * Returns the index of the given locale if the launcher is localized for it
+	 * @param locale Locale in language format
+	 * @return the index or -1
+	 */
+	public static int getIndexOfLocale(String locale) {
 		for (int i = 0; i < availableLocales.length; i ++) {
 			if (locale.equals(availableLocales[i])) {
 				return i;
@@ -112,8 +128,18 @@ public class App extends Application {
 		}
 		return -1;
 	}
-	
+
+	/**
+	 * Returns the launcher's resource bundle
+	 */
 	public static ResourceBundle getResources() {
 		return resources;
+	}
+
+	/**
+	 * Returns the launcher's primary stage
+	 */
+	public static Stage getPrimaryStage() {
+		return primaryStage;
 	}
 }
