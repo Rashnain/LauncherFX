@@ -7,28 +7,33 @@ import java.io.InputStream;
 import java.net.URL;
 import java.net.URLConnection;
 
+/**
+ * Utility class to download files
+ */
 public class FileUtility {
 
 	/**
-	 * Download file at URL if dir/filename doesn't already exist
-	 * @param url
-	 * @param filename
-	 * @param dir
-	 * @throws IOException 
+	 * Download the file from url to a specified directory with a specified filename<br>
+	 * If the file already exists and 'size' is zero or greater than the already existing file then it will be overwritten
+	 * @param url Where the file is located on the Internet
+	 * @param filename The name of the downloaded file
+	 * @param dir The directory where the file will be downloaded to
+	 * @param size The size of the file to download 
+	 * @throws IOException If the file can't be downloaded
 	 */
-	public static void download(String url, String filename, String dir, int size) throws IOException {
-		File pathFile = new File(dir);
-		pathFile.mkdirs();
+	public static void download(String url, String filename, String dir, long size) throws IOException {
+		File path = new File(dir);
+		path.mkdirs();
 		File file = new File(dir+filename);
-		if (file.createNewFile() || size == 0) {
+		if (file.createNewFile() || size == 0 || size > file.length()) {
 			System.out.println("Downloading " + filename + " to " + dir);
 			URLConnection conn = new URL(url).openConnection();
 			conn.setRequestProperty("User-Agent", "Wget/1.21.3 (linux-gnu)");
 
 			InputStream in = conn.getInputStream();
 			FileOutputStream out = new FileOutputStream(file);
-			
-			byte[] buffer = new byte[1024];
+
+			byte[] buffer = new byte[4048];
 			byte[] subBuffer;
 			int sizeBuffer;
 
@@ -42,10 +47,21 @@ public class FileUtility {
 				} else {
 					out.write(buffer);
 				}
-				buffer = new byte[1024];
+				buffer = new byte[4048];
 			}
-			
 			out.close();
 		}
+	}
+
+	/**
+	 * Download the file from url to a specified directory with a specified filename<br>
+	 * If the file already exists it will be overwritten
+	 * @param url Where the file is located on the Internet
+	 * @param filename The name of the downloaded file
+	 * @param dir The directory where the file will be downloaded to
+	 * @throws IOException If the file can't be downloaded
+	 */
+	public static void download(String url, String filename, String dir) throws IOException {
+		download(url, filename, dir, 0);
 	}
 }

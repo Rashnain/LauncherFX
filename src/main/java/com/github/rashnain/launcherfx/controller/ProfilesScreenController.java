@@ -97,7 +97,7 @@ public class ProfilesScreenController {
 			this.instances = new ArrayList<>();
 			
 			try {
-				FileUtility.download(Main.VERSION_MANIFEST, "version_manifest_v2.json", launcher.getVersionsDir(), 0);
+				FileUtility.download(Main.VERSION_MANIFEST, "version_manifest_v2.json", launcher.getVersionsDir());
 				System.out.println("Online mode.");
 				launcher.setOnline(true);
 				// Initialize version list
@@ -116,13 +116,9 @@ public class ProfilesScreenController {
 			File ver = new File(launcher.getVersionsDir());
 			for (File sub : ver.listFiles()) {
 				if (new File(sub.getAbsolutePath()+"/").isDirectory()) {
-					try {
-						JsonObject jo = JsonUtility.load(sub.getAbsolutePath()+"/"+sub.getName()+".json");
-						if (jo.get("type").getAsString().equals("release") && !version.getItems().contains(sub.getName())) {
-							version.getItems().add(sub.getName());
-						}
-					} catch (IOException e2) {
-						e2.printStackTrace();
+					JsonObject jo = JsonUtility.load(sub.getAbsolutePath()+"/"+sub.getName()+".json");
+					if (jo.get("type").getAsString().equals("release") && !version.getItems().contains(sub.getName())) {
+						version.getItems().add(sub.getName());
 					}
 				}
 			}

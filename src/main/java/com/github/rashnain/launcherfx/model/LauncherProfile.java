@@ -218,13 +218,16 @@ public class LauncherProfile {
 
 	public void saveProfile() {
 		JsonObject settings = generatedJson();
-		
-		boolean saved;
-		
-		saved = JsonUtility.save(this.workDir + "launcher_profiles.json", settings);
-		
+
+		System.out.println("Saving settings into launcher_profiles.json.");
+
+		boolean saved = JsonUtility.save(this.workDir + "launcher_profiles.json", settings);
+
 		if (!saved) {
+			System.out.println("Couldn't save profile");
 			Runtime.getRuntime().exit(1);
 		}
+
+		System.out.println("Saved settings.");
 	}
 }

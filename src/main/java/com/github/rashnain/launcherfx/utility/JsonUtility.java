@@ -11,6 +11,9 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
+/**
+ * Utility class to load and save JSON files
+ */
 public class JsonUtility {
 
 	/**
@@ -43,13 +46,14 @@ public class JsonUtility {
 				} else {
 					sb.append(new String(buffer));
 				}
-				buffer = new byte[1024];
+				buffer = new byte[4048];
 			}
 	
 			in.close();
 	
 			return JsonParser.parseString(sb.toString()).getAsJsonObject();
 		} catch (IOException e) {
+			e.printStackTrace();
 			return null;
 		}
 	}
