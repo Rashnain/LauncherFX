@@ -99,7 +99,7 @@ public class ProfilesScreenController {
 			try {
 				FileUtility.download(Main.VERSION_MANIFEST, "version_manifest_v2.json", launcher.getVersionsDir());
 				System.out.println("Online mode.");
-				launcher.setOnline(true);
+				launcher.setOnlineStatus(true);
 				// Initialize version list
 				JsonObject versionManifest = JsonUtility.load(launcher.getVersionsDir()+"version_manifest_v2.json");
 				for (JsonElement e : versionManifest.getAsJsonArray("versions")) {
@@ -109,7 +109,7 @@ public class ProfilesScreenController {
 				}
 			} catch (IOException e1) {
 				System.out.println("Offline mode.");
-				launcher.setOnline(false);
+				launcher.setOnlineStatus(false);
 			}
 			
 			// Initialize version list
@@ -264,7 +264,7 @@ public class ProfilesScreenController {
 			
 			boolean manifestExists = false;
 			
-			if (launcher.isOnline()) {
+			if (launcher.getOnlineStatus()) {
 				JsonObject versionManifest = JsonUtility.load(launcher.getVersionsDir()+"version_manifest_v2.json");
 				JsonArray versionArray = versionManifest.get("versions").getAsJsonArray();
 				for (JsonElement entry : versionArray) {

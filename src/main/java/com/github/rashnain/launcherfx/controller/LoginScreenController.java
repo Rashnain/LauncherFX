@@ -72,7 +72,7 @@ public class LoginScreenController {
 	@FXML
 	private void guestLogging() throws IOException {
 		if (checkGuest()) {
-			launcher.setUsername(guestPseudo.getText());
+			launcher.setGuestUsername(guestPseudo.getText());
 			Main.switchView();
 		}
 	}
