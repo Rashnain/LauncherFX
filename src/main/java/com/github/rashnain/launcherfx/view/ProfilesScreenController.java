@@ -407,7 +407,6 @@ public class ProfilesScreenController {
 		dialog.showAndWait();
 	}
 	
-
 	@FXML
 	private void goToLoginScreen() throws IOException {
 		LauncherFX.switchView();
@@ -481,8 +480,10 @@ public class ProfilesScreenController {
 	
 	@FXML
 	private void selectDir() {
-		DirectoryChooser fc = new DirectoryChooser();
-		File f = fc.showDialog(LauncherFX.primaryStage);
+		GameProfile gp = choiceBoxVersion.getSelectionModel().getSelectedItem();
+		DirectoryChooser dc = new DirectoryChooser();
+		dc.setInitialDirectory(new File(gp.getGameDirOrDefault()));
+		File f = dc.showDialog(LauncherFX.primaryStage);
 		if (f != null) {
 			gameDir.setText(f.getAbsolutePath());
 		}
