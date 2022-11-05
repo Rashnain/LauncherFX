@@ -5,7 +5,8 @@ import java.util.Random;
 
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
-import main.java.com.github.rashnain.launcherfx.LauncherFX;
+import main.java.com.github.rashnain.launcherfx.App;
+import main.java.com.github.rashnain.launcherfx.PROFILE_TYPE;
 
 public class GameProfile {
 	
@@ -23,7 +24,7 @@ public class GameProfile {
 	
 	private StringProperty versionId;
 	
-	private VERSION_TYPE profileType;
+	private PROFILE_TYPE profileType;
 
 	private StringProperty gameDir;
 	
@@ -39,7 +40,7 @@ public class GameProfile {
 	
 	private String identifier;
 	
-	public GameProfile(String name, String versionId, Instant lastUsed, VERSION_TYPE type) {
+	public GameProfile(String name, String versionId, Instant lastUsed, PROFILE_TYPE type) {
 		this.name = new SimpleStringProperty(name);
 		this.versionId = new SimpleStringProperty(versionId);
 		this.lastUsed = lastUsed;
@@ -54,12 +55,12 @@ public class GameProfile {
 	
 	public String toString() {
 		if (this.name.get().equals("")) {
-			if (this.profileType == VERSION_TYPE.LATEST_RELEASE) {
-				return LauncherFX.getResources().getString("profile.editor.name.lastest.release");
-			} else if (this.profileType == VERSION_TYPE.LATEST_SNAPSHOT) {
-				return LauncherFX.getResources().getString("profile.editor.name.lastest.snapshot");
+			if (this.profileType == PROFILE_TYPE.LATEST_RELEASE) {
+				return App.getResources().getString("profile.editor.name.lastest.release");
+			} else if (this.profileType == PROFILE_TYPE.LATEST_SNAPSHOT) {
+				return App.getResources().getString("profile.editor.name.lastest.snapshot");
 			}
-			return LauncherFX.getResources().getString("profile.editor.name.default");
+			return App.getResources().getString("profile.editor.name.default");
 		}
 		return this.name.get();
 	}
@@ -105,7 +106,7 @@ public class GameProfile {
 		this.versionId.set(id);
 	}
 
-	public VERSION_TYPE getVersionType() {
+	public PROFILE_TYPE getVersionType() {
 		return this.profileType;
 	}
 

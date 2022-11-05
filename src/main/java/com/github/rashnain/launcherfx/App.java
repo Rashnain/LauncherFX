@@ -6,16 +6,16 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
+import main.java.com.github.rashnain.launcherfx.controller.LoginScreenController;
+import main.java.com.github.rashnain.launcherfx.controller.ProfilesScreenController;
 import main.java.com.github.rashnain.launcherfx.model.LauncherProfile;
-import main.java.com.github.rashnain.launcherfx.view.LoginScreenController;
-import main.java.com.github.rashnain.launcherfx.view.ProfilesScreenController;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
-public class LauncherFX extends Application {
+public class App extends Application {
 	
 	public static final String VERSION_MANIFEST = "https://piston-meta.mojang.com/mc/game/version_manifest_v2.json";
 
@@ -67,20 +67,20 @@ public class LauncherFX extends Application {
 	@Override
 	public void start(Stage primaryStage) throws IOException {
 		primaryStage.setOnCloseRequest( e -> { launcher.saveProfile(); Runtime.getRuntime().exit(1); } );
-		LauncherFX.primaryStage = primaryStage;
+		App.primaryStage = primaryStage;
 		
 		if (isAvailableLocale(launcher.getLocale()) == -1) {
 			launcher.setLocale("en");
 		}
 		Locale locale = new Locale(launcher.getLocale());
-		resources = ResourceBundle.getBundle("main.java.com.github.rashnain.launcherfx.resources.locales.lang", locale);
+		resources = ResourceBundle.getBundle("main.java.com.github.rashnain.launcherfx.resources.locale.lang", locale);
 		
-		FXMLLoader loginScreen = new FXMLLoader(LauncherFX.class.getResource("view/LoginScreen.fxml"));
+		FXMLLoader loginScreen = new FXMLLoader(App.class.getResource("view/LoginScreen.fxml"));
 		loginScreen.setResources(resources);
 		loginScreenView = loginScreen.load();
 		loginScreenController = loginScreen.getController();
 		
-		FXMLLoader profilesScreen = new FXMLLoader(LauncherFX.class.getResource("view/ProfilesScreen.fxml"));
+		FXMLLoader profilesScreen = new FXMLLoader(App.class.getResource("view/ProfilesScreen.fxml"));
 		profilesScreen.setResources(resources);
 		profilesScreenView = profilesScreen.load();
 		profilesScreenController = profilesScreen.getController();

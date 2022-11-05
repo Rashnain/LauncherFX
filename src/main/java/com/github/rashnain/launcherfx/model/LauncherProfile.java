@@ -1,24 +1,19 @@
 package main.java.com.github.rashnain.launcherfx.model;
 
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.time.Instant;
 import java.util.Locale;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import main.java.com.github.rashnain.launcherfx.LauncherFX;
-import main.java.com.github.rashnain.launcherfx.Util;
+import main.java.com.github.rashnain.launcherfx.App;
+import main.java.com.github.rashnain.launcherfx.PROFILE_TYPE;
+import main.java.com.github.rashnain.launcherfx.utility.JsonUtility;
 
 public class LauncherProfile {
-	
-	private Gson gson;
 	
 	private String workDir;
 	
@@ -39,7 +34,6 @@ public class LauncherProfile {
 	private static final LauncherProfile instance = new LauncherProfile();
 	
 	private LauncherProfile() {
-		this.gson = new GsonBuilder().setPrettyPrinting().disableHtmlEscaping().create();
 		this.gameProfiles = FXCollections.observableArrayList();
 	}
 	
@@ -54,7 +48,7 @@ public class LauncherProfile {
 		} catch (Exception e) {
 			System.out.println("Error loading launcher profiles.");
 			System.out.println("Ceating default profile.");
-			GameProfile latest = new GameProfile("", "latest-release", Instant.EPOCH, VERSION_TYPE.LATEST_RELEASE);
+			GameProfile latest = new GameProfile("", "latest-release", Instant.EPOCH, PROFILE_TYPE.LATEST_RELEASE);
 			gameProfiles.add(latest);
 		}
 		
@@ -65,7 +59,7 @@ public class LauncherProfile {
 			System.out.println("Error loading launcher settings.");
 			System.out.println("Ceating default launcher settings.");
 			String locale = Locale.getDefault().getLanguage();
-			if (LauncherFX.isAvailableLocale(locale) >= 0) {
+			if (App.isAvailableLocale(locale) >= 0) {
 				this.locale = locale;
 			} else {
 				this.locale = "en";
@@ -75,7 +69,7 @@ public class LauncherProfile {
 	}
 	
 	private void loadProfiles() throws Exception {
-		JsonObject json = Util.loadJSON(this.workDir+"launcher_profiles.json");
+		JsonObject json = JsonUtility.load(this.workDir+"launcher_profiles.json");
 		JsonObject profiles = json.get("profiles").getAsJsonObject();
 		for (String key : profiles.keySet()) {
 			JsonObject profile = profiles.get(key).getAsJsonObject();
@@ -86,7 +80,7 @@ public class LauncherProfile {
 			Instant lastUsedDate = Instant.parse(lastUsed);
 			
 			String versionType = profile.get("type").getAsString();
-			VERSION_TYPE type = VERSION_TYPE.getAsType(versionType);
+			PROFILE_TYPE type = PROFILE_TYPE.getAsType(versionType);
 			
 			GameProfile gameProfile = new GameProfile(name, versionId, lastUsedDate, type);
 			
@@ -115,7 +109,7 @@ public class LauncherProfile {
 	}
 	
 	private void loadSettings() throws Exception {
-		JsonObject json = Util.loadJSON(this.workDir+"launcher_profiles.json");
+		JsonObject json = JsonUtility.load(this.workDir+"launcher_profiles.json");
 		JsonObject settings = json.getAsJsonObject("launcherfx");
 		this.locale = settings.get("locale").getAsString();
 		this.guestUsername = settings.get("guestUsername").getAsString();
@@ -209,7 +203,7 @@ public class LauncherProfile {
 				profile.getAsJsonObject("resolution").add("width", new JsonPrimitive(Integer.valueOf(gp.getWidthOrDefault())));
 				profile.getAsJsonObject("resolution").add("height", new JsonPrimitive(Integer.valueOf(gp.getHeightOrDefault())));
 			}
-			profile.add("type", new JsonPrimitive(VERSION_TYPE.getAsString(gp.getVersionType())));
+			profile.add("type", new JsonPrimitive(PROFILE_TYPE.getAsString(gp.getVersionType())));
 		}
 		
 		settings.add("launcherfx", new JsonObject());
@@ -218,24 +212,15 @@ public class LauncherProfile {
 		
 		return settings;
 	}
-	
+
 	public void saveProfile() {
-		try {
-			System.out.println("Saving settings into launcher_profiles.json.");
-			
-			JsonObject settings = generatedJson();
-			
-			File file = new File(this.workDir + "launcher_profiles.json");
-			if (!file.isFile()) {
-				file.createNewFile();
-			}
-			FileOutputStream out = new FileOutputStream(file);
-			out.write(gson.toJson(settings).getBytes());
-			out.close();
-			System.out.println("Saved settings.");
-		} catch (Exception e) {
-			System.out.println("Couldn't save profile");
-			e.printStackTrace();
+		JsonObject settings = generatedJson();
+		
+		boolean saved;
+		
+		saved = JsonUtility.save(this.workDir + "launcher_profiles.json", settings);
+		
+		if (!saved) {
 			Runtime.getRuntime().exit(1);
 		}
 	}
