@@ -130,16 +130,17 @@ public class Main extends Application {
 	}
 
 	/**
+	 * Returns the launcher's primary stage
+	 */
+	public static Stage getPrimaryStage() {
+		return primaryStage;
+	}
+
+	/**
 	 * Returns the launcher's resource bundle
 	 */
 	public static ResourceBundle getResources() {
 		return resources;
 	}
 
-	/**
-	 * Returns the launcher's primary stage
-	 */
-	public static Stage getPrimaryStage() {
-		return primaryStage;
-	}
 }
