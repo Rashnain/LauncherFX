@@ -138,7 +138,8 @@ public class LoginScreenController {
 	}
 
 	/**
-	 * Connection without account
+	 * Connection without account<br>
+	 * Switch to the profiles view
 	 */
 	@FXML
 	private void guestLogging() throws IOException {

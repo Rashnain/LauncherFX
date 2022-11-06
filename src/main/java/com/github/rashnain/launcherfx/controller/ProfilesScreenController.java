@@ -39,63 +39,72 @@ import main.java.com.github.rashnain.launcherfx.utility.FileUtility;
 import main.java.com.github.rashnain.launcherfx.utility.JsonUtility;
 import main.java.com.github.rashnain.launcherfx.utility.LibraryUtility;
 
+/**
+ * Controller of the profiles screen
+ */
 public class ProfilesScreenController {
-	
+
 	private boolean initialized;
-	
+
 	private ResourceBundle resources;
-	
+
 	private LauncherProfile launcher;
-	
+
 	private List<GameInstance> instances;
-	
+
 	private GameProfile previous;
-	
+
 	@FXML
-	private Label pseudo;
-	
-	@FXML
-	private Label selectedProfileVersion;
-	
-	@FXML
-	private ListView<GameProfile> listViewVersions;
-	
-	@FXML
-	private ChoiceBox<GameProfile> choiceBoxVersion;
-	
-	@FXML
-	private ProgressBar loadingBar;
-	
+	private ListView<GameProfile> listViewProfile;
+
 	@FXML
 	private VBox profileEditor;
-	
+
 	@FXML
 	private TextField name;
-	
+
 	@FXML
-	private ChoiceBox<String> version;
-	
+	private ChoiceBox<String> choiceBoxVersion;
+
 	@FXML
 	private TextField gameDir;
-	
+
 	@FXML
 	private TextField width;
-	
+
 	@FXML
 	private TextField height;
-	
+
 	@FXML
-	private TextField java;
-	
+	private TextField executable;
+
 	@FXML
 	private TextField jvmArgs;
-	
+
+	@FXML
+	private ProgressBar loadingBar;
+
+	@FXML
+	private ChoiceBox<GameProfile> choiceBoxProfile;
+
+	@FXML
+	private Label selectedProfileVersion;
+
+	@FXML
+	private Label pseudoStatus;
+
+	@FXML
+	private Label pseudo;
+
+	/**
+	 * Initialize view
+	 */
 	public void initializeView() {
 		if (!initialized) {
 			this.resources = Main.getResources();
 			this.launcher = LauncherProfile.getProfile();
 			this.instances = new ArrayList<>();
-			
+
 			try {
 				FileUtility.download(Main.VERSION_MANIFEST, "version_manifest_v2.json", launcher.getVersionsDir());
 				System.out.println("Online mode.");
@@ -104,51 +113,63 @@ public class ProfilesScreenController {
 				JsonObject versionManifest = JsonUtility.load(launcher.getVersionsDir()+"version_manifest_v2.json");
 				for (JsonElement e : versionManifest.getAsJsonArray("versions")) {
 					if (e.getAsJsonObject().get("type").getAsString().equals("release")) {
-						version.getItems().add(e.getAsJsonObject().get("id").getAsString());
+						choiceBoxVersion.getItems().add(e.getAsJsonObject().get("id").getAsString());
 					}
 				}
 			} catch (IOException e1) {
 				System.out.println("Offline mode.");
 				launcher.setOnlineStatus(false);
 			}
-			
+
 			// Initialize version list
 			File ver = new File(launcher.getVersionsDir());
 			for (File sub : ver.listFiles()) {
 				if (new File(sub.getAbsolutePath()+"/").isDirectory()) {
 					JsonObject jo = JsonUtility.load(sub.getAbsolutePath()+"/"+sub.getName()+".json");
-					if (jo.get("type").getAsString().equals("release") && !version.getItems().contains(sub.getName())) {
-						version.getItems().add(sub.getName());
+					if (jo.get("type").getAsString().equals("release") && !choiceBoxVersion.getItems().contains(sub.getName())) {
+						choiceBoxVersion.getItems().add(sub.getName());
 					}
 				}
 			}
-			
-			this.listViewVersions.setItems(launcher.getGameProfiles());
-			this.choiceBoxVersion.setItems(this.listViewVersions.getItems());
-			
-			this.listViewVersions.getSelectionModel().select(launcher.lastUsedProfile());
-			this.choiceBoxVersion.getSelectionModel().select(launcher.lastUsedProfile());
+
+			this.listViewProfile.setItems(launcher.getGameProfiles());
+			this.choiceBoxProfile.setItems(this.listViewProfile.getItems());
+
+			this.listViewProfile.getSelectionModel().select(launcher.lastUsedProfile());
+			this.choiceBoxProfile.getSelectionModel().select(launcher.lastUsedProfile());
 			updateProfileEditor();
-			updateVersionString();
-			
-			this.choiceBoxVersion.setOnAction( e -> updateVersionString() );
-			
+			updateVersionLabel();
+
+			this.choiceBoxProfile.setOnAction( e -> updateVersionLabel() );
+
 			initialized = true;
 		}
 		pseudo.setText(launcher.getGuestUsername());
 	}
-	
+
+	/**
+	 * Update profile editor with a single click, or launch the selected profile with a double click
+	 * @param event Mouse
+	 * @throws Exception if the instance throw an exception
+	 */
 	@FXML
 	private void onClickOnViewList(MouseEvent event) throws Exception {
 		if (event.getButton().equals(MouseButton.PRIMARY)) {
 			if (event.getClickCount() > 1) {
-				loadGame(this.listViewVersions.getSelectionModel().getSelectedItem());
+				loadGame(this.listViewProfile.getSelectionModel().getSelectedItem());
 			} else {
 				updateProfileEditor();
 			}
 		}
 	}
-	
+
+	/**
+	 * Bind keys to action :<br>
+	 * - DELETE to delete profile<br>
+	 * - N to create a new profile<br>
+	 * - D to duplicate profile
+	 * @param event The key typed
+	 */
 	@FXML
 	private void onKeyPressedViewList(KeyEvent event) {
 		if (event.getCode().equals(KeyCode.DELETE)) {
@@ -161,14 +182,18 @@ public class ProfilesScreenController {
 			duplicateProfile();
 		}
 	}
-	
+
+	/**
+	 * Update the profile editor<br>
+	 * And the bindings to save change in real time
+	 */
 	@FXML
 	private void updateProfileEditor() {
-		GameProfile profile = this.listViewVersions.getSelectionModel().getSelectedItem();
-		
+		GameProfile profile = this.listViewProfile.getSelectionModel().getSelectedItem();
+
 		if (profile != null) {
 			hideProfileEditor(false);
-			
+
 			if (previous != null) {
 				previous.getNameProperty().unbind();
 				previous.getVersionProperty().unbind();
@@ -178,19 +203,19 @@ public class ProfilesScreenController {
 				previous.getExecutableProperty().unbind();
 				previous.getJvmArgumentsProperty().unbind();
 			}
-			
+
 			if (profile.getVersionType() == PROFILE_TYPE.CUSTOM) {
 				name.setDisable(false);
 				name.setText(profile.getName());
 				profile.getNameProperty().bind(name.textProperty());
-				version.setDisable(false);
-				version.getSelectionModel().select(profile.getVersion());
-				profile.getVersionProperty().bind(version.getSelectionModel().selectedItemProperty());
+				choiceBoxVersion.setDisable(false);
+				choiceBoxVersion.getSelectionModel().select(profile.getVersion());
+				profile.getVersionProperty().bind(choiceBoxVersion.getSelectionModel().selectedItemProperty());
 			} else {
 				name.setText(profile.toString());
 				name.setDisable(true);
-				version.getSelectionModel().select(profile.getVersion());
-				version.setDisable(true);
+				choiceBoxVersion.getSelectionModel().select(profile.getVersion());
+				choiceBoxVersion.setDisable(true);
 			}
 			gameDir.setText(profile.getEditableGameDir());
 			profile.getGameDirProperty().bind(gameDir.textProperty());
@@ -199,38 +224,52 @@ public class ProfilesScreenController {
 			height.setText(profile.getEditableHeight());
 			profile.getHeightProperty().bind(height.textProperty());
 			checkResolution();
-			java.setText(profile.getEditableExecutable());
-			profile.getExecutableProperty().bind(java.textProperty());
+			executable.setText(profile.getEditableExecutable());
+			profile.getExecutableProperty().bind(executable.textProperty());
 			jvmArgs.setText(profile.getJvmArguments());
 			profile.getJvmArgumentsProperty().bind(jvmArgs.textProperty());
-			
+
 			previous = profile;
 		} else {
 			hideProfileEditor(true);
 		}
 	}
-	
+
+	/**
+	 * Hide or show the profile editor<br>
+	 * Do not hide the buttons
+	 * @param visibility
+	 */
 	private void hideProfileEditor(boolean visibility) {
 		for (int i = 0; i < profileEditor.getChildren().size()-1; i ++) {
 			profileEditor.getChildren().get(i).setVisible(!visibility);
 		}
 	}
-	
+
+	/**
+	 * Launch the selected profile when clicking the play button
+	 * @throws Exception if the instance throw an exception
+	 */
 	@FXML
 	private void onPlayButtonAction() throws Exception {
-		loadGame(this.choiceBoxVersion.getSelectionModel().getSelectedItem());
+		loadGame(this.choiceBoxProfile.getSelectionModel().getSelectedItem());
 	}
-	
-	private void loadGame(GameProfile ver) throws Exception {
+
+	/**
+	 * Launch the selected profile
+	 * @param profile
+	 * @throws Exception if the instance throw an exception
+	 */
+	private void loadGame(GameProfile profile) throws Exception {
 		boolean ignoreConflicts = false;
-		
+
 		// checks if there isn't another instance running in the same directory
-		if (ver != null) {
-			this.choiceBoxVersion.getSelectionModel().select(ver);
+		if (profile != null) {
+			this.choiceBoxProfile.getSelectionModel().select(profile);
 			checkResolution();
 			launcher.saveProfile();
-			ver.setLastUsed(Instant.now());
-			this.choiceBoxVersion.getSelectionModel().select(launcher.lastUsedProfile());
+			profile.setLastUsed(Instant.now());
+			this.choiceBoxProfile.getSelectionModel().select(launcher.lastUsedProfile());
 			ignoreConflicts = true;
 			Iterator<GameInstance> it = this.instances.iterator();
 			while (it.hasNext()) {
@@ -239,7 +278,7 @@ public class ProfilesScreenController {
 					it.remove();
 					continue;
 				}
-				if (gi.getGameDir().equals(ver.getGameDir())) {
+				if (gi.getGameDir().equals(profile.getGameDir())) {
 					Alert dialog = new Alert(AlertType.CONFIRMATION);
 					dialog.setTitle(this.resources.getString("launch.running.instance"));
 					dialog.setHeaderText(this.resources.getString("launch.running.instance.title"));
@@ -261,41 +300,41 @@ public class ProfilesScreenController {
 		if (ignoreConflicts) {
 			this.loadingBar.setProgress(0);
 			this.loadingBar.setVisible(true);
-			
+
 			boolean manifestExists = false;
-			
+
 			if (launcher.getOnlineStatus()) {
 				JsonObject versionManifest = JsonUtility.load(launcher.getVersionsDir()+"version_manifest_v2.json");
 				JsonArray versionArray = versionManifest.get("versions").getAsJsonArray();
 				for (JsonElement entry : versionArray) {
-					if (entry.getAsJsonObject().get("id").getAsString().equals(ver.getVersion())) {
+					if (entry.getAsJsonObject().get("id").getAsString().equals(profile.getVersion())) {
 						String versionJsonURL = entry.getAsJsonObject().get("url").getAsString();
-						FileUtility.download(versionJsonURL, ver.getVersion()+".json", launcher.getVersionsDir()+ver.getVersion()+"/", 0);
+						FileUtility.download(versionJsonURL, profile.getVersion()+".json", launcher.getVersionsDir()+profile.getVersion()+"/", 0);
 						break;
 					}
 				}
 			}
-			
-			String versionJsonURI = launcher.getVersionsDir()+ver.getVersion()+"/"+ver.getVersion()+".json";
-			
+
+			String versionJsonURI = launcher.getVersionsDir()+profile.getVersion()+"/"+profile.getVersion()+".json";
+
 			if (new File(versionJsonURI).isFile()) {
 				manifestExists = true;
 			}
-			
+
 			if (manifestExists) {
 				JsonObject version = JsonUtility.load(versionJsonURI);
-				
-				GameInstance instance = new GameInstance(ver.getGameDir());
-				
+
+				GameInstance instance = new GameInstance(profile.getGameDir());
+
 				// Java executable + JVM arguments
-				instance.addCommand("\""+ver.getExecutableOrDefault()+"\"");
-				instance.addCommand(ver.getJvmArguments());
-				
+				instance.addCommand("\""+profile.getExecutableOrDefault()+"\"");
+				instance.addCommand(profile.getJvmArguments());
+
 				this.loadingBar.setProgress(0.1);
-				
+
 				// Library path
-				instance.addCommand("-Djava.library.path=\""+launcher.getVersionsDir()+ver.getVersion()+"/natives/\"");
-				
+				instance.addCommand("-Djava.library.path=\""+launcher.getVersionsDir()+profile.getVersion()+"/natives/\"");
+
 				// Classpath, TODO download only required libraries
 				instance.addCommand("-cp");
 				JsonArray libraries = version.get("libraries").getAsJsonArray();
@@ -304,12 +343,12 @@ public class ProfilesScreenController {
 					if (LibraryUtility.shouldUseLibrary(libo)) {
 						JsonObject artifact = libo.get("downloads").getAsJsonObject().get("artifact").getAsJsonObject();
 						String libPath = artifact.getAsJsonObject().get("path").getAsString();
-						
+
 						String libURL = artifact.getAsJsonObject().get("url").getAsString();
 						int libSize = artifact.getAsJsonObject().get("size").getAsInt();
 						String libName = libPath.split("/")[libPath.split("/").length-1];
 						String libDir = libPath.substring(0, libPath.lastIndexOf("/")+1);
-						
+
 						String nativesString = LibraryUtility.getNativesString(libo);
 						if (!nativesString.equals("")) {
 							JsonObject classifiers = libo.get("downloads").getAsJsonObject().get("classifiers").getAsJsonObject();
@@ -326,13 +365,13 @@ public class ProfilesScreenController {
 						instance.addCommand("\""+launcher.getLibrariesDir()+libDir+libName, "\";");
 					}
 				}
-				
+
 				this.loadingBar.setProgress(0.3);
-				
+
 				// Version JAR
-				String versionJarName = ver.getVersion()+".jar";
-				String versionJarDir = launcher.getVersionsDir()+ver.getVersion()+"/";
-				
+				String versionJarName = profile.getVersion()+".jar";
+				String versionJarDir = launcher.getVersionsDir()+profile.getVersion()+"/";
+
 				if (!new File(versionJarDir+versionJarName).isFile()) {
 					JsonObject clientJar = version.get("downloads").getAsJsonObject().get("client").getAsJsonObject();
 					String versionJarURL = clientJar.get("url").getAsString();
@@ -340,33 +379,33 @@ public class ProfilesScreenController {
 					FileUtility.download(versionJarURL, versionJarName, versionJarDir, versionJarSize);
 				}
 				instance.addCommand("\""+versionJarDir+versionJarName+"\"");
-				
+
 				this.loadingBar.setProgress(0.4);
-				
+
 				// Main class
 				instance.addCommand(version.get("mainClass").getAsString());
-				
+
 				// Parameters
 				instance.addCommand("--username " + launcher.getGuestUsername());
-				instance.addCommand("--version " + ver.getVersion());
-				instance.addCommand("--gameDir " + "\""+ver.getGameDirOrDefault()+"\"");
+				instance.addCommand("--version " + profile.getVersion());
+				instance.addCommand("--gameDir " + "\""+profile.getGameDirOrDefault()+"\"");
 				instance.addCommand("--assetsDir " + "\""+launcher.getAssetsDir()+"\"");
 				instance.addCommand("--assetIndex " + version.get("assetIndex").getAsJsonObject().get("id").getAsString());
 				instance.addCommand("--uuid " + UUID.nameUUIDFromBytes(("OfflinePlayer:"+launcher.getGuestUsername()).getBytes()));
 				instance.addCommand("--accessToken " + "accessToken");
 				instance.addCommand("--userType " + "legacy");
 				instance.addCommand("--versionType " + version.get("type").getAsString());
-				instance.addCommand("--width " + ver.getWidthOrDefault());
-				instance.addCommand("--height " + ver.getHeightOrDefault());
-				
+				instance.addCommand("--width " + profile.getWidthOrDefault());
+				instance.addCommand("--height " + profile.getHeightOrDefault());
+
 				this.loadingBar.setProgress(0.5);
-				
+
 				// Assets
 				JsonObject assetIndex = version.get("assetIndex").getAsJsonObject();
 				String assetIndexURL = assetIndex.get("url").getAsString();
 				String assetIndexName = assetIndexURL.split("/")[assetIndexURL.split("/").length-1];
 				String assetIndexDir = launcher.getAssetsDir()+"indexes/";
-				
+
 				if (!new File(assetIndexDir+assetIndexName).isFile()) {
 					int assetIndexSize = assetIndex.get("size").getAsInt();
 					FileUtility.download(assetIndexURL, assetIndexName, assetIndexDir, assetIndexSize);
@@ -379,14 +418,14 @@ public class ProfilesScreenController {
 						FileUtility.download("https://resources.download.minecraft.net/"+assetDir+assetName, assetName, launcher.getAssetsDir()+"objects/"+assetDir, assetSize);
 					}
 				}
-				
+
 				this.loadingBar.setProgress(1.0);
 				this.loadingBar.setVisible(false);
-				
+
 				System.out.println(instance.getCommand());
-				
+
 				instance.runInstance();
-				
+
 				this.instances.add(instance);
 
 			} else {
@@ -397,36 +436,48 @@ public class ProfilesScreenController {
 			}
 		}
 	}
-	
+
+	/**
+	 * Display a message saying that no profile is selected
+	 */
 	private void showNoSelectionDialog() {
 		Alert dialog = new Alert(AlertType.ERROR);
 		dialog.setTitle(this.resources.getString("launch.error"));
 		dialog.setHeaderText(this.resources.getString("launch.error.desc"));
 		dialog.showAndWait();
 	}
-	
+
+	/**
+	 * Switch to the login view
+	 */
 	@FXML
-	private void goToLoginScreen() throws IOException {
+	private void goToLoginScreen() {
 		Main.switchView();
 	}
-	
+
+	/**
+	 * Creates a new profile and select it
+	 */
 	@FXML
 	private void newProfile() {
 		GameProfile newProfile = new GameProfile();
-		
-		this.listViewVersions.getItems().add(newProfile);
-		
-		this.listViewVersions.getSelectionModel().select(newProfile);
+
+		this.listViewProfile.getItems().add(newProfile);
+
+		this.listViewProfile.getSelectionModel().select(newProfile);
 		updateProfileEditor();
-		this.choiceBoxVersion.getSelectionModel().select(launcher.lastUsedProfile());
-		updateVersionString();
+		this.choiceBoxProfile.getSelectionModel().select(launcher.lastUsedProfile());
+		updateVersionLabel();
 		launcher.saveProfile();
 	}
-	
+
+	/**
+	 * Deletes the selected profile
+	 */
 	@FXML
 	private void deleteProfile() {
-		GameProfile selectedVer = this.listViewVersions.getSelectionModel().getSelectedItem();
-		
+		GameProfile selectedVer = this.listViewProfile.getSelectionModel().getSelectedItem();
+
 		if (selectedVer != null) {
 			Alert dialog = new Alert(AlertType.CONFIRMATION);
 			dialog.setTitle(this.resources.getString("profile.delete.title"));
@@ -436,21 +487,24 @@ public class ProfilesScreenController {
 			dialog.getButtonTypes().set(1, ButtonType.NO);
 			Optional<ButtonType> choice = dialog.showAndWait();
 			if (choice.get() == ButtonType.YES) {
-				this.listViewVersions.getItems().remove(selectedVer);
+				this.listViewProfile.getItems().remove(selectedVer);
 				updateProfileEditor();
-				this.choiceBoxVersion.getSelectionModel().select(launcher.lastUsedProfile());
-				updateVersionString();
+				this.choiceBoxProfile.getSelectionModel().select(launcher.lastUsedProfile());
+				updateVersionLabel();
 				launcher.saveProfile();
 			}
 		} else {
 			showNoSelectionDialog();
 		}
 	}
-	
+
+	/**
+	 * Duplicate the selected profile and select the new profile
+	 */
 	@FXML
 	private void duplicateProfile() {
-		GameProfile selectedVer = this.listViewVersions.getSelectionModel().getSelectedItem();
-		
+		GameProfile selectedVer = this.listViewProfile.getSelectionModel().getSelectedItem();
+
 		if (selectedVer != null) {
 			GameProfile newProfile = new GameProfile(selectedVer.getLastUsed(), selectedVer.getVersion(), selectedVer.toString()+" "+resources.getString("profile.editor.copy"), PROFILE_TYPE.CUSTOM);
 			newProfile.setGameDir(selectedVer.getGameDir());
@@ -458,15 +512,19 @@ public class ProfilesScreenController {
 			newProfile.setHeight(selectedVer.getHeight());
 			newProfile.setExecutable(selectedVer.getExecutable());
 			newProfile.setJvmArguments(selectedVer.getJvmArguments());
-			this.listViewVersions.getItems().add(newProfile);
-			this.listViewVersions.getSelectionModel().select(newProfile);
+			this.listViewProfile.getItems().add(newProfile);
+			this.listViewProfile.getSelectionModel().select(newProfile);
 			updateProfileEditor();
 			launcher.saveProfile();
 		} else {
 			showNoSelectionDialog();
 		}
 	}
-	
+
+	/**
+	 * Checks if the resolutions are valide<br>
+	 * They are valid if they are between 100 and 9999
+	 */
 	private void checkResolution() {
 		if (!width.getText().matches("^[1-9][0-9]{2,3}$")) {
 			width.setText("");
@@ -475,10 +533,13 @@ public class ProfilesScreenController {
 			height.setText("");
 		}
 	}
-	
+
+	/**
+	 * Open a window to select the game directory
+	 */
 	@FXML
 	private void selectDir() {
-		GameProfile gp = choiceBoxVersion.getSelectionModel().getSelectedItem();
+		GameProfile gp = choiceBoxProfile.getSelectionModel().getSelectedItem();
 		DirectoryChooser dc = new DirectoryChooser();
 		dc.setInitialDirectory(new File(gp.getGameDirOrDefault()));
 		File f = dc.showDialog(Main.getPrimaryStage());
@@ -487,28 +548,37 @@ public class ProfilesScreenController {
 		}
 	}
 
+	/**
+	 * Open a window to select the Jave executable
+	 */
 	@FXML
 	private void selectExe() {
 		FileChooser fc = new FileChooser();
 		File f = fc.showOpenDialog(Main.getPrimaryStage());
 		if (f != null) {
-			java.setText(f.getAbsolutePath());
+			executable.setText(f.getAbsolutePath());
 		}
 	}
-	
+
+	/**
+	 * Update the list view, used in case a profile's name was changed
+	 */
 	@FXML
 	private void updateListView() {
-		GameProfile gp = this.listViewVersions.getSelectionModel().getSelectedItem();
-		GameProfile selected = this.choiceBoxVersion.getSelectionModel().getSelectedItem();
-		int index = this.listViewVersions.getItems().indexOf(gp);
-		this.listViewVersions.getItems().set(index, gp);
-		if (gp == selected) {
-			this.choiceBoxVersion.getSelectionModel().select(gp);
+		GameProfile editing = this.listViewProfile.getSelectionModel().getSelectedItem();
+		GameProfile selected = this.choiceBoxProfile.getSelectionModel().getSelectedItem();
+		int index = this.listViewProfile.getItems().indexOf(editing);
+		this.listViewProfile.getItems().set(index, editing);
+		if (editing == selected) {
+			this.choiceBoxProfile.getSelectionModel().select(editing);
 		}
 	}
-	
-	private void updateVersionString() {
-		GameProfile profile = this.choiceBoxVersion.getSelectionModel().getSelectedItem();
+
+	/**
+	 * Update the label showing the selected profile's version
+	 */
+	private void updateVersionLabel() {
+		GameProfile profile = this.choiceBoxProfile.getSelectionModel().getSelectedItem();
 		if (profile != null) {
 			String version = profile.getVersion();
 			selectedProfileVersion.setText(version);
@@ -516,4 +586,5 @@ public class ProfilesScreenController {
 			selectedProfileVersion.setText("");
 		}
 	}
+
 }

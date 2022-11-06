@@ -52,4 +52,5 @@ public enum PROFILE_TYPE {
 			return PROFILE_TYPE.CUSTOM;
 		}
 	}
+
 }

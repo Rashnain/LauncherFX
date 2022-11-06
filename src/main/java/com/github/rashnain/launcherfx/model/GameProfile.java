@@ -105,7 +105,6 @@ public class GameProfile {
 		String identifier;
 		do {
 			identifier = UUID.randomUUID().toString().replace("-", "");
-			System.out.println(identifier);
 		} while (!isUniqueIdentifier(identifier));
 		return identifier;
 	}
