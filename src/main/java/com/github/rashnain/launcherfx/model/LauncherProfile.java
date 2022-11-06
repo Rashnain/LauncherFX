@@ -56,8 +56,10 @@ public class LauncherProfile {
 		} catch (Exception e) {
 			System.out.println("Error loading launcher profiles.");
 			System.out.println("Ceating default profile.");
-			GameProfile latest = new GameProfile("", "latest-release", Instant.EPOCH, PROFILE_TYPE.LATEST_RELEASE);
-			gameProfiles.add(latest);
+			GameProfile release = new GameProfile(Instant.EPOCH, "latest-release", "", PROFILE_TYPE.LATEST_RELEASE);
+			gameProfiles.add(release);
+			GameProfile snapshot = new GameProfile(Instant.EPOCH, "latest-snapshot", "", PROFILE_TYPE.LATEST_SNAPSHOT);
+			gameProfiles.add(snapshot);
 		}
 
 		try {
@@ -94,9 +96,7 @@ public class LauncherProfile {
 			Instant lastUsedInstant = Instant.parse(lastUsed);
 			PROFILE_TYPE type = PROFILE_TYPE.getAsType(versionType);
 
-			GameProfile gameProfile = new GameProfile(name, version, lastUsedInstant, type);
-
-			gameProfile.setIdentifier(key);
+			GameProfile gameProfile = new GameProfile(key, lastUsedInstant, version, name, type);
 
 			if (profile.keySet().contains("gameDir")) {
 				gameProfile.setGameDir(profile.get("gameDir").getAsString());
@@ -156,7 +156,7 @@ public class LauncherProfile {
 				profile.add("javaDir", new JsonPrimitive(gp.getExecutable()));
 			}
 			profile.add("lastUsed", new JsonPrimitive(gp.getLastUsed().toString()));
-			profile.add("lastVersionId", new JsonPrimitive(gp.getVersionId()));
+			profile.add("lastVersionId", new JsonPrimitive(gp.getVersion()));
 			profile.add("name", new JsonPrimitive(gp.getName()));
 			if (!(gp.getEditableWidth().equals("") && gp.getEditableHeight().equals(""))) {
 				profile.add("resolution", new JsonObject());

@@ -1,58 +1,91 @@
 package main.java.com.github.rashnain.launcherfx.model;
 
 import java.time.Instant;
-import java.util.Random;
+import java.util.UUID;
 
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import main.java.com.github.rashnain.launcherfx.Main;
 import main.java.com.github.rashnain.launcherfx.PROFILE_TYPE;
 
+/**
+ * Class representing a game profile
+ */
 public class GameProfile {
-	
+
 	private static final String defaultGameDir = LauncherProfile.getProfile().getWorkDir();
-	
+
 	private static final String defaultWidth = "880";
-	
+
 	private static final String defaultHeight = "480";
-	
+
 	private static final String defaultExe = "java";
-	
+
 	private static final String defaultJvmArgs = "-Xmx2G -XX:+UnlockExperimentalVMOptions -XX:+UseG1GC -XX:G1NewSizePercent=20 -XX:G1ReservePercent=20 -XX:MaxGCPauseMillis=50 -XX:G1HeapRegionSize=32M";
-	
-	private StringProperty name;
-	
-	private StringProperty versionId;
-	
-	private PROFILE_TYPE profileType;
+
+	private String identifier;
 
 	private StringProperty gameDir;
-	
-	private StringProperty width;
-	
-	private StringProperty height;
-	
-	private StringProperty executable;
-	
+
 	private StringProperty jvmArguments;
-	
+
+	private StringProperty executable;
+
 	private Instant lastUsed;
-	
-	private String identifier;
-	
-	public GameProfile(String name, String versionId, Instant lastUsed, PROFILE_TYPE type) {
-		this.name = new SimpleStringProperty(name);
-		this.versionId = new SimpleStringProperty(versionId);
-		this.lastUsed = lastUsed;
-		this.profileType = type;
+
+	private StringProperty version;
+
+	private StringProperty name;
+
+	private StringProperty width;
+
+	private StringProperty height;
+
+	private PROFILE_TYPE profileType;
+
+	/**
+	 * Creates a game profile with a specified identifier, last used time, version, name and profile type
+	 * @param identifier
+	 * @param lastUsed
+	 * @param version
+	 * @param name
+	 * @param type
+	 */
+	public GameProfile(String identifier, Instant lastUsed, String version, String name, PROFILE_TYPE type) {
+		this.identifier = identifier;
 		this.gameDir = new SimpleStringProperty(defaultGameDir);
+		this.jvmArguments = new SimpleStringProperty(defaultJvmArgs);
+		this.executable = new SimpleStringProperty(defaultExe);
+		this.lastUsed = lastUsed;
+		this.version = new SimpleStringProperty(version);
+		this.name = new SimpleStringProperty(name);
 		this.width = new SimpleStringProperty(defaultWidth);
 		this.height = new SimpleStringProperty(defaultHeight);
-		this.executable = new SimpleStringProperty(defaultExe);
-		this.jvmArguments = new SimpleStringProperty(defaultJvmArgs);
-		this.identifier = getUniqueIdentifier();
+		this.profileType = type;
 	}
-	
+
+	/**
+	 * Creates a game profile with a specified last used time, version, name and profile type
+	 * @param lastUsed
+	 * @param version
+	 * @param name
+	 * @param type
+	 */
+	public GameProfile(Instant lastUsed, String version, String name, PROFILE_TYPE type) {
+		this(getUniqueIdentifier(), lastUsed, version, name, type);
+	}
+
+	/**
+	 * Creates a game profile without name and set to the latest release version
+	 */
+	public GameProfile() {
+		this(getUniqueIdentifier(), Instant.EPOCH, "latest-release", "", PROFILE_TYPE.CUSTOM);
+	}
+
+	/**
+	 * Returns a string representation of the object.<br>
+	 * For a GameProfile it returns the version attribut
+	 */
 	public String toString() {
 		if (this.name.get().equals("")) {
 			if (this.profileType == PROFILE_TYPE.LATEST_RELEASE) {
@@ -64,16 +97,25 @@ public class GameProfile {
 		}
 		return this.name.get();
 	}
-	
-	private String getUniqueIdentifier() {
+
+	/**
+	 * @return a unique identifier
+	 */
+	private static String getUniqueIdentifier() {
 		String identifier;
 		do {
-			identifier = String.valueOf(new Random().nextInt());
-		} while (!isAvailable(identifier));
+			identifier = UUID.randomUUID().toString().replace("-", "");
+			System.out.println(identifier);
+		} while (!isUniqueIdentifier(identifier));
 		return identifier;
 	}
-	
-	private boolean isAvailable(String identifier) {
+
+	/**
+	 * Returns wether the given identifier is unique among the existing profiles' identifiers
+	 * @param identifier
+	 * @return true if its unique, false otherwise
+	 */
+	private static boolean isUniqueIdentifier(String identifier) {
 		for (GameProfile e : LauncherProfile.getProfile().getGameProfiles()) {
 			if (e.getIdentifier().equals(identifier)) {
 				return false;
@@ -81,53 +123,29 @@ public class GameProfile {
 		}
 		return true;
 	}
-	
-	public String getName() {
-		return this.name.get();
-	}
-	
-	public StringProperty getNameProperty() {
-		return this.name;
-	}
-	
-	public void setName(String name) {
-		this.name.set(name);
-	}
-	
-	public String getVersionId() {
-		return this.versionId.get();
-	}
-	
-	public StringProperty getVersionIdProperty() {
-		return this.versionId;
-	}
-	
-	public void setVersionId(String id) {
-		this.versionId.set(id);
-	}
 
-	public PROFILE_TYPE getVersionType() {
-		return this.profileType;
+	public String getIdentifier() {
+		return identifier;
 	}
 
 	public String getGameDir() {
 		return this.gameDir.get();
 	}
-	
+
 	public String getEditableGameDir() {
 		if (this.gameDir.get() == defaultGameDir) {
 			return "";
 		}
 		return this.gameDir.get();
 	}
-	
+
 	public String getGameDirOrDefault() {
 		if (this.gameDir.get().equals("")) {
 			return defaultGameDir;
 		}
 		return this.gameDir.get();
 	}
-	
+
 	public StringProperty getGameDirProperty() {
 		return this.gameDir;
 	}
@@ -136,109 +154,49 @@ public class GameProfile {
 		this.gameDir.set(directory);
 	}
 
-	public String getWidth() {
-		return this.width.get();
-	}
-	
-	public String getEditableWidth() {
-		if (this.width.get() == defaultWidth) {
-			return "";
-		}
-		return this.width.get();
-	}
-	
-	public String getWidthOrDefault() {
-		if (this.width.get().equals("")) {
-			return defaultWidth;
-		}
-		return this.width.get();
-	}
-	
-	public StringProperty getWidthProperty() {
-		return this.width;
+	public String getJvmArguments() {
+		return this.jvmArguments.get();
 	}
 
-	public void setWidth(String width) {
-		this.width.set(width);
-	}
-
-	public String getHeight() {
-		return this.height.get();
-	}
-	
-	public String getEditableHeight() {
-		if (this.height.get() == defaultHeight) {
-			return "";
-		}
-		return this.height.get();
-	}
-	
-	public String getHeightOrDefault() {
-		if (this.height.get().equals("")) {
-			return defaultHeight;
-		}
-		return this.height.get();
-	}
-	
-	public StringProperty getHeightProperty() {
-		return this.height;
-	}
-	
-	public void setWidth(int width) {
-		this.width.set(String.valueOf(width));
-	}
-	
-	public void setHeight(int height) {
-		this.height.set(String.valueOf(height));
-	}
-	
-	public void setHeight(String height) {
-		this.height.set(height);
-	}
-
-	public String getExecutable() {
-		return this.executable.get();
-	}
-	
-	public String getEditableExecutable() {
-		if (this.executable.get() == defaultExe) {
-			return "";
-		}
-		return this.executable.get();
-	}
-	
-	public String getExecutableOrDefault() {
-		if (this.executable.get().equals("")) {
-			return defaultExe;
-		}
-		return this.executable.get();
-	}
-	
-	public StringProperty getExecutableProperty() {
-		return this.executable;
-	}
-	
-	public void setExecutable(String executable) {
-		this.executable.set(executable);
-	}
-	
 	public String getEditableJvmArguments() {
 		if (this.jvmArguments.get().equals(defaultJvmArgs)) {
 			return "";
 		}
 		return this.jvmArguments.get();
 	}
-	
-	public String getJvmArguments() {
-		return this.jvmArguments.get();
-	}
-	
+
 	public StringProperty getJvmArgumentsProperty() {
 		return this.jvmArguments;
 	}
-	
+
 	public void setJvmArguments(String jvmArguments) {
 		this.jvmArguments.set(jvmArguments);
+	}
+
+	public String getExecutable() {
+		return this.executable.get();
+	}
+
+	public String getEditableExecutable() {
+		if (this.executable.get() == defaultExe) {
+			return "";
+		}
+		return this.executable.get();
+	}
+
+	public String getExecutableOrDefault() {
+		if (this.executable.get().equals("")) {
+			return defaultExe;
+		}
+		return this.executable.get();
+	}
+
+	public StringProperty getExecutableProperty() {
+		return this.executable;
+	}
+
+	public void setExecutable(String executable) {
+		this.executable.set(executable);
 	}
 
 	public Instant getLastUsed() {
@@ -249,11 +207,92 @@ public class GameProfile {
 		this.lastUsed = lastUsed;
 	}
 
-	public String getIdentifier() {
-		return identifier;
+	public String getVersion() {
+		return this.version.get();
 	}
-	
-	public void setIdentifier(String identifier) {
-		this.identifier = identifier;
+
+	public StringProperty getVersionProperty() {
+		return this.version;
 	}
+
+	public void setVersion(String id) {
+		this.version.set(id);
+	}
+
+	public String getName() {
+		return this.name.get();
+	}
+
+	public StringProperty getNameProperty() {
+		return this.name;
+	}
+
+	public void setName(String name) {
+		this.name.set(name);
+	}
+
+	public String getWidth() {
+		return this.width.get();
+	}
+
+	public String getEditableWidth() {
+		if (this.width.get() == defaultWidth) {
+			return "";
+		}
+		return this.width.get();
+	}
+
+	public String getWidthOrDefault() {
+		if (this.width.get().equals("")) {
+			return defaultWidth;
+		}
+		return this.width.get();
+	}
+
+	public StringProperty getWidthProperty() {
+		return this.width;
+	}
+
+	public void setWidth(String width) {
+		this.width.set(width);
+	}
+
+	public void setWidth(int width) {
+		this.width.set(String.valueOf(width));
+	}
+
+	public String getHeight() {
+		return this.height.get();
+	}
+
+	public String getEditableHeight() {
+		if (this.height.get() == defaultHeight) {
+			return "";
+		}
+		return this.height.get();
+	}
+
+	public String getHeightOrDefault() {
+		if (this.height.get().equals("")) {
+			return defaultHeight;
+		}
+		return this.height.get();
+	}
+
+	public StringProperty getHeightProperty() {
+		return this.height;
+	}
+
+	public void setHeight(String height) {
+		this.height.set(height);
+	}
+
+	public void setHeight(int height) {
+		this.height.set(String.valueOf(height));
+	}
+
+	public PROFILE_TYPE getVersionType() {
+		return this.profileType;
+	}
+
 }

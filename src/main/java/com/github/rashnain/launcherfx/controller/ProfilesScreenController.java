@@ -171,7 +171,7 @@ public class ProfilesScreenController {
 			
 			if (previous != null) {
 				previous.getNameProperty().unbind();
-				previous.getVersionIdProperty().unbind();
+				previous.getVersionProperty().unbind();
 				previous.getGameDirProperty().unbind();
 				previous.getWidthProperty().unbind();
 				previous.getHeightProperty().unbind();
@@ -184,12 +184,12 @@ public class ProfilesScreenController {
 				name.setText(profile.getName());
 				profile.getNameProperty().bind(name.textProperty());
 				version.setDisable(false);
-				version.getSelectionModel().select(profile.getVersionId());
-				profile.getVersionIdProperty().bind(version.getSelectionModel().selectedItemProperty());
+				version.getSelectionModel().select(profile.getVersion());
+				profile.getVersionProperty().bind(version.getSelectionModel().selectedItemProperty());
 			} else {
 				name.setText(profile.toString());
 				name.setDisable(true);
-				version.getSelectionModel().select(profile.getVersionId());
+				version.getSelectionModel().select(profile.getVersion());
 				version.setDisable(true);
 			}
 			gameDir.setText(profile.getEditableGameDir());
@@ -268,15 +268,15 @@ public class ProfilesScreenController {
 				JsonObject versionManifest = JsonUtility.load(launcher.getVersionsDir()+"version_manifest_v2.json");
 				JsonArray versionArray = versionManifest.get("versions").getAsJsonArray();
 				for (JsonElement entry : versionArray) {
-					if (entry.getAsJsonObject().get("id").getAsString().equals(ver.getVersionId())) {
+					if (entry.getAsJsonObject().get("id").getAsString().equals(ver.getVersion())) {
 						String versionJsonURL = entry.getAsJsonObject().get("url").getAsString();
-						FileUtility.download(versionJsonURL, ver.getVersionId()+".json", launcher.getVersionsDir()+ver.getVersionId()+"/", 0);
+						FileUtility.download(versionJsonURL, ver.getVersion()+".json", launcher.getVersionsDir()+ver.getVersion()+"/", 0);
 						break;
 					}
 				}
 			}
 			
-			String versionJsonURI = launcher.getVersionsDir()+ver.getVersionId()+"/"+ver.getVersionId()+".json";
+			String versionJsonURI = launcher.getVersionsDir()+ver.getVersion()+"/"+ver.getVersion()+".json";
 			
 			if (new File(versionJsonURI).isFile()) {
 				manifestExists = true;
@@ -294,7 +294,7 @@ public class ProfilesScreenController {
 				this.loadingBar.setProgress(0.1);
 				
 				// Library path
-				instance.addCommand("-Djava.library.path=\""+launcher.getVersionsDir()+ver.getVersionId()+"/natives/\"");
+				instance.addCommand("-Djava.library.path=\""+launcher.getVersionsDir()+ver.getVersion()+"/natives/\"");
 				
 				// Classpath, TODO download only required libraries
 				instance.addCommand("-cp");
@@ -330,8 +330,8 @@ public class ProfilesScreenController {
 				this.loadingBar.setProgress(0.3);
 				
 				// Version JAR
-				String versionJarName = ver.getVersionId()+".jar";
-				String versionJarDir = launcher.getVersionsDir()+ver.getVersionId()+"/";
+				String versionJarName = ver.getVersion()+".jar";
+				String versionJarDir = launcher.getVersionsDir()+ver.getVersion()+"/";
 				
 				if (!new File(versionJarDir+versionJarName).isFile()) {
 					JsonObject clientJar = version.get("downloads").getAsJsonObject().get("client").getAsJsonObject();
@@ -348,7 +348,7 @@ public class ProfilesScreenController {
 				
 				// Parameters
 				instance.addCommand("--username " + launcher.getGuestUsername());
-				instance.addCommand("--version " + ver.getVersionId());
+				instance.addCommand("--version " + ver.getVersion());
 				instance.addCommand("--gameDir " + "\""+ver.getGameDirOrDefault()+"\"");
 				instance.addCommand("--assetsDir " + "\""+launcher.getAssetsDir()+"\"");
 				instance.addCommand("--assetIndex " + version.get("assetIndex").getAsJsonObject().get("id").getAsString());
@@ -412,7 +412,7 @@ public class ProfilesScreenController {
 	
 	@FXML
 	private void newProfile() {
-		GameProfile newProfile = new GameProfile("", "latest-release", Instant.EPOCH, PROFILE_TYPE.CUSTOM);
+		GameProfile newProfile = new GameProfile();
 		
 		this.listViewVersions.getItems().add(newProfile);
 		
@@ -452,12 +452,12 @@ public class ProfilesScreenController {
 		GameProfile selectedVer = this.listViewVersions.getSelectionModel().getSelectedItem();
 		
 		if (selectedVer != null) {
-			GameProfile newProfile = new GameProfile(selectedVer.toString()+" "+resources.getString("profile.editor.copy"), selectedVer.getVersionId(), selectedVer.getLastUsed(), PROFILE_TYPE.CUSTOM);
+			GameProfile newProfile = new GameProfile(selectedVer.getLastUsed(), selectedVer.getVersion(), selectedVer.toString()+" "+resources.getString("profile.editor.copy"), PROFILE_TYPE.CUSTOM);
 			newProfile.setGameDir(selectedVer.getGameDir());
-			newProfile.setExecutable(selectedVer.getExecutable());
-			newProfile.setJvmArguments(selectedVer.getJvmArguments());
 			newProfile.setWidth(selectedVer.getWidth());
 			newProfile.setHeight(selectedVer.getHeight());
+			newProfile.setExecutable(selectedVer.getExecutable());
+			newProfile.setJvmArguments(selectedVer.getJvmArguments());
 			this.listViewVersions.getItems().add(newProfile);
 			this.listViewVersions.getSelectionModel().select(newProfile);
 			updateProfileEditor();
@@ -510,7 +510,7 @@ public class ProfilesScreenController {
 	private void updateVersionString() {
 		GameProfile profile = this.choiceBoxVersion.getSelectionModel().getSelectedItem();
 		if (profile != null) {
-			String version = profile.getVersionId();
+			String version = profile.getVersion();
 			selectedProfileVersion.setText(version);
 		} else {
 			selectedProfileVersion.setText("");
