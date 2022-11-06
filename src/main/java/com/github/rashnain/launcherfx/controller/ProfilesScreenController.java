@@ -390,7 +390,7 @@ public class ProfilesScreenController {
 				instance.addCommand("--version " + profile.getVersion());
 				instance.addCommand("--gameDir " + "\""+profile.getGameDirOrDefault()+"\"");
 				instance.addCommand("--assetsDir " + "\""+launcher.getAssetsDir()+"\"");
-				instance.addCommand("--assetIndex " + version.getAsJsonObject("assetIndex").getAsJsonObject("id"));
+				instance.addCommand("--assetIndex " + version.getAsJsonObject("assetIndex").get("id").getAsString());
 				instance.addCommand("--uuid " + UUID.nameUUIDFromBytes(("OfflinePlayer:"+launcher.getGuestUsername()).getBytes()));
 				instance.addCommand("--accessToken " + "accessToken");
 				instance.addCommand("--userType " + "legacy");

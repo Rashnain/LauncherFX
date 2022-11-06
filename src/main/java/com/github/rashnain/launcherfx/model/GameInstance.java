@@ -22,6 +22,7 @@ public class GameInstance {
 	 */
 	public GameInstance(String gameDir) {
 		this.gameDir = gameDir;
+		this.command = new StringBuilder();
 	}
 
 	/**
