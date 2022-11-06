@@ -305,7 +305,7 @@ public class ProfilesScreenController {
 
 			if (launcher.getOnlineStatus()) {
 				JsonObject versionManifest = JsonUtility.load(launcher.getVersionsDir()+"version_manifest_v2.json");
-				JsonArray versionArray = versionManifest.get("versions").getAsJsonArray();
+				JsonArray versionArray = versionManifest.getAsJsonArray("versions");
 				for (JsonElement entry : versionArray) {
 					if (entry.getAsJsonObject().get("id").getAsString().equals(profile.getVersion())) {
 						String versionJsonURL = entry.getAsJsonObject().get("url").getAsString();
@@ -337,11 +337,11 @@ public class ProfilesScreenController {
 
 				// Classpath, TODO download only required libraries
 				instance.addCommand("-cp");
-				JsonArray libraries = version.get("libraries").getAsJsonArray();
+				JsonArray libraries = version.getAsJsonArray("libraries");
 				for (JsonElement lib : libraries) {
 					JsonObject libo = lib.getAsJsonObject();
 					if (LibraryUtility.shouldUseLibrary(libo)) {
-						JsonObject artifact = libo.get("downloads").getAsJsonObject().get("artifact").getAsJsonObject();
+						JsonObject artifact = libo.getAsJsonObject("downloads").getAsJsonObject("artifact");
 						String libPath = artifact.getAsJsonObject().get("path").getAsString();
 
 						String libURL = artifact.getAsJsonObject().get("url").getAsString();
@@ -351,8 +351,8 @@ public class ProfilesScreenController {
 
 						String nativesString = LibraryUtility.getNativesString(libo);
 						if (!nativesString.equals("")) {
-							JsonObject classifiers = libo.get("downloads").getAsJsonObject().get("classifiers").getAsJsonObject();
-							JsonObject natives = classifiers.get(nativesString).getAsJsonObject();
+							JsonObject classifiers = libo.getAsJsonObject("downloads").getAsJsonObject("classifiers");
+							JsonObject natives = classifiers.getAsJsonObject(nativesString);
 							libURL = natives.get("url").getAsString();
 							libSize = natives.get("size").getAsInt();
 							String nativesPath = natives.get("path").getAsString();
@@ -373,7 +373,7 @@ public class ProfilesScreenController {
 				String versionJarDir = launcher.getVersionsDir()+profile.getVersion()+"/";
 
 				if (!new File(versionJarDir+versionJarName).isFile()) {
-					JsonObject clientJar = version.get("downloads").getAsJsonObject().get("client").getAsJsonObject();
+					JsonObject clientJar = version.getAsJsonObject("downloads").getAsJsonObject("client");
 					String versionJarURL = clientJar.get("url").getAsString();
 					int versionJarSize = clientJar.get("size").getAsInt();
 					FileUtility.download(versionJarURL, versionJarName, versionJarDir, versionJarSize);
@@ -390,7 +390,7 @@ public class ProfilesScreenController {
 				instance.addCommand("--version " + profile.getVersion());
 				instance.addCommand("--gameDir " + "\""+profile.getGameDirOrDefault()+"\"");
 				instance.addCommand("--assetsDir " + "\""+launcher.getAssetsDir()+"\"");
-				instance.addCommand("--assetIndex " + version.get("assetIndex").getAsJsonObject().get("id").getAsString());
+				instance.addCommand("--assetIndex " + version.getAsJsonObject("assetIndex").getAsJsonObject("id"));
 				instance.addCommand("--uuid " + UUID.nameUUIDFromBytes(("OfflinePlayer:"+launcher.getGuestUsername()).getBytes()));
 				instance.addCommand("--accessToken " + "accessToken");
 				instance.addCommand("--userType " + "legacy");
@@ -401,7 +401,7 @@ public class ProfilesScreenController {
 				this.loadingBar.setProgress(0.5);
 
 				// Assets
-				JsonObject assetIndex = version.get("assetIndex").getAsJsonObject();
+				JsonObject assetIndex = version.getAsJsonObject("assetIndex");
 				String assetIndexURL = assetIndex.get("url").getAsString();
 				String assetIndexName = assetIndexURL.split("/")[assetIndexURL.split("/").length-1];
 				String assetIndexDir = launcher.getAssetsDir()+"indexes/";
@@ -409,7 +409,7 @@ public class ProfilesScreenController {
 				if (!new File(assetIndexDir+assetIndexName).isFile()) {
 					int assetIndexSize = assetIndex.get("size").getAsInt();
 					FileUtility.download(assetIndexURL, assetIndexName, assetIndexDir, assetIndexSize);
-					JsonObject assets = JsonUtility.load(assetIndexDir+assetIndexName).getAsJsonObject().get("objects").getAsJsonObject();
+					JsonObject assets = JsonUtility.load(assetIndexDir+assetIndexName).getAsJsonObject("objects");
 					for(Entry<String, JsonElement> e : assets.entrySet()) {
 						JsonObject asset = e.getValue().getAsJsonObject();
 						String assetName = asset.get("hash").getAsString();

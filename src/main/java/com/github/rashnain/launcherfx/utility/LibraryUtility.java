@@ -18,7 +18,7 @@ public class LibraryUtility {
 			return true;
 		}
 
-		for (JsonElement e : lib.get("rules").getAsJsonArray()) {
+		for (JsonElement e : lib.getAsJsonArray("rules")) {
 			if (ruleSaysYes(e.getAsJsonObject())) {
 				return true;
 			}
@@ -44,7 +44,7 @@ public class LibraryUtility {
 		String os = System.getProperty("os.name").toLowerCase();
 
 		if (rule.keySet().contains("os")) {
-			String name = rule.get("os").getAsJsonObject().get("name").getAsString();
+			String name = rule.getAsJsonObject("os").get("name").getAsString();
 			if (name.equals("windows") && os.contains("windows")) {
 				return useLib;
 			} else if (name.equals("osx") && os.contains("darwin")) {
@@ -77,7 +77,7 @@ public class LibraryUtility {
 
 		String os = System.getProperty("os.name").toLowerCase();
 
-		JsonObject natives = lib.get("natives").getAsJsonObject();
+		JsonObject natives = lib.getAsJsonObject("natives");
 
 		if (natives.keySet().contains("windows") && os.contains("windows")) {
 			nativesString = natives.get("windows").getAsString();
