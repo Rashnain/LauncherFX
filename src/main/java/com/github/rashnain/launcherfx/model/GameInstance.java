@@ -47,7 +47,7 @@ public class GameInstance {
 	/**
 	 * @return the instance's command
 	 */
-	private String getCommand() {
+	public String getCommand() {
 		return this.command.toString();
 	}
 
