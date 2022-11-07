@@ -125,9 +125,13 @@ public class ProfilesScreenController {
 			File ver = new File(launcher.getVersionsDir());
 			for (File sub : ver.listFiles()) {
 				if (new File(sub.getAbsolutePath()+"/").isDirectory()) {
-					JsonObject jo = JsonUtility.load(sub.getAbsolutePath()+"/"+sub.getName()+".json");
-					if (jo.get("type").getAsString().equals("release") && !choiceBoxVersion.getItems().contains(sub.getName())) {
-						choiceBoxVersion.getItems().add(sub.getName());
+					try {
+						JsonObject jo = JsonUtility.load(sub.getAbsolutePath()+"/"+sub.getName()+".json");
+						if (jo.get("type").getAsString().equals("release") && !choiceBoxVersion.getItems().contains(sub.getName())) {
+							choiceBoxVersion.getItems().add(sub.getName());
+						}
+					} catch (Exception e) {
+						continue;
 					}
 				}
 			}
