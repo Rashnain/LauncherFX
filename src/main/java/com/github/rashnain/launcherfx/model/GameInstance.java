@@ -1,7 +1,22 @@
 package main.java.com.github.rashnain.launcherfx.model;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.Scanner;
+import java.util.UUID;
+import java.util.Map.Entry;
+
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.DoubleProperty;
+import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.property.SimpleDoubleProperty;
+import main.java.com.github.rashnain.launcherfx.utility.FileUtility;
+import main.java.com.github.rashnain.launcherfx.utility.JsonUtility;
+import main.java.com.github.rashnain.launcherfx.utility.LibraryUtility;
 
 /**
  * Class representing a game instance
@@ -10,35 +25,39 @@ public class GameInstance {
 
 	private StringBuilder command;
 
-	private String gameDir;
+	private GameProfile profile;
+
+	private DoubleProperty loadingProgress;
+
+	private BooleanProperty loadingVisibility;
 
 	private Process process;
 
 	/**
-	 * Create an instance in this directory<br>
-	 * Used to know if a directory is already being used or not<br>
-	 * To inform user that launching multiple instances in the same directory can cause bug
+	 * Create an instance with this profile
 	 * @param gameDir Directory the game will work with
 	 */
-	public GameInstance(String gameDir) {
-		this.gameDir = gameDir;
+	public GameInstance(GameProfile profile) {
 		this.command = new StringBuilder();
+		this.profile = profile;
+		this.loadingProgress = new SimpleDoubleProperty(0);
+		this.loadingVisibility = new SimpleBooleanProperty(true);
 	}
 
 	/**
-	 * Execute the instance's command
-	 * @throws IOException If an error occure when launching
+	 * Starts a thread that prepare and launch the instance
 	 */
-	public void runInstance() throws IOException {
-		this.process = Runtime.getRuntime().exec(getCommand());
+	public void startThread() {
 
 		Thread t = new Thread() {
 			public void run() {
-				Scanner s = new Scanner(process.getInputStream());
-				while (s.hasNext()) {
-					s.nextLine();
+				try {
+					prepareInstance();
+					System.out.println(getCommand());
+					runInstance();
+				} catch (Exception e) {
+					e.printStackTrace();
 				}
-				System.out.println("Instance terminated.");
 			}
 		};
 
@@ -46,9 +65,122 @@ public class GameInstance {
 	}
 
 	/**
+	 * Prepare the instance
+	 * @throws Exception Download errors
+	 */
+	private void prepareInstance() throws Exception {
+		LauncherProfile launcher = LauncherProfile.getProfile();
+
+		String versionJsonURI = launcher.getVersionsDir()+profile.getVersion()+"/"+profile.getVersion()+".json";
+
+		JsonObject version = JsonUtility.load(versionJsonURI);
+
+		// Java executable + JVM arguments
+		addCommand("\""+profile.getExecutableOrDefault()+"\"");
+		addCommand(profile.getJvmArguments());
+
+		// Library path
+		addCommand("-Djava.library.path=\""+launcher.getVersionsDir()+profile.getVersion()+"/natives/\"");
+
+		// Classpath, TODO download only required libraries
+		addCommand("-cp");
+		JsonArray libraries = version.getAsJsonArray("libraries");
+		for (JsonElement lib : libraries) {
+			JsonObject libo = lib.getAsJsonObject();
+			if (LibraryUtility.shouldUseLibrary(libo)) {
+				JsonObject artifact = libo.getAsJsonObject("downloads").getAsJsonObject("artifact");
+				String libPath = artifact.getAsJsonObject().get("path").getAsString();
+
+				String libURL = artifact.getAsJsonObject().get("url").getAsString();
+				int libSize = artifact.getAsJsonObject().get("size").getAsInt();
+				String libName = libPath.split("/")[libPath.split("/").length-1];
+				String libDir = libPath.substring(0, libPath.lastIndexOf("/")+1);
+
+				String nativesString = LibraryUtility.getNativesString(libo);
+				if (!nativesString.equals("")) {
+					JsonObject classifiers = libo.getAsJsonObject("downloads").getAsJsonObject("classifiers");
+					JsonObject natives = classifiers.getAsJsonObject(nativesString);
+					libURL = natives.get("url").getAsString();
+					libSize = natives.get("size").getAsInt();
+					String nativesPath = natives.get("path").getAsString();
+					libName = nativesPath.split("/")[nativesPath.split("/").length-1];
+					libDir = nativesPath.substring(0, nativesPath.lastIndexOf("/")+1);
+				}
+				if (!new File(launcher.getLibrariesDir()+libDir+libName).isFile()) {
+					FileUtility.download(libURL, libName, launcher.getLibrariesDir()+libDir, libSize);
+				}
+				addCommand("\""+launcher.getLibrariesDir()+libDir+libName, "\";");
+			}
+		}
+
+		// Version JAR
+		String versionJarName = profile.getVersion()+".jar";
+		String versionJarDir = launcher.getVersionsDir()+profile.getVersion()+"/";
+
+		if (!new File(versionJarDir+versionJarName).isFile()) {
+			JsonObject clientJar = version.getAsJsonObject("downloads").getAsJsonObject("client");
+			String versionJarURL = clientJar.get("url").getAsString();
+			int versionJarSize = clientJar.get("size").getAsInt();
+			FileUtility.download(versionJarURL, versionJarName, versionJarDir, versionJarSize);
+		}
+		addCommand("\""+versionJarDir+versionJarName+"\"");
+
+		// Main class
+		addCommand(version.get("mainClass").getAsString());
+
+		// Parameters
+		addCommand("--username " + launcher.getGuestUsername());
+		addCommand("--version " + profile.getVersion());
+		addCommand("--gameDir " + "\""+profile.getGameDirOrDefault()+"\"");
+		addCommand("--assetsDir " + "\""+launcher.getAssetsDir()+"\"");
+		addCommand("--assetIndex " + version.getAsJsonObject("assetIndex").get("id").getAsString());
+		addCommand("--uuid " + UUID.nameUUIDFromBytes(("OfflinePlayer:"+launcher.getGuestUsername()).getBytes()));
+		addCommand("--accessToken " + "accessToken");
+		addCommand("--userType " + "legacy");
+		addCommand("--versionType " + version.get("type").getAsString());
+		addCommand("--width " + profile.getWidthOrDefault());
+		addCommand("--height " + profile.getHeightOrDefault());
+
+		// Assets
+		JsonObject assetIndex = version.getAsJsonObject("assetIndex");
+		String assetIndexURL = assetIndex.get("url").getAsString();
+		String assetIndexName = assetIndexURL.split("/")[assetIndexURL.split("/").length-1];
+		String assetIndexDir = launcher.getAssetsDir()+"indexes/";
+
+		if (!new File(assetIndexDir+assetIndexName).isFile()) {
+			int assetIndexSize = assetIndex.get("size").getAsInt();
+			FileUtility.download(assetIndexURL, assetIndexName, assetIndexDir, assetIndexSize);
+			JsonObject assets = JsonUtility.load(assetIndexDir+assetIndexName).getAsJsonObject("objects");
+			for(Entry<String, JsonElement> e : assets.entrySet()) {
+				JsonObject asset = e.getValue().getAsJsonObject();
+				String assetName = asset.get("hash").getAsString();
+				String assetDir = assetName.substring(0, 2)+"/";
+				int assetSize = asset.get("size").getAsInt();
+				FileUtility.download("https://resources.download.minecraft.net/"+assetDir+assetName, assetName, launcher.getAssetsDir()+"objects/"+assetDir, assetSize);
+			}
+		}
+
+		loadingVisibility.setValue(false);
+	}
+
+	/**
+	 * Execute the instance's command
+	 * @throws IOException If an error occure when launching
+	 */
+	private void runInstance() throws IOException {
+		this.process = Runtime.getRuntime().exec(getCommand());
+
+		Scanner s = new Scanner(process.getInputStream());
+		while (s.hasNext()) {
+			s.nextLine();
+		}
+		System.out.println("Instance terminated.");
+	}
+
+	/**
 	 * @return the instance's command
 	 */
-	public String getCommand() {
+	private String getCommand() {
 		return this.command.toString();
 	}
 
@@ -57,7 +189,7 @@ public class GameInstance {
 	 * @param cmd the command
 	 * @param lineEnd end of the command
 	 */
-	public void addCommand(String cmd, String lineEnd) {
+	private void addCommand(String cmd, String lineEnd) {
 		this.command.append(cmd + lineEnd);
 	}
 
@@ -65,15 +197,31 @@ public class GameInstance {
 	 * Adds a command, ending with a space
 	 * @param cmd the command
 	 */
-	public void addCommand(String cmd) {
+	private void addCommand(String cmd) {
 		addCommand(cmd, " ");
 	}
 
 	/**
+	 * Used to know if a directory is already being used or not<br>
+	 * To inform user that launching multiple instances in the same directory can cause bug
 	 * @return the instance's game directory
 	 */
 	public String getGameDir() {
-		return this.gameDir;
+		return this.profile.getGameDir();
+	}
+
+	/**
+	 * @return instance's loading progress property
+	 */
+	public DoubleProperty getLoadingProgressProperty() {
+		return this.loadingProgress;
+	}
+
+	/**
+	 * @return instance's loading visibility property
+	 */
+	public BooleanProperty getLoadingVisibilityProperty() {
+		return this.loadingVisibility;
 	}
 
 	/**

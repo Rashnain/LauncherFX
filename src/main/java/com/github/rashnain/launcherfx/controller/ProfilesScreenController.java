@@ -6,11 +6,8 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.ResourceBundle;
-import java.util.UUID;
-
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -23,6 +20,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.ListView;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.Button;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseButton;
@@ -37,7 +35,6 @@ import main.java.com.github.rashnain.launcherfx.model.GameProfile;
 import main.java.com.github.rashnain.launcherfx.model.LauncherProfile;
 import main.java.com.github.rashnain.launcherfx.utility.FileUtility;
 import main.java.com.github.rashnain.launcherfx.utility.JsonUtility;
-import main.java.com.github.rashnain.launcherfx.utility.LibraryUtility;
 
 /**
  * Controller of the profiles screen
@@ -89,6 +86,9 @@ public class ProfilesScreenController {
 
 	@FXML
 	private Label selectedProfileVersion;
+
+	@FXML
+	private Button playButton;
 
 	@FXML
 	private Label pseudoStatus;
@@ -156,7 +156,11 @@ public class ProfilesScreenController {
 	private void onClickOnViewList(MouseEvent event) throws Exception {
 		if (event.getButton().equals(MouseButton.PRIMARY)) {
 			if (event.getClickCount() > 1) {
-				loadGame(this.listViewProfile.getSelectionModel().getSelectedItem());
+				if (!playButton.isDisabled()) {
+					GameProfile profile = this.listViewProfile.getSelectionModel().getSelectedItem();
+					this.choiceBoxProfile.getSelectionModel().select(profile);
+					loadGame(profile);
+				}
 			} else {
 				updateProfileEditor();
 			}
@@ -256,21 +260,19 @@ public class ProfilesScreenController {
 	}
 
 	/**
-	 * Launch the selected profile
-	 * @param profile
+	 * Launch the given profile
+	 * @param profile profile to launch
 	 * @throws Exception if the instance throw an exception
 	 */
-	private void loadGame(GameProfile profile) throws Exception {
-		boolean ignoreConflicts = false;
+	private void loadGame(GameProfile profile) {
+		boolean authorizeLaunch = false;
 
-		// checks if there isn't another instance running in the same directory
 		if (profile != null) {
-			this.choiceBoxProfile.getSelectionModel().select(profile);
+			authorizeLaunch = true;
 			checkResolution();
-			launcher.saveProfile();
 			profile.setLastUsed(Instant.now());
-			this.choiceBoxProfile.getSelectionModel().select(launcher.lastUsedProfile());
-			ignoreConflicts = true;
+			launcher.saveProfile();
+			// checks if there is another instance running in the same directory
 			Iterator<GameInstance> it = this.instances.iterator();
 			while (it.hasNext()) {
 				GameInstance gi = it.next();
@@ -280,27 +282,23 @@ public class ProfilesScreenController {
 				}
 				if (gi.getGameDir().equals(profile.getGameDir())) {
 					Alert dialog = new Alert(AlertType.CONFIRMATION);
-					dialog.setTitle(this.resources.getString("launch.running.instance"));
-					dialog.setHeaderText(this.resources.getString("launch.running.instance.title"));
-					dialog.setContentText(this.resources.getString("launch.running.instance.desc"));
+					dialog.setTitle(this.resources.getString("launch.error.instance"));
+					dialog.setHeaderText(this.resources.getString("launch.error.instance.title"));
+					dialog.setContentText(this.resources.getString("launch.error.instance.desc"));
 					dialog.getButtonTypes().set(0, ButtonType.YES);
 					dialog.getButtonTypes().set(1, ButtonType.NO);
 					Optional<ButtonType> choice = dialog.showAndWait();
-					if (choice.get() == ButtonType.YES) {
-						ignoreConflicts = true;
-					} else {
-						ignoreConflicts = false;
+					if (choice.get() != ButtonType.YES) {
+						authorizeLaunch = false;
 					}
+					break;
 				}
 			}
 		} else {
 			showNoSelectionDialog();
 		}
 
-		if (ignoreConflicts) {
-			this.loadingBar.setProgress(0);
-			this.loadingBar.setVisible(true);
-
+		if (authorizeLaunch) {
 			boolean manifestExists = false;
 
 			if (launcher.getOnlineStatus()) {
@@ -309,7 +307,11 @@ public class ProfilesScreenController {
 				for (JsonElement entry : versionArray) {
 					if (entry.getAsJsonObject().get("id").getAsString().equals(profile.getVersion())) {
 						String versionJsonURL = entry.getAsJsonObject().get("url").getAsString();
-						FileUtility.download(versionJsonURL, profile.getVersion()+".json", launcher.getVersionsDir()+profile.getVersion()+"/", 0);
+						try {
+							FileUtility.download(versionJsonURL, profile.getVersion()+".json", launcher.getVersionsDir()+profile.getVersion()+"/", 0);
+						} catch (IOException e) {
+							showCantDownloadDialog();
+						}
 						break;
 					}
 				}
@@ -322,116 +324,23 @@ public class ProfilesScreenController {
 			}
 
 			if (manifestExists) {
-				JsonObject version = JsonUtility.load(versionJsonURI);
+				GameInstance instance = new GameInstance(profile);
 
-				GameInstance instance = new GameInstance(profile.getGameDir());
+				this.loadingBar.progressProperty().unbind();
+				this.loadingBar.visibleProperty().unbind();
+				this.playButton.disableProperty().unbind();
 
-				// Java executable + JVM arguments
-				instance.addCommand("\""+profile.getExecutableOrDefault()+"\"");
-				instance.addCommand(profile.getJvmArguments());
+				this.loadingBar.progressProperty().bind(instance.getLoadingProgressProperty());
+				this.loadingBar.visibleProperty().bind(instance.getLoadingVisibilityProperty());
+				this.playButton.disableProperty().bind(instance.getLoadingVisibilityProperty());
 
-				this.loadingBar.setProgress(0.1);
-
-				// Library path
-				instance.addCommand("-Djava.library.path=\""+launcher.getVersionsDir()+profile.getVersion()+"/natives/\"");
-
-				// Classpath, TODO download only required libraries
-				instance.addCommand("-cp");
-				JsonArray libraries = version.getAsJsonArray("libraries");
-				for (JsonElement lib : libraries) {
-					JsonObject libo = lib.getAsJsonObject();
-					if (LibraryUtility.shouldUseLibrary(libo)) {
-						JsonObject artifact = libo.getAsJsonObject("downloads").getAsJsonObject("artifact");
-						String libPath = artifact.getAsJsonObject().get("path").getAsString();
-
-						String libURL = artifact.getAsJsonObject().get("url").getAsString();
-						int libSize = artifact.getAsJsonObject().get("size").getAsInt();
-						String libName = libPath.split("/")[libPath.split("/").length-1];
-						String libDir = libPath.substring(0, libPath.lastIndexOf("/")+1);
-
-						String nativesString = LibraryUtility.getNativesString(libo);
-						if (!nativesString.equals("")) {
-							JsonObject classifiers = libo.getAsJsonObject("downloads").getAsJsonObject("classifiers");
-							JsonObject natives = classifiers.getAsJsonObject(nativesString);
-							libURL = natives.get("url").getAsString();
-							libSize = natives.get("size").getAsInt();
-							String nativesPath = natives.get("path").getAsString();
-							libName = nativesPath.split("/")[nativesPath.split("/").length-1];
-							libDir = nativesPath.substring(0, nativesPath.lastIndexOf("/")+1);
-						}
-						if (!new File(launcher.getLibrariesDir()+libDir+libName).isFile()) {
-							FileUtility.download(libURL, libName, launcher.getLibrariesDir()+libDir, libSize);
-						}
-						instance.addCommand("\""+launcher.getLibrariesDir()+libDir+libName, "\";");
-					}
-				}
-
-				this.loadingBar.setProgress(0.3);
-
-				// Version JAR
-				String versionJarName = profile.getVersion()+".jar";
-				String versionJarDir = launcher.getVersionsDir()+profile.getVersion()+"/";
-
-				if (!new File(versionJarDir+versionJarName).isFile()) {
-					JsonObject clientJar = version.getAsJsonObject("downloads").getAsJsonObject("client");
-					String versionJarURL = clientJar.get("url").getAsString();
-					int versionJarSize = clientJar.get("size").getAsInt();
-					FileUtility.download(versionJarURL, versionJarName, versionJarDir, versionJarSize);
-				}
-				instance.addCommand("\""+versionJarDir+versionJarName+"\"");
-
-				this.loadingBar.setProgress(0.4);
-
-				// Main class
-				instance.addCommand(version.get("mainClass").getAsString());
-
-				// Parameters
-				instance.addCommand("--username " + launcher.getGuestUsername());
-				instance.addCommand("--version " + profile.getVersion());
-				instance.addCommand("--gameDir " + "\""+profile.getGameDirOrDefault()+"\"");
-				instance.addCommand("--assetsDir " + "\""+launcher.getAssetsDir()+"\"");
-				instance.addCommand("--assetIndex " + version.getAsJsonObject("assetIndex").get("id").getAsString());
-				instance.addCommand("--uuid " + UUID.nameUUIDFromBytes(("OfflinePlayer:"+launcher.getGuestUsername()).getBytes()));
-				instance.addCommand("--accessToken " + "accessToken");
-				instance.addCommand("--userType " + "legacy");
-				instance.addCommand("--versionType " + version.get("type").getAsString());
-				instance.addCommand("--width " + profile.getWidthOrDefault());
-				instance.addCommand("--height " + profile.getHeightOrDefault());
-
-				this.loadingBar.setProgress(0.5);
-
-				// Assets
-				JsonObject assetIndex = version.getAsJsonObject("assetIndex");
-				String assetIndexURL = assetIndex.get("url").getAsString();
-				String assetIndexName = assetIndexURL.split("/")[assetIndexURL.split("/").length-1];
-				String assetIndexDir = launcher.getAssetsDir()+"indexes/";
-
-				if (!new File(assetIndexDir+assetIndexName).isFile()) {
-					int assetIndexSize = assetIndex.get("size").getAsInt();
-					FileUtility.download(assetIndexURL, assetIndexName, assetIndexDir, assetIndexSize);
-					JsonObject assets = JsonUtility.load(assetIndexDir+assetIndexName).getAsJsonObject("objects");
-					for(Entry<String, JsonElement> e : assets.entrySet()) {
-						JsonObject asset = e.getValue().getAsJsonObject();
-						String assetName = asset.get("hash").getAsString();
-						String assetDir = assetName.substring(0, 2)+"/";
-						int assetSize = asset.get("size").getAsInt();
-						FileUtility.download("https://resources.download.minecraft.net/"+assetDir+assetName, assetName, launcher.getAssetsDir()+"objects/"+assetDir, assetSize);
-					}
-				}
-
-				this.loadingBar.setProgress(1.0);
-				this.loadingBar.setVisible(false);
-
-				System.out.println(instance.getCommand());
-
-				instance.runInstance();
+				instance.startThread();
 
 				this.instances.add(instance);
-
 			} else {
 				Alert dialog = new Alert(AlertType.ERROR);
-				dialog.setTitle(this.resources.getString("launch.manifest"));
-				dialog.setHeaderText(this.resources.getString("launch.manifest.desc"));
+				dialog.setTitle(this.resources.getString("launch.error.manifest"));
+				dialog.setHeaderText(this.resources.getString("launch.error.manifest.desc"));
 				dialog.show();
 			}
 		}
@@ -444,6 +353,16 @@ public class ProfilesScreenController {
 		Alert dialog = new Alert(AlertType.ERROR);
 		dialog.setTitle(this.resources.getString("launch.error"));
 		dialog.setHeaderText(this.resources.getString("launch.error.desc"));
+		dialog.showAndWait();
+	}
+
+	/**
+	 * Display a message saying that a file could not be downloaded
+	 */
+	private void showCantDownloadDialog() {
+		Alert dialog = new Alert(AlertType.ERROR);
+		dialog.setTitle(this.resources.getString("launch.error.connection"));
+		dialog.setHeaderText(this.resources.getString("launch.error.connection.desc"));
 		dialog.showAndWait();
 	}
 

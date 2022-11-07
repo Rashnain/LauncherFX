@@ -88,7 +88,7 @@
             </Label>
             <Label fx:id="selectedProfileVersion" layoutX="70.0" layoutY="78.0" maxWidth="-Infinity" prefWidth="200.0" text="version" />
             <ChoiceBox fx:id="choiceBoxProfile" layoutX="70.0" layoutY="52.0" maxWidth="-Infinity" prefWidth="200.0" />
-            <Button layoutX="340.0" layoutY="25.0" maxWidth="-Infinity" mnemonicParsing="false" onAction="#onPlayButtonAction" prefWidth="200.0" text="%profile.launch" textAlignment="CENTER">
+            <Button fx:id="playButton" layoutX="340.0" layoutY="25.0" maxWidth="-Infinity" mnemonicParsing="false" onAction="#onPlayButtonAction" prefWidth="200.0" text="%profile.launch" textAlignment="CENTER">
                <font>
                   <Font name="Segoe UI Bold" size="48.0" />
                </font>
