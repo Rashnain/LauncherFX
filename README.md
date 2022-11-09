@@ -2,13 +2,12 @@
  A Minecraft: Java Edition launcher made with Java 8 and JavaFX
 
 ### Features
-* Launch Minecraft 1.13+
+* Launch almost all Minecraft versions
 * Customize configurations (game dir, java exe, java args)
 * Play without account
 
 ### Roadmap
 * Microsoft account logging
-* Launch pre-1.13 versions
 * Launch Fabric versions
 
 #### Maybe
