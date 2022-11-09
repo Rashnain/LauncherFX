@@ -1,11 +1,14 @@
 package main.java.com.github.rashnain.launcherfx.utility;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.net.URLConnection;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
 
 /**
  * Utility class to download files
@@ -54,6 +57,37 @@ public class FileUtility {
 	 */
 	public static void download(String url, String filename, String dir) throws IOException {
 		download(url, filename, dir, 0);
+	}
+
+	/**
+	 * Unzip files from a zip archive into a specified repertory
+	 * @param zipFile the zip archive to unzip
+	 * @param dest destination of files
+	 * @throws IOException if file manipulation error
+	 */
+	public static void unzip(String zipFile, String dest) throws IOException {
+		File destDir = new File(dest);
+		byte[] buffer = new byte[4048];
+		ZipInputStream zip = new ZipInputStream(new FileInputStream(zipFile));
+		ZipEntry zipEntry = zip.getNextEntry();
+		while (zipEntry != null) {
+			System.out.println(zipEntry.getName());
+			File newFile = new File(destDir + "/" + zipEntry.getName());
+			System.out.println(newFile.getAbsolutePath());
+			if (zipEntry.isDirectory()) {
+				newFile.mkdirs();
+			} else {
+				FileOutputStream out = new FileOutputStream(newFile);
+				int len;
+				while ((len = zip.read(buffer)) > 0) {
+					out.write(buffer, 0, len);
+				}
+				out.close();
+			}
+			zipEntry = zip.getNextEntry();
+		}
+		zip.closeEntry();
+		zip.close();
 	}
 
 }
