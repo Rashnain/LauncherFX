@@ -56,6 +56,7 @@ public class GameInstance {
 					System.out.println(getCommand());
 					runInstance();
 				} catch (Exception e) {
+					loadingVisibility.setValue(false);
 					e.printStackTrace();
 				}
 			}
@@ -82,20 +83,32 @@ public class GameInstance {
 		// Library path
 		addCommand("-Djava.library.path=\""+launcher.getVersionsDir()+profile.getVersion()+"/natives/\"");
 
-		// Classpath, TODO download only required libraries
+		// Classpath
 		addCommand("-cp");
 		JsonArray libraries = version.getAsJsonArray("libraries");
 		for (JsonElement lib : libraries) {
 			JsonObject libo = lib.getAsJsonObject();
+			String libURL = "";
+			String libName = "";
+			String libDir = "";
+			int libSize = 0;
+
+			// checks artifact
 			if (LibraryUtility.shouldUseLibrary(libo)) {
-				JsonObject artifact = libo.getAsJsonObject("downloads").getAsJsonObject("artifact");
-				String libPath = artifact.getAsJsonObject().get("path").getAsString();
+				JsonObject download = libo.getAsJsonObject("downloads");
+				JsonObject artifact = download.getAsJsonObject("artifact");
+				if (artifact != null) {
+					String libPath = artifact.getAsJsonObject().get("path").getAsString();
+	
+					libURL = artifact.getAsJsonObject().get("url").getAsString();
+					libSize = artifact.getAsJsonObject().get("size").getAsInt();
+					libName = libPath.split("/")[libPath.split("/").length-1];
+					libDir = libPath.substring(0, libPath.lastIndexOf("/")+1);
+					FileUtility.download(libURL, libName, launcher.getLibrariesDir()+libDir, libSize);
+					addCommand("\""+launcher.getLibrariesDir()+libDir+libName, "\";");
+				}
 
-				String libURL = artifact.getAsJsonObject().get("url").getAsString();
-				int libSize = artifact.getAsJsonObject().get("size").getAsInt();
-				String libName = libPath.split("/")[libPath.split("/").length-1];
-				String libDir = libPath.substring(0, libPath.lastIndexOf("/")+1);
-
+				// checks natives
 				String nativesString = LibraryUtility.getNativesString(libo);
 				if (!nativesString.equals("")) {
 					JsonObject classifiers = libo.getAsJsonObject("downloads").getAsJsonObject("classifiers");
@@ -105,11 +118,11 @@ public class GameInstance {
 					String nativesPath = natives.get("path").getAsString();
 					libName = nativesPath.split("/")[nativesPath.split("/").length-1];
 					libDir = nativesPath.substring(0, nativesPath.lastIndexOf("/")+1);
-				}
-				if (!new File(launcher.getLibrariesDir()+libDir+libName).isFile()) {
 					FileUtility.download(libURL, libName, launcher.getLibrariesDir()+libDir, libSize);
+					// extract natives executables
+					FileUtility.unzip(launcher.getLibrariesDir()+libDir+libName, launcher.getVersionsDir()+profile.getVersion()+"/natives/");
+					addCommand("\""+launcher.getLibrariesDir()+libDir+libName, "\";");
 				}
-				addCommand("\""+launcher.getLibrariesDir()+libDir+libName, "\";");
 			}
 		}
 
@@ -136,6 +149,7 @@ public class GameInstance {
 		addCommand("--assetIndex " + version.getAsJsonObject("assetIndex").get("id").getAsString());
 		addCommand("--uuid " + UUID.nameUUIDFromBytes(("OfflinePlayer:"+launcher.getGuestUsername()).getBytes()));
 		addCommand("--accessToken " + "accessToken");
+		addCommand("--userProperties " + "{}"); // TODO should give only required arguments
 		addCommand("--userType " + "legacy");
 		addCommand("--versionType " + version.get("type").getAsString());
 		addCommand("--width " + profile.getWidthOrDefault());
@@ -169,12 +183,41 @@ public class GameInstance {
 	 */
 	private void runInstance() throws IOException {
 		this.process = Runtime.getRuntime().exec(getCommand());
+		consumeStdIn();
+		consumeStdErr();
+	}
 
-		Scanner s = new Scanner(process.getInputStream());
-		while (s.hasNext()) {
-			s.nextLine();
-		}
-		System.out.println("Instance terminated.");
+	/**
+	 * Consume standard input buffer of the process<br>
+	 * Must be done otherwise the game freeze once the buffer is full
+	 */
+	private void consumeStdIn() {
+		Thread t = new Thread() {
+			public void run() {
+				Scanner in = new Scanner(process.getInputStream());
+				while (in.hasNext()) {
+					System.out.println(in.nextLine());
+				}
+				System.out.println("Instance terminated.");
+			}
+		};
+		t.start();
+	}
+
+	/**
+	 * Consume standard error buffer of the process<br>
+	 * Must be done otherwise the game freeze once the buffer is full
+	 */
+	private void consumeStdErr() {
+		Thread t = new Thread() {
+			public void run() {
+				Scanner err = new Scanner(process.getErrorStream());
+				while (err.hasNext()) {
+					System.out.println(err.nextLine());
+				}
+			}
+		};
+		t.start();
 	}
 
 	/**
