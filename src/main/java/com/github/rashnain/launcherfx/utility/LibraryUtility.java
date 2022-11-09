@@ -70,23 +70,20 @@ public class LibraryUtility {
 			return nativesString;
 		}
 
-		String arch = System.getProperty("sun.arch.data.model");
-		if (!arch.equals("64") && !arch.equals("32")) {
-			throw new Exception("Architecture not supported.");
-		}
-
-		String os = System.getProperty("os.name").toLowerCase();
-
 		JsonObject natives = lib.getAsJsonObject("natives");
 
+		String os = System.getProperty("os.name").toLowerCase();
 		if (natives.keySet().contains("windows") && os.contains("windows")) {
 			nativesString = natives.get("windows").getAsString();
 		} else if (natives.keySet().contains("osx") && os.contains("darwin")) {
 			nativesString = natives.get("osx").getAsString();
 		} else if (natives.keySet().contains("linux") && os.contains("linux")) {
 			nativesString = natives.get("linux").getAsString();
-		} else {
-			throw new Exception("Platform not supported.");
+		}
+
+		String arch = System.getProperty("sun.arch.data.model");
+		if (nativesString.contains("${arch}")) {
+			nativesString = nativesString.replace("${arch}", arch);
 		}
 
 		return nativesString;
