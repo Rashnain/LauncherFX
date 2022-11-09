@@ -34,21 +34,12 @@ public class FileUtility {
 			FileOutputStream out = new FileOutputStream(file);
 
 			byte[] buffer = new byte[4048];
-			byte[] subBuffer;
-			int sizeBuffer;
+			int len;
 
-			while ((sizeBuffer=in.read(buffer)) > 0) {
-				if (sizeBuffer != buffer.length) {
-					subBuffer = new byte[sizeBuffer];
-					for (int i = 0; i < sizeBuffer; i++) { 
-						subBuffer[i] = buffer[i];
-					}
-					out.write(subBuffer);
-				} else {
-					out.write(buffer);
-				}
-				buffer = new byte[4048];
+			while ((len = in.read(buffer)) > 0) {
+				out.write(buffer, 0, len);
 			}
+
 			out.close();
 		}
 	}
