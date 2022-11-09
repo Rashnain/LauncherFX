@@ -112,9 +112,7 @@ public class ProfilesScreenController {
 				// Initialize version list
 				JsonObject versionManifest = JsonUtility.load(launcher.getVersionsDir()+"version_manifest_v2.json");
 				for (JsonElement e : versionManifest.getAsJsonArray("versions")) {
-					if (e.getAsJsonObject().get("type").getAsString().equals("release")) {
-						choiceBoxVersion.getItems().add(e.getAsJsonObject().get("id").getAsString());
-					}
+					choiceBoxVersion.getItems().add(e.getAsJsonObject().get("id").getAsString());
 				}
 			} catch (IOException e1) {
 				System.out.println("Offline mode.");
@@ -127,10 +125,11 @@ public class ProfilesScreenController {
 				if (new File(sub.getAbsolutePath()+"/").isDirectory()) {
 					try {
 						JsonObject jo = JsonUtility.load(sub.getAbsolutePath()+"/"+sub.getName()+".json");
-						if (jo.get("type").getAsString().equals("release") && !choiceBoxVersion.getItems().contains(sub.getName())) {
-							choiceBoxVersion.getItems().add(sub.getName());
+						if (!choiceBoxVersion.getItems().contains(jo.get("id").getAsString())) {
+							choiceBoxVersion.getItems().add(jo.get("id").getAsString());
 						}
 					} catch (Exception e) {
+						System.out.println("Malformed version manifest.");
 						continue;
 					}
 				}
