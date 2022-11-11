@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.net.URLConnection;
+import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
@@ -60,29 +61,40 @@ public class FileUtility {
 	}
 
 	/**
-	 * Unzip files from a zip archive into a specified repertory
-	 * @param zipFile the zip archive to unzip
-	 * @param dest destination of files
+	 * Unzip files from a zip archive into a specified repertory, excluding specified files/folders
+	 * @param zipFile path to the zip archive
+	 * @param dest destination path
+	 * @param exclusion list of files/folders to ignore
 	 * @throws IOException if file manipulation error
 	 */
-	public static void unzip(String zipFile, String dest) throws IOException {
+	public static void unzip(String zipFile, String dest, List<String> exclusion) throws IOException {
 		File destDir = new File(dest);
+		destDir.mkdirs();
 		byte[] buffer = new byte[4048];
 		ZipInputStream zip = new ZipInputStream(new FileInputStream(zipFile));
 		ZipEntry zipEntry = zip.getNextEntry();
 		while (zipEntry != null) {
 			System.out.println(zipEntry.getName());
-			File newFile = new File(destDir + "/" + zipEntry.getName());
-			System.out.println(newFile.getAbsolutePath());
-			if (zipEntry.isDirectory()) {
-				newFile.mkdirs();
-			} else {
-				FileOutputStream out = new FileOutputStream(newFile);
-				int len;
-				while ((len = zip.read(buffer)) > 0) {
-					out.write(buffer, 0, len);
+			boolean shouldExtract = true;
+			for (String s : exclusion) {
+				if (zipEntry.getName().contains(s)) {
+					shouldExtract = false;
+					break;
 				}
-				out.close();
+			}
+			if (shouldExtract) {
+				File newFile = new File(destDir + "/" + zipEntry.getName());
+				System.out.println(newFile.getAbsolutePath());
+				if (zipEntry.isDirectory()) {
+					newFile.mkdirs();
+				} else {
+					FileOutputStream out = new FileOutputStream(newFile);
+					int len;
+					while ((len = zip.read(buffer)) > 0) {
+						out.write(buffer, 0, len);
+					}
+					out.close();
+				}
 			}
 			zipEntry = zip.getNextEntry();
 		}

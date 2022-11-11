@@ -4,6 +4,8 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Scanner;
 import java.util.UUID;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map.Entry;
 
 import com.google.gson.JsonArray;
@@ -120,7 +122,12 @@ public class GameInstance {
 					libDir = nativesPath.substring(0, nativesPath.lastIndexOf("/")+1);
 					FileUtility.download(libURL, libName, launcher.getLibrariesDir()+libDir, libSize);
 					// extract natives executables
-					FileUtility.unzip(launcher.getLibrariesDir()+libDir+libName, launcher.getVersionsDir()+profile.getVersion()+"/natives/");
+					JsonArray exclude = libo.getAsJsonObject("extract").getAsJsonArray("exclude");
+					List<String> excludeList = new ArrayList<>();
+					for (JsonElement e : exclude) {
+						excludeList.add(e.getAsString());
+					}
+					FileUtility.unzip(launcher.getLibrariesDir()+libDir+libName, launcher.getVersionsDir()+profile.getVersion()+"/natives/", excludeList);
 					addCommand("\""+launcher.getLibrariesDir()+libDir+libName, "\";");
 				}
 			}
