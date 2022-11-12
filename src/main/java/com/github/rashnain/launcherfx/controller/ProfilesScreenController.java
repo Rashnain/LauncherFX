@@ -120,11 +120,11 @@ public class ProfilesScreenController {
 			}
 
 			// Initialize version list
-			File ver = new File(launcher.getVersionsDir());
-			for (File sub : ver.listFiles()) {
-				if (new File(sub.getAbsolutePath()+"/").isDirectory()) {
+			File verDir = new File(launcher.getVersionsDir());
+			for (File subDir : verDir.listFiles()) {
+				if (new File(subDir.getAbsolutePath()+"/").isDirectory()) {
 					try {
-						JsonObject jo = JsonUtility.load(sub.getAbsolutePath()+"/"+sub.getName()+".json");
+						JsonObject jo = JsonUtility.load(subDir.getAbsolutePath()+"/"+subDir.getName()+".json");
 						if (!choiceBoxVersion.getItems().contains(jo.get("id").getAsString())) {
 							choiceBoxVersion.getItems().add(jo.get("id").getAsString());
 						}
@@ -135,15 +135,16 @@ public class ProfilesScreenController {
 				}
 			}
 
-			this.listViewProfile.setItems(launcher.getGameProfiles());
-			this.choiceBoxProfile.setItems(this.listViewProfile.getItems());
+			listViewProfile.setItems(launcher.getGameProfiles());
+			choiceBoxProfile.setItems(launcher.getGameProfiles());
 
-			this.listViewProfile.getSelectionModel().select(launcher.lastUsedProfile());
-			this.choiceBoxProfile.getSelectionModel().select(launcher.lastUsedProfile());
+			listViewProfile.getSelectionModel().select(launcher.lastUsedProfile());
+			choiceBoxProfile.getSelectionModel().select(launcher.lastUsedProfile());
 			updateProfileEditor();
 			updateVersionLabel();
 
-			this.choiceBoxProfile.setOnAction( e -> updateVersionLabel() );
+			choiceBoxProfile.setOnAction( e -> updateVersionLabel() );
+			choiceBoxVersion.setOnAction( e -> updateVersionLabel() );
 
 			initialized = true;
 		}
