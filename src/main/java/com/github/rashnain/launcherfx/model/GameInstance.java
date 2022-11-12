@@ -189,7 +189,7 @@ public class GameInstance {
 	 * @throws IOException If an error occure when launching
 	 */
 	private void runInstance() throws IOException {
-		this.process = Runtime.getRuntime().exec(getCommand());
+		this.process = Runtime.getRuntime().exec(getCommand(), null, new File(profile.getGameDirOrDefault()));
 		consumeStdIn();
 		consumeStdErr();
 	}
