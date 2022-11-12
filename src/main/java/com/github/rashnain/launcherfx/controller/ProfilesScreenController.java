@@ -79,6 +79,9 @@ public class ProfilesScreenController {
 	private TextField jvmArgs;
 
 	@FXML
+	private Button deleteButton;
+
+	@FXML
 	private ProgressBar loadingBar;
 
 	@FXML
@@ -138,9 +141,11 @@ public class ProfilesScreenController {
 			listViewProfile.setItems(launcher.getGameProfiles());
 			choiceBoxProfile.setItems(launcher.getGameProfiles());
 
+			listViewProfile.getSelectionModel().selectedIndexProperty().addListener(
+				(obs, oldval, newval) -> updateProfileEditor() );
+
 			listViewProfile.getSelectionModel().select(launcher.lastUsedProfile());
-			choiceBoxProfile.getSelectionModel().select(launcher.lastUsedProfile());
-			updateProfileEditor();
+			choiceBoxProfile.getSelectionModel().select(listViewProfile.getSelectionModel().getSelectedItem());
 			updateVersionLabel();
 
 			choiceBoxProfile.setOnAction( e -> updateVersionLabel() );
@@ -152,7 +157,7 @@ public class ProfilesScreenController {
 	}
 
 	/**
-	 * Update profile editor with a single click, or launch the selected profile with a double click
+	 * Launch the selected profile if the ListView is double clicked
 	 * @param event Mouse
 	 * @throws Exception if the instance throw an exception
 	 */
@@ -165,8 +170,6 @@ public class ProfilesScreenController {
 					this.choiceBoxProfile.getSelectionModel().select(profile);
 					loadGame(profile);
 				}
-			} else {
-				updateProfileEditor();
 			}
 		}
 	}
@@ -195,7 +198,6 @@ public class ProfilesScreenController {
 	 * Update the profile editor<br>
 	 * And the bindings to save change in real time
 	 */
-	@FXML
 	private void updateProfileEditor() {
 		GameProfile profile = this.listViewProfile.getSelectionModel().getSelectedItem();
 
@@ -219,11 +221,13 @@ public class ProfilesScreenController {
 				choiceBoxVersion.setDisable(false);
 				choiceBoxVersion.getSelectionModel().select(profile.getVersion());
 				profile.getVersionProperty().bind(choiceBoxVersion.getSelectionModel().selectedItemProperty());
+				deleteButton.setDisable(false);
 			} else {
 				name.setText(profile.toString());
 				name.setDisable(true);
 				choiceBoxVersion.getSelectionModel().select(profile.getVersion());
 				choiceBoxVersion.setDisable(true);
+				deleteButton.setDisable(true);
 			}
 			gameDir.setText(profile.getEditableGameDir());
 			profile.getGameDirProperty().bind(gameDir.textProperty());
@@ -383,11 +387,11 @@ public class ProfilesScreenController {
 	 */
 	@FXML
 	private void newProfile() {
-		GameProfile newProfile = new GameProfile();
+		GameProfile profile = new GameProfile();
 
-		this.listViewProfile.getItems().add(newProfile);
+		this.listViewProfile.getItems().add(profile);
 
-		this.listViewProfile.getSelectionModel().select(newProfile);
+		this.listViewProfile.getSelectionModel().select(profile);
 		updateProfileEditor();
 		this.choiceBoxProfile.getSelectionModel().select(launcher.lastUsedProfile());
 		updateVersionLabel();
@@ -399,22 +403,24 @@ public class ProfilesScreenController {
 	 */
 	@FXML
 	private void deleteProfile() {
-		GameProfile selectedVer = this.listViewProfile.getSelectionModel().getSelectedItem();
+		GameProfile profile = this.listViewProfile.getSelectionModel().getSelectedItem();
 
-		if (selectedVer != null) {
-			Alert dialog = new Alert(AlertType.CONFIRMATION);
-			dialog.setTitle(this.resources.getString("profile.delete.title"));
-			dialog.setHeaderText(this.resources.getString("profile.delete.header"));
-			dialog.setContentText(this.resources.getString("profile.delete.content"));
-			dialog.getButtonTypes().set(0, ButtonType.YES);
-			dialog.getButtonTypes().set(1, ButtonType.NO);
-			Optional<ButtonType> choice = dialog.showAndWait();
-			if (choice.get() == ButtonType.YES) {
-				this.listViewProfile.getItems().remove(selectedVer);
-				updateProfileEditor();
-				this.choiceBoxProfile.getSelectionModel().select(launcher.lastUsedProfile());
-				updateVersionLabel();
-				launcher.saveProfile();
+		if (profile != null) {
+			if (profile.getVersionType() == PROFILE_TYPE.CUSTOM) {
+				Alert dialog = new Alert(AlertType.CONFIRMATION);
+				dialog.setTitle(this.resources.getString("profile.delete.title"));
+				dialog.setHeaderText(this.resources.getString("profile.delete.header"));
+				dialog.setContentText(this.resources.getString("profile.delete.content"));
+				dialog.getButtonTypes().set(0, ButtonType.YES);
+				dialog.getButtonTypes().set(1, ButtonType.NO);
+				Optional<ButtonType> choice = dialog.showAndWait();
+				if (choice.get() == ButtonType.YES) {
+					this.listViewProfile.getItems().remove(profile);
+					updateProfileEditor();
+					this.choiceBoxProfile.getSelectionModel().select(launcher.lastUsedProfile());
+					updateVersionLabel();
+					launcher.saveProfile();
+				}
 			}
 		} else {
 			showNoSelectionDialog();
@@ -426,15 +432,15 @@ public class ProfilesScreenController {
 	 */
 	@FXML
 	private void duplicateProfile() {
-		GameProfile selectedVer = this.listViewProfile.getSelectionModel().getSelectedItem();
+		GameProfile profile = this.listViewProfile.getSelectionModel().getSelectedItem();
 
-		if (selectedVer != null) {
-			GameProfile newProfile = new GameProfile(selectedVer.getLastUsed(), selectedVer.getVersion(), selectedVer.toString()+" "+resources.getString("profile.editor.copy"), PROFILE_TYPE.CUSTOM);
-			newProfile.setGameDir(selectedVer.getGameDir());
-			newProfile.setWidth(selectedVer.getWidth());
-			newProfile.setHeight(selectedVer.getHeight());
-			newProfile.setExecutable(selectedVer.getExecutable());
-			newProfile.setJvmArguments(selectedVer.getJvmArguments());
+		if (profile != null) {
+			GameProfile newProfile = new GameProfile(profile.getLastUsed(), profile.getVersion(), profile.toString()+" "+resources.getString("profile.editor.copy"), PROFILE_TYPE.CUSTOM);
+			newProfile.setGameDir(profile.getGameDir());
+			newProfile.setWidth(profile.getWidth());
+			newProfile.setHeight(profile.getHeight());
+			newProfile.setExecutable(profile.getExecutable());
+			newProfile.setJvmArguments(profile.getJvmArguments());
 			this.listViewProfile.getItems().add(newProfile);
 			this.listViewProfile.getSelectionModel().select(newProfile);
 			updateProfileEditor();
