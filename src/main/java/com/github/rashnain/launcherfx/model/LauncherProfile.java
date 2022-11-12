@@ -138,7 +138,7 @@ public class LauncherProfile {
 	 * Returns a JsonObject representing the launcher's profiles and settings
 	 * @return Corresponding JsonObject
 	 */
-	private JsonObject generatedJson() {
+	private JsonObject generateJson() {
 		JsonObject settings = new JsonObject();
 		settings.add("profiles", new JsonObject());
 		JsonObject profiles = settings.getAsJsonObject("profiles");
@@ -156,7 +156,7 @@ public class LauncherProfile {
 				profile.add("javaDir", new JsonPrimitive(gp.getExecutable()));
 			}
 			profile.add("lastUsed", new JsonPrimitive(gp.getLastUsed().toString()));
-			profile.add("lastVersionId", new JsonPrimitive(gp.getVersion()));
+			profile.add("lastVersionId", new JsonPrimitive(gp.getVersionProperty().getValue()));
 			profile.add("name", new JsonPrimitive(gp.getName()));
 			if (!(gp.getEditableWidth().equals("") && gp.getEditableHeight().equals(""))) {
 				profile.add("resolution", new JsonObject());
@@ -177,7 +177,7 @@ public class LauncherProfile {
 	 * Saves profiles and settings into settings file
 	 */
 	public void saveProfile() {
-		JsonObject settings = generatedJson();
+		JsonObject settings = generateJson();
 
 		System.out.println("Saving settings into launcher_profiles.json.");
 

@@ -122,6 +122,17 @@ public class ProfilesScreenController {
 				launcher.setOnlineStatus(false);
 			}
 
+			JsonObject versionManifest = JsonUtility.load(launcher.getVersionsDir()+"version_manifest_v2.json");
+			if (versionManifest != null) {
+				JsonObject latest = versionManifest.getAsJsonObject("latest");
+				GameProfile.latestRelease = latest.get("release").getAsString();
+				GameProfile.latestSnapshot = latest.get("snapshot").getAsString();
+				System.out.println("Latest release is " + GameProfile.latestRelease);
+				System.out.println("Latest snapshot is " + GameProfile.latestSnapshot);
+			} else {
+				System.out.println("Couldn't define latest versions.");
+			}
+
 			// Initialize version list
 			File verDir = new File(launcher.getVersionsDir());
 			for (File subDir : verDir.listFiles()) {
@@ -223,10 +234,10 @@ public class ProfilesScreenController {
 				profile.getVersionProperty().bind(choiceBoxVersion.getSelectionModel().selectedItemProperty());
 				deleteButton.setDisable(false);
 			} else {
-				name.setText(profile.toString());
 				name.setDisable(true);
-				choiceBoxVersion.getSelectionModel().select(profile.getVersion());
+				name.setText(profile.toString());
 				choiceBoxVersion.setDisable(true);
+				choiceBoxVersion.getSelectionModel().select(profile.getVersion());
 				deleteButton.setDisable(true);
 			}
 			gameDir.setText(profile.getEditableGameDir());
