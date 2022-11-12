@@ -65,8 +65,8 @@
             <AnchorPane minHeight="-Infinity" prefHeight="30.0" prefWidth="200.0">
                <children>
                   <Button layoutX="11.0" layoutY="1.0" maxWidth="-Infinity" mnemonicParsing="false" onAction="#newProfile" prefWidth="125.0" text="%profile.new" />
-                  <Button layoutX="304.0" maxWidth="-Infinity" mnemonicParsing="false" onAction="#deleteProfile" prefWidth="125.0" text="%profile.delete" />
                   <Button layoutX="158.0" maxWidth="-Infinity" mnemonicParsing="false" onAction="#duplicateProfile" prefWidth="125.0" text="%profile.duplicate" />
+                  <Button layoutX="304.0" maxWidth="-Infinity" mnemonicParsing="false" onAction="#deleteProfile" prefWidth="125.0" text="%profile.delete" />
                </children>
             </AnchorPane>
          </children>
