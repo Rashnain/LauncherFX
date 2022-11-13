@@ -122,12 +122,14 @@ public class GameInstance {
 					libDir = nativesPath.substring(0, nativesPath.lastIndexOf("/")+1);
 					FileUtility.download(libURL, libName, launcher.getLibrariesDir()+libDir, libSize);
 					// extract natives executables
-					JsonArray exclude = libo.getAsJsonObject("extract").getAsJsonArray("exclude");
-					List<String> excludeList = new ArrayList<>();
-					for (JsonElement e : exclude) {
-						excludeList.add(e.getAsString());
+					if (libo.has("extract")) {
+						JsonArray exclude = libo.getAsJsonObject("extract").getAsJsonArray("exclude");
+						List<String> excludeList = new ArrayList<>();
+						for (JsonElement e : exclude) {
+							excludeList.add(e.getAsString());
+						}
+						FileUtility.unzip(launcher.getLibrariesDir()+libDir+libName, launcher.getVersionsDir()+profile.getVersion()+"/natives/", excludeList);
 					}
-					FileUtility.unzip(launcher.getLibrariesDir()+libDir+libName, launcher.getVersionsDir()+profile.getVersion()+"/natives/", excludeList);
 					addCommand("\""+launcher.getLibrariesDir()+libDir+libName, "\";");
 				}
 			}
