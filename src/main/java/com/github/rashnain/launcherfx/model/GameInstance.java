@@ -151,18 +151,48 @@ public class GameInstance {
 		addCommand(version.get("mainClass").getAsString());
 
 		// Parameters
-		addCommand("--username " + launcher.getGuestUsername());
-		addCommand("--version " + profile.getVersion());
-		addCommand("--gameDir " + "\""+profile.getGameDirOrDefault()+"\"");
-		addCommand("--assetsDir " + "\""+launcher.getAssetsDir()+"\"");
-		addCommand("--assetIndex " + version.getAsJsonObject("assetIndex").get("id").getAsString());
-		addCommand("--uuid " + UUID.nameUUIDFromBytes(("OfflinePlayer:"+launcher.getGuestUsername()).getBytes()));
-		addCommand("--accessToken " + "accessToken");
-		addCommand("--userProperties " + "{}"); // TODO should give only required arguments
-		addCommand("--userType " + "legacy");
-		addCommand("--versionType " + version.get("type").getAsString());
-		addCommand("--width " + profile.getWidthOrDefault());
-		addCommand("--height " + profile.getHeightOrDefault());
+		String arguments = "";
+		if (version.has("minecraftArguments")) {
+			arguments = version.get("minecraftArguments").getAsString() + " ";
+		} else {
+			JsonArray argsArray = version.getAsJsonObject("arguments").getAsJsonArray("game");
+			for (JsonElement e : argsArray) {
+				if (e.isJsonPrimitive()) {
+					arguments += e.getAsString() + " ";
+				}
+			}
+		}
+		arguments += "--width ${resolution_width} --height ${resolution_height}";
+		System.out.println(arguments);
+
+		// username
+		arguments = arguments.replace("${auth_player_name}", launcher.getGuestUsername());
+		// version
+		arguments = arguments.replace("${version_name}", profile.getVersion());
+		// game dir
+		arguments = arguments.replace("${game_directory}", "\""+profile.getGameDirOrDefault()+"\"");
+		// assets dir
+		arguments = arguments.replace("${assets_root}", "\""+launcher.getAssetsDir()+"\"");
+		arguments = arguments.replace("${game_assets}", "\""+launcher.getAssetsDir()+"\"");
+		// assets index
+		arguments = arguments.replace("${assets_index_name}", version.getAsJsonObject("assetIndex").get("id").getAsString());
+		// uuid
+		arguments = arguments.replace("${auth_uuid}", ""+UUID.nameUUIDFromBytes(("OfflinePlayer:"+launcher.getGuestUsername()).getBytes()));
+		// auth access
+		arguments = arguments.replace("${auth_session}", "accessToken");
+		arguments = arguments.replace("${auth_access_token}", "accessToken");
+		// user properties
+		arguments = arguments.replace("${user_properties}", "{}");
+		// user type
+		arguments = arguments.replace("${user_type}", "legacy");
+		// version type
+		arguments = arguments.replace("${version_type}", version.get("type").getAsString());
+		// width
+		arguments = arguments.replace("${resolution_width}", profile.getWidthOrDefault());
+		// height
+		arguments = arguments.replace("${resolution_height}", profile.getHeightOrDefault());
+
+		addCommand(arguments);
 
 		// Assets
 		JsonObject assetIndex = version.getAsJsonObject("assetIndex");
