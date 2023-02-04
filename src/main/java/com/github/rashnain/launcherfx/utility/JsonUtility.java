@@ -1,4 +1,4 @@
-package main.java.com.github.rashnain.launcherfx.utility;
+package com.github.rashnain.launcherfx.utility;
 
 import java.io.File;
 import java.io.FileInputStream;

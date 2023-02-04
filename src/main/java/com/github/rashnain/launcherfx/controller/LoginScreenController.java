@@ -1,4 +1,4 @@
-package main.java.com.github.rashnain.launcherfx.controller;
+package com.github.rashnain.launcherfx.controller;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
@@ -8,8 +8,8 @@ import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
-import main.java.com.github.rashnain.launcherfx.Main;
-import main.java.com.github.rashnain.launcherfx.model.LauncherProfile;
+import com.github.rashnain.launcherfx.Main;
+import com.github.rashnain.launcherfx.model.LauncherProfile;
 
 import java.io.IOException;
 import java.util.ResourceBundle;

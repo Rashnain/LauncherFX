@@ -1,4 +1,4 @@
-package main.java.com.github.rashnain.launcherfx.model;
+package com.github.rashnain.launcherfx.model;
 
 import java.time.Instant;
 import java.util.Locale;
@@ -8,9 +8,9 @@ import com.google.gson.JsonPrimitive;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import main.java.com.github.rashnain.launcherfx.Main;
-import main.java.com.github.rashnain.launcherfx.PROFILE_TYPE;
-import main.java.com.github.rashnain.launcherfx.utility.JsonUtility;
+import com.github.rashnain.launcherfx.Main;
+import com.github.rashnain.launcherfx.PROFILE_TYPE;
+import com.github.rashnain.launcherfx.utility.JsonUtility;
 
 /**
  * Class representing the launcher's settings

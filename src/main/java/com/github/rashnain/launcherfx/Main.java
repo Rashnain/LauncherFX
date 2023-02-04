@@ -1,4 +1,4 @@
-package main.java.com.github.rashnain.launcherfx;
+package com.github.rashnain.launcherfx;
 
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
@@ -6,9 +6,9 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
-import main.java.com.github.rashnain.launcherfx.controller.LoginScreenController;
-import main.java.com.github.rashnain.launcherfx.controller.ProfilesScreenController;
-import main.java.com.github.rashnain.launcherfx.model.LauncherProfile;
+import com.github.rashnain.launcherfx.controller.LoginScreenController;
+import com.github.rashnain.launcherfx.controller.ProfilesScreenController;
+import com.github.rashnain.launcherfx.model.LauncherProfile;
 
 import java.io.File;
 import java.io.IOException;
@@ -80,7 +80,7 @@ public class Main extends Application {
 		Main.primaryStage = primaryStage;
 
 		Locale locale = new Locale(launcher.getLocale());
-		resources = ResourceBundle.getBundle("main.java.com.github.rashnain.launcherfx.resources.locale.lang", locale);
+		resources = ResourceBundle.getBundle("com.github.rashnain.launcherfx.locale.lang", locale);
 
 		FXMLLoader loginScreen = new FXMLLoader(Main.class.getResource("view/LoginScreen.fxml"));
 		loginScreen.setResources(resources);

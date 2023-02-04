@@ -1,4 +1,4 @@
-package main.java.com.github.rashnain.launcherfx.controller;
+package com.github.rashnain.launcherfx.controller;
 
 import java.io.File;
 import java.io.IOException;
@@ -28,13 +28,13 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
-import main.java.com.github.rashnain.launcherfx.Main;
-import main.java.com.github.rashnain.launcherfx.PROFILE_TYPE;
-import main.java.com.github.rashnain.launcherfx.model.GameInstance;
-import main.java.com.github.rashnain.launcherfx.model.GameProfile;
-import main.java.com.github.rashnain.launcherfx.model.LauncherProfile;
-import main.java.com.github.rashnain.launcherfx.utility.FileUtility;
-import main.java.com.github.rashnain.launcherfx.utility.JsonUtility;
+import com.github.rashnain.launcherfx.Main;
+import com.github.rashnain.launcherfx.PROFILE_TYPE;
+import com.github.rashnain.launcherfx.model.GameInstance;
+import com.github.rashnain.launcherfx.model.GameProfile;
+import com.github.rashnain.launcherfx.model.LauncherProfile;
+import com.github.rashnain.launcherfx.utility.FileUtility;
+import com.github.rashnain.launcherfx.utility.JsonUtility;
 
 /**
  * Controller of the profiles screen

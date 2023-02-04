@@ -1,4 +1,4 @@
-package main.java.com.github.rashnain.launcherfx.model;
+package com.github.rashnain.launcherfx.model;
 
 import java.io.File;
 import java.io.IOException;
@@ -16,9 +16,9 @@ import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleDoubleProperty;
-import main.java.com.github.rashnain.launcherfx.utility.FileUtility;
-import main.java.com.github.rashnain.launcherfx.utility.JsonUtility;
-import main.java.com.github.rashnain.launcherfx.utility.LibraryUtility;
+import com.github.rashnain.launcherfx.utility.FileUtility;
+import com.github.rashnain.launcherfx.utility.JsonUtility;
+import com.github.rashnain.launcherfx.utility.LibraryUtility;
 
 /**
  * Class representing a game instance
@@ -37,7 +37,7 @@ public class GameInstance {
 
 	/**
 	 * Create an instance with this profile
-	 * @param gameDir Directory the game will work with
+	 * @param profile Directory the game will work with
 	 */
 	public GameInstance(GameProfile profile) {
 		this.command = new StringBuilder();

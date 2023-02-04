@@ -7,7 +7,7 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane minHeight="-Infinity" minWidth="-Infinity" prefHeight="550.0" prefWidth="880.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="main.java.com.github.rashnain.launcherfx.controller.LoginScreenController">
+<AnchorPane minHeight="-Infinity" minWidth="-Infinity" prefHeight="550.0" prefWidth="880.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.github.rashnain.launcherfx.controller.LoginScreenController">
    <children>
       <Label alignment="CENTER" contentDisplay="CENTER" layoutX="340.0" layoutY="148.0" maxWidth="-Infinity" prefWidth="200.0" text="%microsoft.login.title" textAlignment="CENTER">
          <font>

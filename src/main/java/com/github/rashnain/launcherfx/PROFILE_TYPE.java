@@ -1,4 +1,4 @@
-package main.java.com.github.rashnain.launcherfx;
+package com.github.rashnain.launcherfx;
 
 /**
  * Profile types that can be used

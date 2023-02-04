@@ -1,12 +1,12 @@
-package main.java.com.github.rashnain.launcherfx.model;
+package com.github.rashnain.launcherfx.model;
 
 import java.time.Instant;
 import java.util.UUID;
 
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
-import main.java.com.github.rashnain.launcherfx.Main;
-import main.java.com.github.rashnain.launcherfx.PROFILE_TYPE;
+import com.github.rashnain.launcherfx.Main;
+import com.github.rashnain.launcherfx.PROFILE_TYPE;
 
 /**
  * Class representing a game profile

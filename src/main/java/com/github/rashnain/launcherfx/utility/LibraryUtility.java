@@ -1,4 +1,4 @@
-package main.java.com.github.rashnain.launcherfx.utility;
+package com.github.rashnain.launcherfx.utility;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
