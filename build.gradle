@@ -1,7 +1,6 @@
 plugins {
     id 'java'
     id 'application'
-    id 'org.openjfx.javafxplugin' version '0.0.13'
 }
 
 group 'com.github.rashnain'
@@ -11,21 +10,16 @@ repositories {
     mavenCentral()
 }
 
-sourceCompatibility = '17'
-targetCompatibility = '17'
+sourceCompatibility = '1.8'
+targetCompatibility = '1.8'
 
-tasks.withType(JavaCompile) {
+tasks.withType(JavaCompile).configureEach {
     options.encoding = 'UTF-8'
 }
 
 application {
     mainModule = 'com.github.rashnain.launcherfx'
     mainClass = 'com.github.rashnain.launcherfx.Main'
-}
-
-javafx {
-    version = '17.0.2'
-    modules = ['javafx.controls', 'javafx.fxml']
 }
 
 dependencies {
