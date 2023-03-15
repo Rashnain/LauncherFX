@@ -45,11 +45,11 @@ public enum PROFILE_TYPE {
 	public static PROFILE_TYPE getAsType(String type) {
 		switch (type) {
 		case ("latest-release"):
-			return PROFILE_TYPE.LATEST_RELEASE;
+			return LATEST_RELEASE;
 		case ("latest-snapshot"):
-			return PROFILE_TYPE.LATEST_SNAPSHOT;
+			return LATEST_SNAPSHOT;
 		default:
-			return PROFILE_TYPE.CUSTOM;
+			return CUSTOM;
 		}
 	}
 
