@@ -4,6 +4,7 @@ import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.image.Image;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import com.github.rashnain.launcherfx.controller.LoginScreenController;
@@ -93,6 +94,7 @@ public class Main extends Application {
 		profilesScreenController = profilesScreen.getController();
 
 		primaryStage.setOnCloseRequest( e -> { launcher.saveProfile(); Runtime.getRuntime().exit(1); } );
+		primaryStage.getIcons().add(new Image(Main.class.getResource("img/icon.png").toExternalForm()));
 		primaryStage.setTitle("LauncherFX");
 		primaryStage.setResizable(false);
 		primaryStage.setScene(new Scene(new Pane(), 880, 550));
