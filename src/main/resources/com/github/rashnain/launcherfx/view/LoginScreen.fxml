@@ -7,18 +7,18 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane minHeight="-Infinity" minWidth="-Infinity" prefHeight="550.0" prefWidth="880.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.github.rashnain.launcherfx.controller.LoginScreenController">
+<AnchorPane minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="1067.0" styleClass="login" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.github.rashnain.launcherfx.controller.LoginScreenController">
    <children>
-      <Label alignment="CENTER" contentDisplay="CENTER" layoutX="340.0" layoutY="148.0" maxWidth="-Infinity" prefWidth="200.0" text="%microsoft.login.title" textAlignment="CENTER">
+      <Label alignment="CENTER" contentDisplay="CENTER" layoutX="750.0" layoutY="155.0" maxWidth="-Infinity" prefWidth="225.0" styleClass="title" text="%microsoft.login.title" textAlignment="CENTER">
          <font>
             <Font size="14.0" />
          </font></Label>
-      <TextField fx:id="microsoftEmail" layoutX="340.0" layoutY="178.0" onKeyPressed="#onKeyPressedMicrosoft" prefWidth="200.0" promptText="%microsoft.login.email" />
-      <TextField fx:id="microsoftPassword" layoutX="340.0" layoutY="214.0" onKeyPressed="#onKeyPressedMicrosoft" prefWidth="200.0" promptText="%microsoft.login.password" />
-      <Button fx:id="microsoftButton" layoutX="341.0" layoutY="250.0" maxWidth="-Infinity" mnemonicParsing="false" onAction="#microsoftLogging" prefWidth="200.0" text="%microsoft.login.button" />
-      <Label alignment="CENTER" layoutX="341.0" layoutY="299.0" maxWidth="-Infinity" prefWidth="200.0" text="%login.or" />
-      <TextField fx:id="guestPseudo" layoutX="353.0" layoutY="338.0" maxWidth="-Infinity" onKeyPressed="#onKeyPressedGuest" prefColumnCount="20" prefWidth="175.0" promptText="%guest.login.pseudo" />
-      <Button fx:id="guestButton" layoutX="353.0" layoutY="376.0" maxWidth="-Infinity" onAction="#guestLogging" prefWidth="175.0" text="%guest.login.button" />
-      <ChoiceBox fx:id="languages" layoutX="378.0" layoutY="504.0" maxWidth="-Infinity" prefWidth="125.0" />
+      <TextField fx:id="microsoftEmail" layoutX="750.0" layoutY="185.0" onKeyPressed="#onKeyPressedMicrosoft" prefWidth="225.0" promptText="%microsoft.login.email" />
+      <TextField fx:id="microsoftPassword" layoutX="750.0" layoutY="220.0" onKeyPressed="#onKeyPressedMicrosoft" prefWidth="225.0" promptText="%microsoft.login.password" />
+      <Button fx:id="microsoftButton" layoutX="750.0" layoutY="255.0" maxWidth="-Infinity" mnemonicParsing="false" onAction="#microsoftLogging" prefWidth="225.0" styleClass="buttonGreenMedium" text="%microsoft.login.button" />
+      <Label alignment="CENTER" layoutX="750.0" layoutY="305.0" maxWidth="-Infinity" prefWidth="225.0" styleClass="title" text="%login.or" />
+      <TextField fx:id="guestPseudo" layoutX="750.0" layoutY="345.0" maxWidth="-Infinity" onKeyPressed="#onKeyPressedGuest" prefColumnCount="20" prefWidth="225.0" promptText="%guest.login.pseudo" />
+      <Button fx:id="guestButton" layoutX="750.0" layoutY="380.0" maxWidth="-Infinity" onAction="#guestLogging" prefWidth="225.0" styleClass="buttonGreenMedium" text="%guest.login.button" />
+      <ChoiceBox fx:id="languages" layoutX="800.0" layoutY="560.0" maxWidth="-Infinity" prefWidth="125.0" styleClass="buttonGreenLittle" />
    </children>
 </AnchorPane>

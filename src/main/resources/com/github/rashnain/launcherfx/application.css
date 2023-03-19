@@ -1,0 +1,193 @@
+@font-face {
+	src: url("font/FredokaOne-Regular.ttf");
+}
+
+
+.root {
+	-fx-base: rgb(0, 50, 20);
+}
+
+
+.login {
+	-fx-background-image: url("img/background.png");
+}
+
+
+/* Label */
+.label {
+	-fx-font-family:'Fredoka One';
+	-fx-text-fill: rgba(162, 231, 109, 0.8);
+	-fx-font-weight: bold;
+	-fx-font-size: 14px;
+}
+.label.title {
+	-fx-text-fill: rgba(55, 55, 55, 0.9);
+	-fx-font-size: 20px;
+}
+
+
+/* TextField */
+.text-field {
+	-fx-background-color: rgba(73, 153, 93, 0.65);
+	-fx-background-radius: 10px;
+	-fx-border-color: rgba(18, 54, 13, 0.65);
+	-fx-border-radius: 10px;
+	-fx-border-width: 2px;
+	-fx-text-fill: rgb(25, 75, 45);
+	-fx-prompt-text-fill: rgba(25, 95, 43, 0.5);
+	-fx-font-family: 'Fredoka One';
+	-fx-accent: rgb(25, 95, 43);
+	-fx-background-insets: none;
+	-fx-font-size: 14px;
+}
+
+
+/* ChoiceBox */
+.choice-box {
+	-fx-cursor: hand;
+	-fx-mark-color: rgba(162, 231, 109, 0.8);
+}
+.choice-box .left-container .radio {
+	-fx-background-color: rgb(77, 165, 9);
+}
+.choice-box .context-menu {
+	-fx-background-color: rgb(25, 95, 43);
+	-fx-background-radius: 5px;
+	-fx-border-color: rgb(18, 54, 13);
+	-fx-border-radius: 5px;
+	-fx-border-width: 3px;
+}
+.choice-box .radio-menu-item:focused {
+	-fx-cursor: hand;
+	-fx-background-color: rgb(14, 51, 23);
+}
+
+
+/* Button */
+.button {
+	-fx-cursor: hand;
+}
+.buttonGreenBig, .buttonGreenMedium, .buttonGreenLittle {
+	-fx-background-color: rgba(25, 95, 43, 0.65);
+	-fx-background-radius: 25px;
+	-fx-border-color: rgba(18, 54, 13, 0.65);
+	-fx-border-radius: 20px;
+	-fx-border-width: 3px;
+	-fx-text-fill: rgba(162, 231, 109, 0.65);
+	-fx-font-family: 'Fredoka One';
+	-fx-font-weight: bold;
+}
+.buttonGreenBig {
+	-fx-font-size: 42px;
+}
+.buttonGreenMedium {
+	-fx-font-size: 14px;
+}
+.buttonGreenLittle {
+	-fx-font-size: 12px;
+}
+.buttonGreenBig:focused, .buttonGreenMedium:focused, .buttonGreenLittle:focused {
+	-fx-background-color: rgba(26, 83, 38, 0.5);
+	-fx-border-color: rgba(18, 54, 13, 0.5);
+	-fx-text-fill: rgba(162, 231, 109, 0.5);
+}
+.buttonGreenBig:hover, .buttonGreenMedium:hover, .buttonGreenLittle:hover {
+	-fx-background-color: rgb(26, 83, 38);
+	-fx-border-color: rgb(18, 54, 13);
+	-fx-text-fill: rgb(162, 231, 109);
+}
+
+.folder {
+	-fx-background-image: url("img/folder.png");
+	-fx-background-repeat: no-repeat;
+	-fx-background-position: center;
+}
+.open-folder {
+	-fx-background-image: url("img/open_folder.png");
+	-fx-background-repeat: no-repeat;
+	-fx-background-position: center;
+}
+
+
+/* CheckBox */
+.check-box {
+	-fx-text-fill: rgba(162, 231, 109, 0.8);
+	-fx-font-family: 'Fredoka One';
+	-fx-font-size: 14px;
+}
+.check-box .box {
+	-fx-background-color: rgba(18, 54, 13, 0.65);
+}
+.check-box:selected .mark {
+	-fx-background-color: rgb(77, 165, 9);
+}
+.check-box:focused .box {
+	-fx-background-color: rgba(77, 165, 9, 0.25);
+}
+.check-box:focused {
+	-fx-text-fill: rgba(162, 231, 109, 0.5);
+}
+.check-box:hover {
+	-fx-text-fill: rgba(162, 231, 109, 0.65);
+}
+.check-box:hover .box {
+	-fx-background-color: rgba(77, 165, 9, 0.5);
+}
+
+
+/* ListView */
+.list-view {
+	-fx-background-color: none;
+	-fx-padding: 0;
+	-fx-background-insets: none;
+	-fx-font-family: 'Fredoka One';
+	-fx-font-size: 14px;
+}
+.list-cell {
+	-fx-background-radius: 0 10px 10px 0;
+	-fx-text-fill: rgba(162, 231, 109, 0.8);
+}
+.list-cell:even {
+	-fx-background-color: rgba(127, 127, 127, 0.1);
+}
+.list-cell:odd {
+	-fx-background-color: rgba(127, 127, 127, 0.05);
+}
+.list-cell:filled:hover { 
+	-fx-background-color: rgba(127, 127, 127, 0.25);
+}
+.list-cell:filled:hover:selected { 
+	-fx-background-color: rgba(127, 127, 127, 0.30);
+}
+.list-cell:filled:selected { 
+	-fx-background-color: rgba(127, 127, 127, 0.35);
+	-fx-text-fill: rgb(191, 255, 143);
+}
+
+
+/* ScrollBar */
+.scroll-bar:vertical {
+	-fx-background-color: none;
+	-fx-border-color: none;
+}
+.scroll-bar .increment-button,
+.scroll-bar .decrement-button {
+	-fx-background-color: rgba(18, 54, 13, 0.65);
+	-fx-background-radius: 10px;
+}
+.scroll-bar .increment-button:hover,
+.scroll-bar .decrement-button:hover {
+	-fx-background-color: rgba(25, 75, 18, 0.65);
+}
+.scroll-bar .increment-arrow,
+.scroll-bar .decrement-arrow {
+	-fx-background-color: none;
+	-fx-padding: 1px;
+}
+.scroll-bar:vertical .thumb {
+	-fx-background-color: rgba(18, 54, 13, 0.65);
+	-fx-background-radius: 10px;
+}
+.scroll-bar:vertical .thumb:hover {
+	-fx-background-color: rgba(25, 75, 18, 0.65);
+}

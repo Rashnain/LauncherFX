@@ -16,7 +16,7 @@ Features :
 	- save tokens
 		- add a button to reconnect with tokens
 - buttons to order lists of profiles by last played time or alphabeticaly
-- filter profiles by version type : [x] Releases [ ] Snapshot [ ] Historical [x] Modded
+- filter profiles by version type : [x] Releases [x] Modded [ ] Snapshot [ ] Historical
 - display download percentage and amont (assetIndex.totalSize)
 
 Runtime :
@@ -27,9 +27,10 @@ QoL :
 
 - thread download of "manifest_version"
 - enter key launch instance
-- order versions by time
 - buttons to reset game dir, resolution, exe, jvm
+- open a new window for selecting version
+	- with a search field
+	- 4 buttons to filter by type
+	- order versions by time
 
-Design :
 
-- Improve design by adding CSS
