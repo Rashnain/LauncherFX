@@ -23,7 +23,7 @@ jobs:
       uses: actions/setup-java@v3
       with:
         java-version: '8'
-        distribution: 'zulu'
+        distribution: 'zulu-fx'
         cache: gradle
     - name: Run chmod to make gradlew executable
       run: chmod +x ./gradlew
