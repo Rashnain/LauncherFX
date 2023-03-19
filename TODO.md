@@ -5,7 +5,7 @@ Polish :
 	- "legacy" (~1.6) assets/virtual/legacy/ where assets are normal files
 	- "pre-1.6" (<1.6) game dir/resources/ where assets are normal files
 - actually assets are only downloaded if the assets index doesn't exist
-- if a game instance hasn't started after a second is lhaunched, it will crash because the second time an instance is launched it checks if the first is alive
+- if a game instance hasn't started after a second is launched, it will crash because the second time an instance is launched it checks if the first is alive
 
 Features :
 
