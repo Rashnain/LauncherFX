@@ -91,7 +91,7 @@ public class GameProfile {
 	 * For a GameProfile it returns the version attribut
 	 */
 	public String toString() {
-		if (this.name.get().equals("")) {
+		if (this.name.get().isEmpty()) {
 			if (this.profileType == PROFILE_TYPE.LATEST_RELEASE) {
 				return Main.getResources().getString("profile.editor.name.lastest.release");
 			} else if (this.profileType == PROFILE_TYPE.LATEST_SNAPSHOT) {
@@ -143,7 +143,7 @@ public class GameProfile {
 	}
 
 	public String getGameDirOrDefault() {
-		if (this.gameDir.get().equals("")) {
+		if (this.gameDir.get().isEmpty()) {
 			return defaultGameDir;
 		}
 		return this.gameDir.get();
@@ -188,7 +188,7 @@ public class GameProfile {
 	}
 
 	public String getExecutableOrDefault() {
-		if (this.executable.get().equals("")) {
+		if (this.executable.get().isEmpty()) {
 			return defaultExe;
 		}
 		return this.executable.get();
@@ -251,7 +251,7 @@ public class GameProfile {
 	}
 
 	public String getWidthOrDefault() {
-		if (this.width.get().equals("")) {
+		if (this.width.get().isEmpty()) {
 			return defaultWidth;
 		}
 		return this.width.get();
@@ -281,7 +281,7 @@ public class GameProfile {
 	}
 
 	public String getHeightOrDefault() {
-		if (this.height.get().equals("")) {
+		if (this.height.get().isEmpty()) {
 			return defaultHeight;
 		}
 		return this.height.get();

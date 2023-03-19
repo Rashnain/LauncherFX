@@ -146,19 +146,19 @@ public class LauncherProfile {
 			profiles.add(gp.getIdentifier(), new JsonObject());
 			JsonObject profile = profiles.getAsJsonObject(gp.getIdentifier());
 
-			if (!gp.getEditableGameDir().equals("")) {
+			if (!gp.getEditableGameDir().isEmpty()) {
 				profile.add("gameDir", new JsonPrimitive(gp.getGameDir()));
 			}
-			if (!gp.getEditableJvmArguments().equals("")) {
+			if (!gp.getEditableJvmArguments().isEmpty()) {
 				profile.add("javaArgs", new JsonPrimitive(gp.getJvmArguments()));
 			}
-			if (!gp.getEditableExecutable().equals("")) {
+			if (!gp.getEditableExecutable().isEmpty()) {
 				profile.add("javaDir", new JsonPrimitive(gp.getExecutable()));
 			}
 			profile.add("lastUsed", new JsonPrimitive(gp.getLastUsed().toString()));
 			profile.add("lastVersionId", new JsonPrimitive(gp.getVersionProperty().getValue()));
 			profile.add("name", new JsonPrimitive(gp.getName()));
-			if (!(gp.getEditableWidth().equals("") && gp.getEditableHeight().equals(""))) {
+			if (!(gp.getEditableWidth().isEmpty() && gp.getEditableHeight().isEmpty())) {
 				profile.add("resolution", new JsonObject());
 				profile.getAsJsonObject("resolution").add("width", new JsonPrimitive(Integer.valueOf(gp.getWidthOrDefault())));
 				profile.getAsJsonObject("resolution").add("height", new JsonPrimitive(Integer.valueOf(gp.getHeightOrDefault())));

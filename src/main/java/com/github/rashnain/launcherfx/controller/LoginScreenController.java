@@ -60,7 +60,7 @@ public class LoginScreenController {
 
 			initialized = true;
 		}
-		if (!launcher.getGuestUsername().equals("")) {
+		if (!launcher.getGuestUsername().isEmpty()) {
 			guestPseudo.setText(launcher.getGuestUsername());
 			guestButton.requestFocus();
 		}

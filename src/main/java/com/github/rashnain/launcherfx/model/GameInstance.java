@@ -112,7 +112,7 @@ public class GameInstance {
 
 				// checks natives
 				String nativesString = LibraryUtility.getNativesString(libo);
-				if (!nativesString.equals("")) {
+				if (!nativesString.isEmpty()) {
 					JsonObject classifiers = libo.getAsJsonObject("downloads").getAsJsonObject("classifiers");
 					JsonObject natives = classifiers.getAsJsonObject(nativesString);
 					libURL = natives.get("url").getAsString();
