@@ -6,6 +6,7 @@ Polish :
 	- "pre-1.6" (<1.6) game dir/resources/ where assets are normal files
 - actually assets are only downloaded if the assets index doesn't exist
 - if a game instance hasn't started after a second is launched, it will crash because the second time an instance is launched it checks if the first is alive
+- disable editing of launched profiles
 
 Features :
 

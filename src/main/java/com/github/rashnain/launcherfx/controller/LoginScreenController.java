@@ -85,6 +85,7 @@ public class LoginScreenController {
 	private void microsoftLogging() {
 		if (areMicrosoftCredentialsValid()) {
 			Alert dialog = new Alert(AlertType.INFORMATION);
+			dialog.initOwner(Main.getPrimaryStage());
 			dialog.setTitle("Microsoft account logging");
 			dialog.setHeaderText("Not yet implemented.");
 			dialog.show();
@@ -117,6 +118,7 @@ public class LoginScreenController {
 
 		if (!valid) {
 			Alert dialog = new Alert(AlertType.ERROR);
+			dialog.initOwner(Main.getPrimaryStage());
 			dialog.setTitle(this.resources.getString("error.invalidinputs"));
 			dialog.setHeaderText(this.resources.getString("error.howtofix"));
 			dialog.setContentText(errorString);
@@ -160,6 +162,7 @@ public class LoginScreenController {
 
 		if (!guestPseudo.getText().matches("^[a-zA-Z0-9_]{3,16}$")) {
 			Alert dialog = new Alert(AlertType.ERROR);
+			dialog.initOwner(Main.getPrimaryStage());
 			dialog.setTitle(this.resources.getString("error.invalidinputs"));
 			dialog.setHeaderText(this.resources.getString("error.howtofix"));
 			dialog.setContentText(this.resources.getString("guest.login.error"));
@@ -178,6 +181,7 @@ public class LoginScreenController {
 		launcher.setLocale(Main.availableLocales[index]);
 
 		Alert dialog = new Alert(AlertType.INFORMATION);
+		dialog.initOwner(Main.getPrimaryStage());
 		dialog.setTitle(resources.getString("language.change.title"));
 		dialog.setHeaderText(resources.getString("language.change.desc"));
 		dialog.showAndWait();

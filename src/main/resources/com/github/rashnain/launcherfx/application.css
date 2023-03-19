@@ -109,6 +109,44 @@
 }
 
 
+/* Dialog button */
+.button:default, .button:cancel {
+	-fx-background-color: rgba(25, 95, 43, 0.65);
+	-fx-background-radius: 25px;
+	-fx-border-color: rgba(18, 54, 13, 0.65);
+	-fx-border-radius: 20px;
+	-fx-border-width: 3px;
+	-fx-text-fill: rgba(162, 231, 109, 0.65);
+	-fx-font-family: 'Fredoka One';
+	-fx-font-weight: bold;
+}
+.button:cancel {
+	-fx-background-color: rgba(95, 25, 25, 0.65);
+	-fx-border-color: rgba(54, 13, 13, 0.65);
+	-fx-text-fill: rgba(231, 109, 109, 0.65);
+}
+.button:default:focused {
+	-fx-background-color: rgba(26, 83, 38, 0.5);
+	-fx-border-color: rgba(18, 54, 13, 0.5);
+	-fx-text-fill: rgba(162, 231, 109, 0.5);
+}
+.button:cancel:focused {
+	-fx-background-color: rgba(83, 26, 26, 0.5);
+	-fx-border-color: rgba(54, 13, 13, 0.5);
+	-fx-text-fill: rgba(231, 109, 109, 0.5);
+}
+.button:default:hover {
+	-fx-background-color: rgb(26, 83, 38);
+	-fx-border-color: rgb(18, 54, 13);
+	-fx-text-fill: rgb(162, 231, 109);
+}
+.button:cancel:hover {
+	-fx-background-color: rgb(83, 26, 26);
+	-fx-border-color: rgb(54, 13, 13);
+	-fx-text-fill: rgb(231, 109, 109);
+}
+
+
 /* CheckBox */
 .check-box {
 	-fx-text-fill: rgba(162, 231, 109, 0.8);

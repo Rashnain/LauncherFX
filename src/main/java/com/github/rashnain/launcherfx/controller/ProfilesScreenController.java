@@ -301,6 +301,7 @@ public class ProfilesScreenController {
 				}
 				if (gi.getGameDir().equals(profile.getGameDir())) {
 					Alert dialog = new Alert(AlertType.CONFIRMATION);
+					dialog.initOwner(Main.getPrimaryStage());
 					dialog.setTitle(this.resources.getString("launch.error.instance"));
 					dialog.setHeaderText(this.resources.getString("launch.error.instance.title"));
 					dialog.setContentText(this.resources.getString("launch.error.instance.desc"));
@@ -358,6 +359,7 @@ public class ProfilesScreenController {
 				this.instances.add(instance);
 			} else {
 				Alert dialog = new Alert(AlertType.ERROR);
+				dialog.initOwner(Main.getPrimaryStage());
 				dialog.setTitle(this.resources.getString("launch.error.manifest"));
 				dialog.setHeaderText(this.resources.getString("launch.error.manifest.desc"));
 				dialog.show();
@@ -370,6 +372,7 @@ public class ProfilesScreenController {
 	 */
 	private void showNoSelectionDialog() {
 		Alert dialog = new Alert(AlertType.ERROR);
+		dialog.initOwner(Main.getPrimaryStage());
 		dialog.setTitle(this.resources.getString("launch.error"));
 		dialog.setHeaderText(this.resources.getString("launch.error.desc"));
 		dialog.showAndWait();
@@ -380,6 +383,7 @@ public class ProfilesScreenController {
 	 */
 	private void showCantDownloadDialog() {
 		Alert dialog = new Alert(AlertType.ERROR);
+		dialog.initOwner(Main.getPrimaryStage());
 		dialog.setTitle(this.resources.getString("launch.error.connection"));
 		dialog.setHeaderText(this.resources.getString("launch.error.connection.desc"));
 		dialog.showAndWait();
@@ -419,6 +423,7 @@ public class ProfilesScreenController {
 		if (profile != null) {
 			if (profile.getVersionType() == PROFILE_TYPE.CUSTOM) {
 				Alert dialog = new Alert(AlertType.CONFIRMATION);
+				dialog.initOwner(Main.getPrimaryStage());
 				dialog.setTitle(this.resources.getString("profile.delete.title"));
 				dialog.setHeaderText(this.resources.getString("profile.delete.header"));
 				dialog.setContentText(this.resources.getString("profile.delete.content"));
