@@ -29,10 +29,6 @@ jobs:
       uses: gradle/gradle-build-action@v2
       with:
         arguments: build
-    # - name: Build with Gradle
-    #   uses: ./gradlew build
-    # - name: Compile with Gradle
-    #   uses: ./gradlew compileJava
     - name: Copy Artifacts
       run: mkdir staging && cp build/libs/*.jar staging
     - name: Upload Artifacts
