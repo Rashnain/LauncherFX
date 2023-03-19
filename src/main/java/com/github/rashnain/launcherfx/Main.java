@@ -95,7 +95,7 @@ public class Main extends Application {
 
 		primaryStage.setOnCloseRequest( e -> { launcher.saveProfile(); Runtime.getRuntime().exit(1); } );
 		primaryStage.getIcons().add(new Image(Main.class.getResource("img/icon.png").toExternalForm()));
-		primaryStage.setTitle("LauncherFX");
+		primaryStage.setTitle("Test");
 		primaryStage.setResizable(false);
 		primaryStage.setScene(new Scene(new Pane(), 1067, 600));
 		primaryStage.getScene().getStylesheets().add(Main.class.getResource("application.css").toExternalForm());
