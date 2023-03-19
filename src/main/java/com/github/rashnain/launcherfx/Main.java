@@ -25,6 +25,7 @@ public class Main extends Application {
 
 	public static final String[] availableLocales = {"en", "fr"};
 
+	private static Stage primaryStage;
 
 	private static ResourceBundle resources;
 
