@@ -3,6 +3,7 @@ package com.github.rashnain.launcherfx.model;
 import java.time.Instant;
 import java.util.Locale;
 
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 
@@ -29,7 +30,21 @@ public class LauncherProfile {
 
 	private String versionsDir;
 
+	private boolean isGuest;
+
 	private String guestUsername;
+
+	private String username;
+
+	private String uuid;
+
+	private String accessToken;
+
+	private String refreshToken;
+
+	private String clientId;
+
+	private String xuid;
 
 	private String locale;
 
@@ -55,7 +70,7 @@ public class LauncherProfile {
 			System.out.println("Successfully loaded all profiles.");
 		} catch (Exception e) {
 			System.out.println("Error loading launcher profiles.");
-			System.out.println("Ceating default profile.");
+			System.out.println("Ceating default profiles.");
 			GameProfile release = new GameProfile(Instant.EPOCH, "latest-release", "", PROFILE_TYPE.LATEST_RELEASE);
 			gameProfiles.add(release);
 			GameProfile snapshot = new GameProfile(Instant.EPOCH, "latest-snapshot", "", PROFILE_TYPE.LATEST_SNAPSHOT);
@@ -75,6 +90,12 @@ public class LauncherProfile {
 				this.locale = "en";
 			}
 			this.guestUsername = "";
+			this.username = "";
+			this.uuid = "";
+			this.accessToken = "";
+			this.refreshToken = "";
+			this.clientId = "";
+			this.xuid = "";
 		}
 	}
 
@@ -131,7 +152,13 @@ public class LauncherProfile {
 		if (Main.getIndexOfLocale(this.locale) == -1) {
 			this.locale = "en";
 		}
-		this.guestUsername = settings.get("guestUsername").getAsString();
+		this.guestUsername = getIfItExixts(settings, "guestUsername").getAsString();
+		this.username = getIfItExixts(settings, "username").getAsString();
+		this.uuid = getIfItExixts(settings, "uuid").getAsString();
+		this.accessToken = getIfItExixts(settings, "accessToken").getAsString();
+		this.refreshToken = getIfItExixts(settings, "refreshToken").getAsString();
+		this.clientId = getIfItExixts(settings, "clientId").getAsString();
+		this.xuid = getIfItExixts(settings, "xuid").getAsString();
 	}
 
 	/**
@@ -167,8 +194,15 @@ public class LauncherProfile {
 		}
 
 		settings.add("launcherfx", new JsonObject());
-		settings.getAsJsonObject("launcherfx").add("guestUsername", new JsonPrimitive(this.guestUsername));
-		settings.getAsJsonObject("launcherfx").add("locale", new JsonPrimitive(this.locale));
+		JsonObject launcherfx = settings.getAsJsonObject("launcherfx");
+		launcherfx.add("locale", new JsonPrimitive(this.locale));
+		launcherfx.add("guestUsername", new JsonPrimitive(this.guestUsername));
+		launcherfx.add("username", new JsonPrimitive(this.username));
+		launcherfx.add("uuid", new JsonPrimitive(this.uuid));
+		launcherfx.add("accessToken", new JsonPrimitive(this.accessToken));
+		launcherfx.add("refreshToken", new JsonPrimitive(this.refreshToken));
+		launcherfx.add("clientId", new JsonPrimitive(this.clientId));
+		launcherfx.add("xuid", new JsonPrimitive(this.xuid));
 
 		return settings;
 	}
@@ -241,12 +275,60 @@ public class LauncherProfile {
 		return this.assetsDir;
 	}
 
+	public String getAccessToken() {
+		return this.accessToken;
+	}
+
+	public void setAccessToken(String accessToken) {
+		this.accessToken = accessToken;
+	}
+
+	public String getRefreshToken() {
+		return this.refreshToken;
+	}
+
+	public void setRefreshToken(String refreshToken) {
+		this.refreshToken = refreshToken;
+	}
+
+	public String getClientId() {
+		return this.clientId;
+	}
+
+	public void setClientId(String clientId) {
+		this.clientId = clientId;
+	}
+
+	public String getXuid() {
+		return this.xuid;
+	}
+
+	public void setXuid(String xuid) {
+		this.xuid = xuid;
+	}
+
 	public String getGuestUsername() {
 		return this.guestUsername;
 	}
 
-	public void setGuestUsername(String username) {
-		this.guestUsername = username;
+	public void setGuestUsername(String guestUsername) {
+		this.guestUsername = guestUsername;
+	}
+
+	public String getUsername() {
+		return this.username;
+	}
+
+	public void setUsername(String username) {
+		this.username = username;
+	}
+
+	public String getUUID() {
+		return this.uuid;
+	}
+
+	public void setUUID(String uuid) {
+		this.uuid = uuid;
 	}
 
 	public String getLocale() {
@@ -261,8 +343,28 @@ public class LauncherProfile {
 		return this.onlineStatus;
 	}
 
-	public void setOnlineStatus(boolean online) {
-		this.onlineStatus = online;
+	public void setOnlineStatus(boolean status) {
+		this.onlineStatus = status;
+	}
+
+	public boolean isGuest() {
+		return isGuest;
+	}
+
+	public void setGuestStatus(boolean status) {
+		isGuest = status;
+	}
+
+	/**
+	 * Returns the member of a JsonObject if it has it, otherwise it gives a empty string JsonPrimitive.
+	 * @param object the JsonObject
+	 * @param member the member
+	 */
+	public JsonElement getIfItExixts(JsonObject object, String member) {
+		if (object.has(member)) {
+			return object.get(member);
+		}
+		return new JsonPrimitive("");
 	}
 
 }

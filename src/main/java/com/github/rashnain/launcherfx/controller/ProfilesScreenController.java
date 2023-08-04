@@ -164,7 +164,14 @@ public class ProfilesScreenController {
 
 			initialized = true;
 		}
-		pseudo.setText(launcher.getGuestUsername());
+
+		if (launcher.isGuest()) {
+			pseudo.setText(launcher.getGuestUsername());
+			pseudoStatus.setText("Guest");
+		} else {
+			pseudo.setText(launcher.getUsername());
+			pseudoStatus.setText("");
+		}
 	}
 
 	/**

@@ -165,31 +165,34 @@ public class GameInstance {
 		arguments += "--width ${resolution_width} --height ${resolution_height}";
 		System.out.println(arguments);
 
-		// username
-		arguments = arguments.replace("${auth_player_name}", launcher.getGuestUsername());
-		// version
+		arguments = arguments.replace("${auth_player_name}", launcher.isGuest() ? launcher.getGuestUsername() : launcher.getUsername());
+
 		arguments = arguments.replace("${version_name}", profile.getVersion());
-		// game dir
+
 		arguments = arguments.replace("${game_directory}", "\""+profile.getGameDirOrDefault()+"\"");
-		// assets dir
+
 		arguments = arguments.replace("${assets_root}", "\""+launcher.getAssetsDir()+"\"");
 		arguments = arguments.replace("${game_assets}", "\""+launcher.getAssetsDir()+"\"");
-		// assets index
+
 		arguments = arguments.replace("${assets_index_name}", version.getAsJsonObject("assetIndex").get("id").getAsString());
-		// uuid
-		arguments = arguments.replace("${auth_uuid}", ""+UUID.nameUUIDFromBytes(("OfflinePlayer:"+launcher.getGuestUsername()).getBytes()));
-		// auth access
-		arguments = arguments.replace("${auth_session}", "accessToken");
-		arguments = arguments.replace("${auth_access_token}", "accessToken");
-		// user properties
+
+		arguments = arguments.replace("${auth_uuid}", launcher.isGuest() ? ""+UUID.nameUUIDFromBytes(launcher.getGuestUsername().getBytes()) : launcher.getUUID());
+
+		arguments = arguments.replace("${auth_session}", launcher.isGuest() ? "auth_session" : launcher.getAccessToken());
+		arguments = arguments.replace("${auth_access_token}", launcher.isGuest() ? "auth_access_token" : launcher.getAccessToken());
+
+		arguments = arguments.replace("${clientid}", launcher.isGuest() ? "clientid" : launcher.getClientId());
+
+		arguments = arguments.replace("${auth_xuid}", launcher.isGuest() ? "auth_xuid" : launcher.getXuid());
+
 		arguments = arguments.replace("${user_properties}", "{}");
-		// user type
-		arguments = arguments.replace("${user_type}", "legacy");
-		// version type
+
+		arguments = arguments.replace("${user_type}", launcher.isGuest() ? "legacy" : "microsoft");
+
 		arguments = arguments.replace("${version_type}", version.get("type").getAsString());
-		// width
+
 		arguments = arguments.replace("${resolution_width}", profile.getWidthOrDefault());
-		// height
+
 		arguments = arguments.replace("${resolution_height}", profile.getHeightOrDefault());
 
 		addCommand(arguments);

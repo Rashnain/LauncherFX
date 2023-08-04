@@ -153,6 +153,9 @@
 	-fx-font-family: 'Fredoka One';
 	-fx-font-size: 14px;
 }
+.login .check-box {
+	-fx-text-fill: rgba(25, 95, 43, 0.9);
+}
 .check-box .box {
 	-fx-background-color: rgba(18, 54, 13, 0.65);
 }

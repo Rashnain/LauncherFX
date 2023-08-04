@@ -1,11 +1,11 @@
 package com.github.rashnain.launcherfx.controller;
 
+import fr.litarvan.openauth.microsoft.MicrosoftAuthResult;
+import fr.litarvan.openauth.microsoft.MicrosoftAuthenticationException;
+import fr.litarvan.openauth.microsoft.MicrosoftAuthenticator;
 import javafx.fxml.FXML;
-import javafx.scene.control.Alert;
+import javafx.scene.control.*;
 import javafx.scene.control.Alert.AlertType;
-import javafx.scene.control.Button;
-import javafx.scene.control.ChoiceBox;
-import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import com.github.rashnain.launcherfx.Main;
@@ -29,10 +29,28 @@ public class LoginScreenController {
 	private TextField microsoftEmail;
 
 	@FXML
-	private TextField microsoftPassword;
+	private PasswordField microsoftPassword;
 
 	@FXML
-	private Button microsoftButton;
+	private Button microsoftLoginButton;
+
+	@FXML
+	private CheckBox microsoftRememberMe;
+
+	@FXML
+	private Button microsoftReconnectButton;
+
+	@FXML
+	private Button microsoftNewAccountButton;
+
+	@FXML
+	private Button microsoftAccountsButton;
+
+	@FXML
+	private ListView<Button> microsoftAccountList;
+
+	@FXML
+	private Button microsoftRestoreButton;
 
 	@FXML
 	private TextField guestPseudo;
@@ -60,8 +78,21 @@ public class LoginScreenController {
 
 			initialized = true;
 		}
-		if (!launcher.getGuestUsername().isEmpty()) {
-			guestPseudo.setText(launcher.getGuestUsername());
+		guestPseudo.setText(launcher.getGuestUsername());
+		if (!launcher.getUsername().isEmpty() && !launcher.getUUID().isEmpty()
+				&& !launcher.getAccessToken().isEmpty() && !launcher.getRefreshToken().isEmpty()) {
+			System.out.println("UUID: " + launcher.getUUID());
+			microsoftEmail.setVisible(false);
+			microsoftPassword.setVisible(false);
+			microsoftLoginButton.setVisible(false);
+			microsoftReconnectButton.setText(launcher.getUsername());
+			microsoftReconnectButton.setVisible(true);
+			microsoftNewAccountButton.setVisible(true);
+			microsoftAccountsButton.setVisible(true);
+			microsoftRestoreButton.setVisible(false);
+//			microsoftRememberMe.setVisible(false);
+			microsoftReconnectButton.requestFocus();
+		} else {
 			guestPseudo.requestFocus();
 		}
 	}
@@ -73,23 +104,94 @@ public class LoginScreenController {
 	@FXML
 	private void onKeyPressedMicrosoft(KeyEvent event) {
 		if (event.getCode() == KeyCode.ENTER) {
-			microsoftButton.fire();
+			microsoftLoginButton.fire();
 		}
 	}
 
-	/**
-	 * Connection with a Microsoft account<br>
-	 * Not yet implemented
-	 */
 	@FXML
 	private void microsoftLogging() {
 		if (areMicrosoftCredentialsValid()) {
-			Alert dialog = new Alert(AlertType.INFORMATION);
+			MicrosoftAuthenticator authenticator = new MicrosoftAuthenticator();
+			try {
+				MicrosoftAuthResult result = authenticator.loginWithCredentials(microsoftEmail.getText(), microsoftPassword.getText());
+				launcher.setAccessToken(result.getAccessToken());
+				launcher.setRefreshToken(result.getRefreshToken());
+				launcher.setClientId(result.getClientId());
+				launcher.setXuid(result.getXuid());
+				launcher.setUsername(result.getProfile().getName());
+				launcher.setUUID(result.getProfile().getId());
+				System.out.println("UUID: " + launcher.getUUID());
+				launcher.setGuestStatus(false);
+				Main.switchView();
+			} catch (Exception e) {
+				Alert dialog = new Alert(AlertType.ERROR);
+				dialog.initOwner(Main.getPrimaryStage());
+				dialog.setTitle(resources.getString("microsoft.login.error.dialog.title"));
+				dialog.setContentText(resources.getString("microsoft.login.error.dialog.connect"));
+				dialog.setHeaderText("");
+				dialog.show();
+			}
+		}
+	}
+
+	@FXML
+	private void microsoftReconnect() {
+		MicrosoftAuthenticator authenticator = new MicrosoftAuthenticator();
+        try {
+			MicrosoftAuthResult result = authenticator.loginWithRefreshToken(launcher.getRefreshToken());
+			launcher.setAccessToken(result.getAccessToken());
+			launcher.setRefreshToken(result.getRefreshToken());
+			launcher.setClientId(result.getClientId());
+			launcher.setXuid(result.getXuid());
+			launcher.setUsername(result.getProfile().getName());
+			launcher.setUUID(result.getProfile().getId());
+			System.out.println("UUID refresh: " + launcher.getUUID());
+			launcher.setGuestStatus(false);
+			Main.switchView();
+		} catch (Exception e) {
+			Alert dialog = new Alert(AlertType.ERROR);
 			dialog.initOwner(Main.getPrimaryStage());
-			dialog.setTitle("Microsoft account logging");
-			dialog.setHeaderText("Not yet implemented.");
+			dialog.setTitle(resources.getString("microsoft.login.error.dialog.title"));
+			dialog.setHeaderText("");
+			dialog.setContentText(resources.getString("microsoft.login.error.dialog.reconnect"));
 			dialog.show();
 		}
+    }
+
+	@FXML
+	private void microsoftRestore() {
+		microsoftEmail.setVisible(false);
+		microsoftPassword.setVisible(false);
+		microsoftLoginButton.setVisible(false);
+		microsoftReconnectButton.setText(launcher.getUsername());
+		microsoftReconnectButton.setVisible(true);
+		microsoftNewAccountButton.setVisible(true);
+		microsoftAccountsButton.setVisible(true);
+		microsoftRestoreButton.setVisible(false);
+		microsoftAccountList.setVisible(false);
+		microsoftReconnectButton.requestFocus();
+	}
+
+	@FXML
+	private void microsoftAnotherAccount() {
+		microsoftReconnectButton.setVisible(false);
+		microsoftNewAccountButton.setVisible(false);
+		microsoftAccountsButton.setVisible(false);
+		microsoftAccountList.setVisible(true);
+		microsoftRestoreButton.setVisible(true);
+	}
+
+	@FXML
+	private void microsoftNewAccount() {
+		microsoftReconnectButton.setVisible(false);
+		microsoftNewAccountButton.setVisible(false);
+		microsoftAccountsButton.setVisible(false);
+		microsoftAccountList.setVisible(false);
+		microsoftEmail.setVisible(true);
+		microsoftPassword.setVisible(true);
+		microsoftLoginButton.setVisible(true);
+		microsoftRestoreButton.setVisible(true);
+		microsoftEmail.requestFocus();
 	}
 
 	/**
@@ -147,6 +249,7 @@ public class LoginScreenController {
 	private void guestLogging() throws IOException {
 		if (isGuestValid()) {
 			launcher.setGuestUsername(guestPseudo.getText());
+			launcher.setGuestStatus(true);
 			Main.switchView();
 		}
 	}
