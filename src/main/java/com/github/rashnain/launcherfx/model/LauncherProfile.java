@@ -140,8 +140,8 @@ public class LauncherProfile {
 		if (Main.getIndexOfLocale(this.locale) == -1) {
 			this.locale = "en";
 		}
-		this.guestUsername = getIfItExixts(settings, "guestUsername").getAsString();
-		rememberMe = getIfItExixts(settings, "rememberMe").getAsBoolean();
+		this.guestUsername = getIfItExists(settings, "guestUsername").getAsString();
+		rememberMe = getIfItExists(settings, "rememberMe").getAsBoolean();
 
 		JsonArray jsonAcounts = settings.getAsJsonArray("accounts");
 		for (int i = 0; i < jsonAcounts.size(); i++) {
@@ -350,7 +350,7 @@ public class LauncherProfile {
 	 * @param object the JsonObject
 	 * @param member the member
 	 */
-	public JsonElement getIfItExixts(JsonObject object, String member) {
+	public JsonElement getIfItExists(JsonObject object, String member) {
 		if (object.has(member)) {
 			return object.get(member);
 		}
