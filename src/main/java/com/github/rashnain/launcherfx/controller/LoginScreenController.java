@@ -1,15 +1,15 @@
 package com.github.rashnain.launcherfx.controller;
 
+import com.github.rashnain.launcherfx.Main;
+import com.github.rashnain.launcherfx.model.LauncherProfile;
+import com.github.rashnain.launcherfx.model.MicrosoftAccount;
 import fr.litarvan.openauth.microsoft.MicrosoftAuthResult;
-import fr.litarvan.openauth.microsoft.MicrosoftAuthenticationException;
 import fr.litarvan.openauth.microsoft.MicrosoftAuthenticator;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
-import com.github.rashnain.launcherfx.Main;
-import com.github.rashnain.launcherfx.model.LauncherProfile;
 
 import java.io.IOException;
 import java.util.ResourceBundle;
@@ -79,18 +79,16 @@ public class LoginScreenController {
 			initialized = true;
 		}
 		guestPseudo.setText(launcher.getGuestUsername());
-		if (!launcher.getUsername().isEmpty() && !launcher.getUUID().isEmpty()
-				&& !launcher.getAccessToken().isEmpty() && !launcher.getRefreshToken().isEmpty()) {
-			System.out.println("UUID: " + launcher.getUUID());
+		if (!launcher.getCurrentAccount().getUsername().isEmpty() && !launcher.getCurrentAccount().getRefreshToken().isEmpty()) {
 			microsoftEmail.setVisible(false);
 			microsoftPassword.setVisible(false);
 			microsoftLoginButton.setVisible(false);
-			microsoftReconnectButton.setText(launcher.getUsername());
+			microsoftReconnectButton.setText(launcher.getCurrentAccount().getUsername());
 			microsoftReconnectButton.setVisible(true);
 			microsoftNewAccountButton.setVisible(true);
 			microsoftAccountsButton.setVisible(true);
 			microsoftRestoreButton.setVisible(false);
-//			microsoftRememberMe.setVisible(false);
+			microsoftRememberMe.setVisible(false);
 			microsoftReconnectButton.requestFocus();
 		} else {
 			guestPseudo.requestFocus();
@@ -114,13 +112,17 @@ public class LoginScreenController {
 			MicrosoftAuthenticator authenticator = new MicrosoftAuthenticator();
 			try {
 				MicrosoftAuthResult result = authenticator.loginWithCredentials(microsoftEmail.getText(), microsoftPassword.getText());
-				launcher.setAccessToken(result.getAccessToken());
-				launcher.setRefreshToken(result.getRefreshToken());
-				launcher.setClientId(result.getClientId());
-				launcher.setXuid(result.getXuid());
-				launcher.setUsername(result.getProfile().getName());
-				launcher.setUUID(result.getProfile().getId());
-				System.out.println("UUID: " + launcher.getUUID());
+				MicrosoftAccount account = new MicrosoftAccount(result.getProfile().getName(), result.getProfile().getId(), result.getAccessToken(), result.getRefreshToken(), result.getClientId(), result.getXuid());
+				launcher.setCurrentAccount(account);
+				if (microsoftRememberMe.isSelected()) {
+					int index = launcher.indexOfAccount(account.getUuid());
+					if (index == -1)
+						launcher.getAccounts().add(account);
+					else
+						launcher.getAccounts().set(index, account);
+				}
+				microsoftEmail.setText("");
+				microsoftPassword.setText("");
 				launcher.setGuestStatus(false);
 				Main.switchView();
 			} catch (Exception e) {
@@ -138,14 +140,13 @@ public class LoginScreenController {
 	private void microsoftReconnect() {
 		MicrosoftAuthenticator authenticator = new MicrosoftAuthenticator();
         try {
-			MicrosoftAuthResult result = authenticator.loginWithRefreshToken(launcher.getRefreshToken());
-			launcher.setAccessToken(result.getAccessToken());
-			launcher.setRefreshToken(result.getRefreshToken());
-			launcher.setClientId(result.getClientId());
-			launcher.setXuid(result.getXuid());
-			launcher.setUsername(result.getProfile().getName());
-			launcher.setUUID(result.getProfile().getId());
-			System.out.println("UUID refresh: " + launcher.getUUID());
+			MicrosoftAuthResult result = authenticator.loginWithRefreshToken(launcher.getCurrentAccount().getRefreshToken());
+			launcher.getCurrentAccount().setUsername(result.getProfile().getName());
+			launcher.getCurrentAccount().setUuid(result.getProfile().getId());
+			launcher.getCurrentAccount().setAccessToken(result.getAccessToken());
+			launcher.getCurrentAccount().setRefreshToken(result.getRefreshToken());
+			launcher.getCurrentAccount().setClientId(result.getClientId());
+			launcher.getCurrentAccount().setXuid(result.getXuid());
 			launcher.setGuestStatus(false);
 			Main.switchView();
 		} catch (Exception e) {
@@ -163,12 +164,13 @@ public class LoginScreenController {
 		microsoftEmail.setVisible(false);
 		microsoftPassword.setVisible(false);
 		microsoftLoginButton.setVisible(false);
-		microsoftReconnectButton.setText(launcher.getUsername());
+		microsoftReconnectButton.setText(launcher.getCurrentAccount().getUsername());
 		microsoftReconnectButton.setVisible(true);
 		microsoftNewAccountButton.setVisible(true);
 		microsoftAccountsButton.setVisible(true);
 		microsoftRestoreButton.setVisible(false);
 		microsoftAccountList.setVisible(false);
+		microsoftRememberMe.setVisible(false);
 		microsoftReconnectButton.requestFocus();
 	}
 
@@ -191,6 +193,7 @@ public class LoginScreenController {
 		microsoftPassword.setVisible(true);
 		microsoftLoginButton.setVisible(true);
 		microsoftRestoreButton.setVisible(true);
+		microsoftRememberMe.setVisible(true);
 		microsoftEmail.requestFocus();
 	}
 

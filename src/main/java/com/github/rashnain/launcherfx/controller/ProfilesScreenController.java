@@ -8,6 +8,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 import java.util.ResourceBundle;
+
+import com.github.rashnain.launcherfx.model.MicrosoftAccount;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -169,7 +171,7 @@ public class ProfilesScreenController {
 			pseudo.setText(launcher.getGuestUsername());
 			pseudoStatus.setText("Guest");
 		} else {
-			pseudo.setText(launcher.getUsername());
+			pseudo.setText(launcher.getCurrentAccount().getUsername());
 			pseudoStatus.setText("");
 		}
 	}
@@ -401,6 +403,12 @@ public class ProfilesScreenController {
 	 */
 	@FXML
 	private void goToLoginScreen() {
+		if (!launcher.getAccounts().contains(launcher.getCurrentAccount())) {
+			if (launcher.getAccounts().isEmpty())
+				launcher.setCurrentAccount(new MicrosoftAccount("", "", "", "", "", ""));
+			else
+				launcher.setCurrentAccount(launcher.getAccounts().get(0));
+		}
 		Main.switchView();
 	}
 

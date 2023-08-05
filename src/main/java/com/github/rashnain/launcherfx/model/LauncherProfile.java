@@ -3,6 +3,7 @@ package com.github.rashnain.launcherfx.model;
 import java.time.Instant;
 import java.util.Locale;
 
+import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
@@ -20,7 +21,8 @@ public class LauncherProfile {
 
 	private static final LauncherProfile instance = new LauncherProfile();
 
-	private ObservableList<GameProfile> gameProfiles;
+	private final ObservableList<GameProfile> gameProfiles;
+	private final ObservableList<MicrosoftAccount> accounts;
 
 	private String workDir;
 
@@ -34,17 +36,7 @@ public class LauncherProfile {
 
 	private String guestUsername;
 
-	private String username;
-
-	private String uuid;
-
-	private String accessToken;
-
-	private String refreshToken;
-
-	private String clientId;
-
-	private String xuid;
+	private MicrosoftAccount currentAccount;
 
 	private String locale;
 
@@ -52,6 +44,7 @@ public class LauncherProfile {
 
 	private LauncherProfile() {
 		this.gameProfiles = FXCollections.observableArrayList();
+		accounts = FXCollections.observableArrayList();
 	}
 
 	/**
@@ -90,12 +83,7 @@ public class LauncherProfile {
 				this.locale = "en";
 			}
 			this.guestUsername = "";
-			this.username = "";
-			this.uuid = "";
-			this.accessToken = "";
-			this.refreshToken = "";
-			this.clientId = "";
-			this.xuid = "";
+			currentAccount = new MicrosoftAccount("", "", "", "", "", "");
 		}
 	}
 
@@ -151,12 +139,25 @@ public class LauncherProfile {
 			this.locale = "en";
 		}
 		this.guestUsername = getIfItExixts(settings, "guestUsername").getAsString();
-		this.username = getIfItExixts(settings, "username").getAsString();
-		this.uuid = getIfItExixts(settings, "uuid").getAsString();
-		this.accessToken = getIfItExixts(settings, "accessToken").getAsString();
-		this.refreshToken = getIfItExixts(settings, "refreshToken").getAsString();
-		this.clientId = getIfItExixts(settings, "clientId").getAsString();
-		this.xuid = getIfItExixts(settings, "xuid").getAsString();
+
+		JsonArray jsonAcounts = settings.getAsJsonArray("accounts");
+		for (int i = 0; i < jsonAcounts.size(); i++) {
+			JsonObject jsonAccount = (JsonObject) jsonAcounts.get(i);
+
+			String username = jsonAccount.get("username").getAsString();
+			String uuid = jsonAccount.get("uuid").getAsString();
+			String accessToken = jsonAccount.get("accessToken").getAsString();
+			String refreshToken = jsonAccount.get("refreshToken").getAsString();
+			String clientId = jsonAccount.get("clientId").getAsString();
+			String xuid = jsonAccount.get("xuid").getAsString();
+
+			MicrosoftAccount account = new MicrosoftAccount(username, uuid, accessToken, refreshToken, clientId, xuid);
+			accounts.add(account);
+		}
+		if (!accounts.isEmpty())
+			currentAccount = accounts.get(0);
+		else
+			currentAccount = new MicrosoftAccount("", "", "", "", "", "");
 	}
 
 	/**
@@ -193,14 +194,23 @@ public class LauncherProfile {
 
 		settings.add("launcherfx", new JsonObject());
 		JsonObject launcherfx = settings.getAsJsonObject("launcherfx");
+
 		launcherfx.add("locale", new JsonPrimitive(this.locale));
 		launcherfx.add("guestUsername", new JsonPrimitive(this.guestUsername));
-		launcherfx.add("username", new JsonPrimitive(this.username));
-		launcherfx.add("uuid", new JsonPrimitive(this.uuid));
-		launcherfx.add("accessToken", new JsonPrimitive(this.accessToken));
-		launcherfx.add("refreshToken", new JsonPrimitive(this.refreshToken));
-		launcherfx.add("clientId", new JsonPrimitive(this.clientId));
-		launcherfx.add("xuid", new JsonPrimitive(this.xuid));
+
+		launcherfx.add("accounts", new JsonArray());
+		JsonArray jsonAccounts = launcherfx.getAsJsonArray("accounts");
+		for (MicrosoftAccount account : accounts) {
+			if (account.getUsername().isEmpty()) continue;
+			jsonAccounts.add(new JsonObject());
+			JsonObject jsonAccount = (JsonObject) jsonAccounts.get(accounts.indexOf(account));
+			jsonAccount.add("username", new JsonPrimitive(account.getUsername()));
+			jsonAccount.add("uuid", new JsonPrimitive(account.getUuid()));
+			jsonAccount.add("accessToken", new JsonPrimitive(account.getAccessToken()));
+			jsonAccount.add("refreshToken", new JsonPrimitive(account.getRefreshToken()));
+			jsonAccount.add("clientId", new JsonPrimitive(account.getClientId()));
+			jsonAccount.add("xuid", new JsonPrimitive(account.getXuid()));
+		}
 
 		return settings;
 	}
@@ -228,6 +238,16 @@ public class LauncherProfile {
 	 */
 	public ObservableList<GameProfile> getGameProfiles() {
 		return this.gameProfiles;
+	}
+
+	public ObservableList<MicrosoftAccount> getAccounts() {
+		return accounts;
+	}
+
+	public int indexOfAccount(String uuid) {
+		for (MicrosoftAccount account : accounts)
+			if (account.getUuid().equals(uuid)) return accounts.indexOf(account);
+		return -1;
 	}
 
 	/**
@@ -273,36 +293,12 @@ public class LauncherProfile {
 		return this.assetsDir;
 	}
 
-	public String getAccessToken() {
-		return this.accessToken;
+	public MicrosoftAccount getCurrentAccount() {
+		return currentAccount;
 	}
 
-	public void setAccessToken(String accessToken) {
-		this.accessToken = accessToken;
-	}
-
-	public String getRefreshToken() {
-		return this.refreshToken;
-	}
-
-	public void setRefreshToken(String refreshToken) {
-		this.refreshToken = refreshToken;
-	}
-
-	public String getClientId() {
-		return this.clientId;
-	}
-
-	public void setClientId(String clientId) {
-		this.clientId = clientId;
-	}
-
-	public String getXuid() {
-		return this.xuid;
-	}
-
-	public void setXuid(String xuid) {
-		this.xuid = xuid;
+	public void setCurrentAccount(MicrosoftAccount currentAccount) {
+		this.currentAccount = currentAccount;
 	}
 
 	public String getGuestUsername() {
@@ -311,22 +307,6 @@ public class LauncherProfile {
 
 	public void setGuestUsername(String guestUsername) {
 		this.guestUsername = guestUsername;
-	}
-
-	public String getUsername() {
-		return this.username;
-	}
-
-	public void setUsername(String username) {
-		this.username = username;
-	}
-
-	public String getUUID() {
-		return this.uuid;
-	}
-
-	public void setUUID(String uuid) {
-		this.uuid = uuid;
 	}
 
 	public String getLocale() {

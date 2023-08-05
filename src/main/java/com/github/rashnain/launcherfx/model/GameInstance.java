@@ -165,7 +165,7 @@ public class GameInstance {
 		arguments += "--width ${resolution_width} --height ${resolution_height}";
 		System.out.println(arguments);
 
-		arguments = arguments.replace("${auth_player_name}", launcher.isGuest() ? launcher.getGuestUsername() : launcher.getUsername());
+		arguments = arguments.replace("${auth_player_name}", launcher.isGuest() ? launcher.getGuestUsername() : launcher.getCurrentAccount().getUsername());
 
 		arguments = arguments.replace("${version_name}", profile.getVersion());
 
@@ -176,14 +176,14 @@ public class GameInstance {
 
 		arguments = arguments.replace("${assets_index_name}", version.getAsJsonObject("assetIndex").get("id").getAsString());
 
-		arguments = arguments.replace("${auth_uuid}", launcher.isGuest() ? ""+UUID.nameUUIDFromBytes(launcher.getGuestUsername().getBytes()) : launcher.getUUID());
+		arguments = arguments.replace("${auth_uuid}", launcher.isGuest() ? ""+UUID.nameUUIDFromBytes(launcher.getGuestUsername().getBytes()) : launcher.getCurrentAccount().getUuid());
 
-		arguments = arguments.replace("${auth_session}", launcher.isGuest() ? "auth_session" : launcher.getAccessToken());
-		arguments = arguments.replace("${auth_access_token}", launcher.isGuest() ? "auth_access_token" : launcher.getAccessToken());
+		arguments = arguments.replace("${auth_session}", launcher.isGuest() ? "auth_session" : launcher.getCurrentAccount().getAccessToken());
+		arguments = arguments.replace("${auth_access_token}", launcher.isGuest() ? "auth_access_token" : launcher.getCurrentAccount().getAccessToken());
 
-		arguments = arguments.replace("${clientid}", launcher.isGuest() ? "clientid" : launcher.getClientId());
+		arguments = arguments.replace("${clientid}", launcher.isGuest() ? "clientid" : launcher.getCurrentAccount().getClientId());
 
-		arguments = arguments.replace("${auth_xuid}", launcher.isGuest() ? "auth_xuid" : launcher.getXuid());
+		arguments = arguments.replace("${auth_xuid}", launcher.isGuest() ? "auth_xuid" : launcher.getCurrentAccount().getXuid());
 
 		arguments = arguments.replace("${user_properties}", "{}");
 
