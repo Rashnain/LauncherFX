@@ -101,9 +101,8 @@ public class LauncherProfile {
 
 	/**
 	 * Load profiles from settings file
-	 * @throws Exception If a profile is malformed
 	 */
-	private void loadProfiles() throws Exception {
+	private void loadProfiles() {
 		JsonObject json = JsonUtility.load(this.workDir + "launcher_profiles.json");
 		JsonObject profiles = json.getAsJsonObject("profiles");
 		for (String key : profiles.keySet()) {
@@ -143,9 +142,8 @@ public class LauncherProfile {
 
 	/**
 	 * Load settings from settings file
-	 * @throws Exception If the settings are malformed
 	 */
-	private void loadSettings() throws Exception {
+	private void loadSettings() {
 		JsonObject json = JsonUtility.load(this.workDir + "launcher_profiles.json");
 		JsonObject settings = json.getAsJsonObject("launcherfx");
 		this.locale = settings.get("locale").getAsString();

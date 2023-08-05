@@ -42,9 +42,8 @@ public class Main extends Application {
 	/**
 	 * Load or create settings and launch the app
 	 * @param args Program arguments
-	 * @throws IOException
 	 */
-	public static void main(String[] args) throws IOException {
+	public static void main(String[] args) {
 		launcher = LauncherProfile.getProfile();
 
 		// Working directory
@@ -66,10 +65,8 @@ public class Main extends Application {
 
 		System.out.println("Working directory : " + launcher.getWorkDir());
 
-		// Load launcher's settings
 		launcher.loadProfile();
 
-		// Launch
 		launch();
 	}
 
