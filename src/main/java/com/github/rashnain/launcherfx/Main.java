@@ -59,7 +59,7 @@ public class Main extends Application {
 		File workDir = new File(launcher.getWorkDir());
 		workDir.mkdirs();
 		if (!workDir.isDirectory()) {
-			launcher.setWorkDir(System.getProperty("user.dir"));
+			launcher.setWorkDir(System.getProperty("user.dir") + "/data");
 			System.out.println("Could not use custom work directory, will use default directory instead.");
 		}
 
