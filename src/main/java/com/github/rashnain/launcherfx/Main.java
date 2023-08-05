@@ -90,7 +90,7 @@ public class Main extends Application {
 		profilesScreenView = profilesScreen.load();
 		profilesScreenController = profilesScreen.getController();
 
-		primaryStage.setOnCloseRequest( e -> { launcher.saveProfile(); Runtime.getRuntime().exit(1); } );
+		primaryStage.setOnCloseRequest( e -> { launcher.saveProfile(); Runtime.getRuntime().exit(0); } );
 		primaryStage.getIcons().add(new Image(Main.class.getResource("img/icon.png").toExternalForm()));
 		primaryStage.setTitle("LauncherFX");
 		primaryStage.setResizable(false);
