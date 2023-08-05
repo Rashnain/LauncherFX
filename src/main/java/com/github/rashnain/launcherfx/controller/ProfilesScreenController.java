@@ -1,28 +1,19 @@
 package com.github.rashnain.launcherfx.controller;
 
-import java.io.File;
-import java.io.IOException;
-import java.time.Instant;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Optional;
-import java.util.ResourceBundle;
-
+import com.github.rashnain.launcherfx.Main;
+import com.github.rashnain.launcherfx.PROFILE_TYPE;
+import com.github.rashnain.launcherfx.model.GameInstance;
+import com.github.rashnain.launcherfx.model.GameProfile;
+import com.github.rashnain.launcherfx.model.LauncherProfile;
 import com.github.rashnain.launcherfx.model.MicrosoftAccount;
+import com.github.rashnain.launcherfx.utility.FileUtility;
+import com.github.rashnain.launcherfx.utility.JsonUtility;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import javafx.fxml.FXML;
-import javafx.scene.control.Alert;
-import javafx.scene.control.ButtonType;
-import javafx.scene.control.ChoiceBox;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
-import javafx.scene.control.ListView;
-import javafx.scene.control.ProgressBar;
+import javafx.scene.control.*;
 import javafx.scene.control.Alert.AlertType;
-import javafx.scene.control.Button;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseButton;
@@ -30,13 +21,11 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
-import com.github.rashnain.launcherfx.Main;
-import com.github.rashnain.launcherfx.PROFILE_TYPE;
-import com.github.rashnain.launcherfx.model.GameInstance;
-import com.github.rashnain.launcherfx.model.GameProfile;
-import com.github.rashnain.launcherfx.model.LauncherProfile;
-import com.github.rashnain.launcherfx.utility.FileUtility;
-import com.github.rashnain.launcherfx.utility.JsonUtility;
+
+import java.io.File;
+import java.io.IOException;
+import java.time.Instant;
+import java.util.*;
 
 /**
  * Controller of the profiles screen

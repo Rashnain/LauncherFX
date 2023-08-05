@@ -1,18 +1,17 @@
 package com.github.rashnain.launcherfx.model;
 
-import java.time.Instant;
-import java.util.Locale;
-
+import com.github.rashnain.launcherfx.Main;
+import com.github.rashnain.launcherfx.PROFILE_TYPE;
+import com.github.rashnain.launcherfx.utility.JsonUtility;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
-
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import com.github.rashnain.launcherfx.Main;
-import com.github.rashnain.launcherfx.PROFILE_TYPE;
-import com.github.rashnain.launcherfx.utility.JsonUtility;
+
+import java.time.Instant;
+import java.util.Locale;
 
 /**
  * Class representing the launcher's settings

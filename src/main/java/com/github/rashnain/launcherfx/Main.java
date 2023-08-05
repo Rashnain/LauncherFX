@@ -1,5 +1,8 @@
 package com.github.rashnain.launcherfx;
 
+import com.github.rashnain.launcherfx.controller.LoginScreenController;
+import com.github.rashnain.launcherfx.controller.ProfilesScreenController;
+import com.github.rashnain.launcherfx.model.LauncherProfile;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -7,9 +10,6 @@ import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
-import com.github.rashnain.launcherfx.controller.LoginScreenController;
-import com.github.rashnain.launcherfx.controller.ProfilesScreenController;
-import com.github.rashnain.launcherfx.model.LauncherProfile;
 
 import java.io.File;
 import java.io.IOException;

@@ -1,24 +1,23 @@
 package com.github.rashnain.launcherfx.model;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.Scanner;
-import java.util.UUID;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map.Entry;
-
+import com.github.rashnain.launcherfx.utility.FileUtility;
+import com.github.rashnain.launcherfx.utility.JsonUtility;
+import com.github.rashnain.launcherfx.utility.LibraryUtility;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleDoubleProperty;
-import com.github.rashnain.launcherfx.utility.FileUtility;
-import com.github.rashnain.launcherfx.utility.JsonUtility;
-import com.github.rashnain.launcherfx.utility.LibraryUtility;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map.Entry;
+import java.util.Scanner;
+import java.util.UUID;
 
 /**
  * Class representing a game instance
