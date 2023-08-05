@@ -76,6 +76,8 @@ public class LoginScreenController {
 			languages.getSelectionModel().select(Main.getIndexOfLocale(launcher.getLocale()));
 			languages.setOnAction( e -> changeLanguage() );
 
+			microsoftRememberMe.setSelected(launcher.isRememberMe());
+
 			initialized = true;
 		}
 		guestPseudo.setText(launcher.getGuestUsername());
@@ -114,7 +116,7 @@ public class LoginScreenController {
 				MicrosoftAuthResult result = authenticator.loginWithCredentials(microsoftEmail.getText(), microsoftPassword.getText());
 				MicrosoftAccount account = new MicrosoftAccount(result.getProfile().getName(), result.getProfile().getId(), result.getAccessToken(), result.getRefreshToken(), result.getClientId(), result.getXuid());
 				launcher.setCurrentAccount(account);
-				if (microsoftRememberMe.isSelected()) {
+				if (launcher.isRememberMe()) {
 					int index = launcher.indexOfAccount(account.getUuid());
 					if (index == -1)
 						launcher.getAccounts().add(account);
@@ -255,6 +257,11 @@ public class LoginScreenController {
 			launcher.setGuestStatus(true);
 			Main.switchView();
 		}
+	}
+
+	@FXML
+	private void rememberMeChanged() {
+		launcher.setRememberMe(microsoftRememberMe.isSelected());
 	}
 
 	/**

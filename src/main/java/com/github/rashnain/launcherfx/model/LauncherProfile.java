@@ -37,6 +37,8 @@ public class LauncherProfile {
 
 	private MicrosoftAccount currentAccount;
 
+	private boolean rememberMe;
+
 	private String locale;
 
 	private boolean onlineStatus;
@@ -83,6 +85,7 @@ public class LauncherProfile {
 			}
 			this.guestUsername = "";
 			currentAccount = new MicrosoftAccount("", "", "", "", "", "");
+			rememberMe = true;
 		}
 	}
 
@@ -138,6 +141,7 @@ public class LauncherProfile {
 			this.locale = "en";
 		}
 		this.guestUsername = getIfItExixts(settings, "guestUsername").getAsString();
+		rememberMe = getIfItExixts(settings, "rememberMe").getAsBoolean();
 
 		JsonArray jsonAcounts = settings.getAsJsonArray("accounts");
 		for (int i = 0; i < jsonAcounts.size(); i++) {
@@ -196,6 +200,7 @@ public class LauncherProfile {
 
 		launcherfx.add("locale", new JsonPrimitive(this.locale));
 		launcherfx.add("guestUsername", new JsonPrimitive(this.guestUsername));
+		launcherfx.add("rememberMe", new JsonPrimitive(rememberMe));
 
 		launcherfx.add("accounts", new JsonArray());
 		JsonArray jsonAccounts = launcherfx.getAsJsonArray("accounts");
@@ -314,6 +319,14 @@ public class LauncherProfile {
 
 	public void setLocale(String locale) {
 		this.locale = locale;
+	}
+
+	public boolean isRememberMe() {
+		return rememberMe;
+	}
+
+	public void setRememberMe(boolean rememberMe) {
+		this.rememberMe = rememberMe;
 	}
 
 	public boolean getOnlineStatus() {

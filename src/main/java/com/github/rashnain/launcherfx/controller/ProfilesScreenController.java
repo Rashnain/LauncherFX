@@ -392,7 +392,7 @@ public class ProfilesScreenController {
 	 */
 	@FXML
 	private void goToLoginScreen() {
-		if (!launcher.getAccounts().contains(launcher.getCurrentAccount())) {
+		if (!launcher.isRememberMe()) {
 			if (launcher.getAccounts().isEmpty())
 				launcher.setCurrentAccount(new MicrosoftAccount("", "", "", "", "", ""));
 			else
