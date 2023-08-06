@@ -66,8 +66,8 @@ public class LoginScreenController {
 	 */
 	public void initializeView() {
 		if (!initialized) {
-			this.resources = Main.getResources();
-			this.launcher = LauncherProfile.getProfile();
+			resources = Main.getResources();
+			launcher = LauncherProfile.getProfile();
 
 			for (String lang : Main.availableLocales) {
 				languages.getItems().add(lang + " - " + resources.getString("language."+lang));
@@ -214,20 +214,20 @@ public class LoginScreenController {
 		String errorString = "";
 
 		if (!microsoftEmail.getText().matches("^.+@.+[.].+$")) {
-			errorString += "- " + this.resources.getString("microsoft.login.error.email") + "\r\n";
+			errorString += "- " + resources.getString("microsoft.login.error.email") + "\r\n";
 			valid = false;
 		}
 
 		if (!microsoftPassword.getText().matches("^.{8,}$")) {
-			errorString += "- " + this.resources.getString("microsoft.login.error.password");
+			errorString += "- " + resources.getString("microsoft.login.error.password");
 			valid = false;
 		}
 
 		if (!valid) {
 			Alert dialog = new Alert(AlertType.ERROR);
 			dialog.initOwner(Main.getPrimaryStage());
-			dialog.setTitle(this.resources.getString("error.invalidinputs"));
-			dialog.setHeaderText(this.resources.getString("error.howtofix"));
+			dialog.setTitle(resources.getString("error.invalidinputs"));
+			dialog.setHeaderText(resources.getString("error.howtofix"));
 			dialog.setContentText(errorString);
 			dialog.show();
 		}
@@ -276,9 +276,9 @@ public class LoginScreenController {
 		if (!guestPseudo.getText().matches("^[a-zA-Z0-9_]{3,16}$")) {
 			Alert dialog = new Alert(AlertType.ERROR);
 			dialog.initOwner(Main.getPrimaryStage());
-			dialog.setTitle(this.resources.getString("error.invalidinputs"));
-			dialog.setHeaderText(this.resources.getString("error.howtofix"));
-			dialog.setContentText(this.resources.getString("guest.login.error"));
+			dialog.setTitle(resources.getString("error.invalidinputs"));
+			dialog.setHeaderText(resources.getString("error.howtofix"));
+			dialog.setContentText(resources.getString("guest.login.error"));
 			dialog.show();
 			valid = false;
 		}

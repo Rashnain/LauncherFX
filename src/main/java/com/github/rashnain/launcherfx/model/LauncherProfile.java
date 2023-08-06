@@ -44,7 +44,7 @@ public class LauncherProfile {
 	private boolean onlineStatus;
 
 	private LauncherProfile() {
-		this.gameProfiles = FXCollections.observableArrayList();
+		gameProfiles = FXCollections.observableArrayList();
 		accounts = FXCollections.observableArrayList();
 	}
 
@@ -77,13 +77,13 @@ public class LauncherProfile {
 		} catch (Exception e) {
 			System.out.println("Error loading launcher settings.");
 			System.out.println("Ceating default launcher settings.");
-			String locale = Locale.getDefault().getLanguage();
-			if (Main.getIndexOfLocale(locale) != -1) {
-				this.locale = locale;
+			String hostLocale = Locale.getDefault().getLanguage();
+			if (Main.getIndexOfLocale(hostLocale) != -1) {
+				locale = hostLocale;
 			} else {
-				this.locale = "en";
+				locale = "en";
 			}
-			this.guestUsername = "";
+			guestUsername = "";
 			currentAccount = new MicrosoftAccount("", "", "", "", "", "");
 			rememberMe = true;
 		}
@@ -93,7 +93,7 @@ public class LauncherProfile {
 	 * Load profiles from settings file
 	 */
 	private void loadProfiles() {
-		JsonObject json = JsonUtility.load(this.workDir + "launcher_profiles.json");
+		JsonObject json = JsonUtility.load(workDir + "launcher_profiles.json");
 		JsonObject profiles = json.getAsJsonObject("profiles");
 		for (String key : profiles.keySet()) {
 			JsonObject profile = profiles.getAsJsonObject(key);
@@ -124,7 +124,7 @@ public class LauncherProfile {
 				gameProfile.setJvmArguments(profile.get("javaArgs").getAsString());
 			}
 
-			this.gameProfiles.add(gameProfile);
+			gameProfiles.add(gameProfile);
 
 			System.out.println("Loaded profile " + key);
 		}
@@ -134,13 +134,13 @@ public class LauncherProfile {
 	 * Load settings from settings file
 	 */
 	private void loadSettings() {
-		JsonObject json = JsonUtility.load(this.workDir + "launcher_profiles.json");
+		JsonObject json = JsonUtility.load(workDir + "launcher_profiles.json");
 		JsonObject settings = json.getAsJsonObject("launcherfx");
-		this.locale = settings.get("locale").getAsString();
-		if (Main.getIndexOfLocale(this.locale) == -1) {
-			this.locale = "en";
+		locale = settings.get("locale").getAsString();
+		if (Main.getIndexOfLocale(locale) == -1) {
+			locale = "en";
 		}
-		this.guestUsername = getIfItExists(settings, "guestUsername").getAsString();
+		guestUsername = getIfItExists(settings, "guestUsername").getAsString();
 		rememberMe = getIfItExists(settings, "rememberMe").getAsBoolean();
 
 		JsonArray jsonAcounts = settings.getAsJsonArray("accounts");
@@ -171,7 +171,7 @@ public class LauncherProfile {
 		JsonObject settings = new JsonObject();
 		settings.add("profiles", new JsonObject());
 		JsonObject profiles = settings.getAsJsonObject("profiles");
-		for (GameProfile gp : this.gameProfiles) {
+		for (GameProfile gp : gameProfiles) {
 			profiles.add(gp.getIdentifier(), new JsonObject());
 			JsonObject profile = profiles.getAsJsonObject(gp.getIdentifier());
 
@@ -198,8 +198,8 @@ public class LauncherProfile {
 		settings.add("launcherfx", new JsonObject());
 		JsonObject launcherfx = settings.getAsJsonObject("launcherfx");
 
-		launcherfx.add("locale", new JsonPrimitive(this.locale));
-		launcherfx.add("guestUsername", new JsonPrimitive(this.guestUsername));
+		launcherfx.add("locale", new JsonPrimitive(locale));
+		launcherfx.add("guestUsername", new JsonPrimitive(guestUsername));
 		launcherfx.add("rememberMe", new JsonPrimitive(rememberMe));
 
 		launcherfx.add("accounts", new JsonArray());
@@ -227,7 +227,7 @@ public class LauncherProfile {
 
 		System.out.println("Saving settings into launcher_profiles.json.");
 
-		boolean saved = JsonUtility.save(this.workDir + "launcher_profiles.json", settings);
+		boolean saved = JsonUtility.save(workDir + "launcher_profiles.json", settings);
 
 		if (!saved) {
 			System.out.println("Couldn't save profile");
@@ -241,7 +241,7 @@ public class LauncherProfile {
 	 * @return List of loaded GameProfiles
 	 */
 	public ObservableList<GameProfile> getGameProfiles() {
-		return this.gameProfiles;
+		return gameProfiles;
 	}
 
 	public ObservableList<MicrosoftAccount> getAccounts() {
@@ -259,10 +259,10 @@ public class LauncherProfile {
 	 * @return Index of last used profile or null there is no profile
 	 */
 	public GameProfile lastUsedProfile() {
-		if (this.gameProfiles.size() == 0) { return null; };
+		if (gameProfiles.size() == 0) { return null; };
 
-		GameProfile lastUsed = this.gameProfiles.get(0);
-		for (GameProfile gp : this.gameProfiles) {
+		GameProfile lastUsed = gameProfiles.get(0);
+		for (GameProfile gp : gameProfiles) {
 			if (gp.getLastUsed().isAfter(lastUsed.getLastUsed())) {
 				lastUsed = gp;
 			}
@@ -271,7 +271,7 @@ public class LauncherProfile {
 	}
 
 	public String getWorkDir() {
-		return this.workDir;
+		return workDir;
 	}
 
 	/**
@@ -279,42 +279,42 @@ public class LauncherProfile {
 	 * @param dir Directory
 	 */
 	public void setWorkDir(String dir) {
-		this.workDir = dir + "/";
-		this.assetsDir = this.workDir + "assets/";
-		this.librariesDir = this.workDir + "libraries/";
-		this.versionsDir = this.workDir + "versions/";
+		workDir = dir + "/";
+		assetsDir = workDir + "assets/";
+		librariesDir = workDir + "libraries/";
+		versionsDir = workDir + "versions/";
 	}
 
 	public String getVersionsDir() {
-		return this.versionsDir;
+		return versionsDir;
 	}
 
 	public String getLibrariesDir() {
-		return this.librariesDir;
+		return librariesDir;
 	}
 
 	public String getAssetsDir() {
-		return this.assetsDir;
+		return assetsDir;
 	}
 
 	public MicrosoftAccount getCurrentAccount() {
 		return currentAccount;
 	}
 
-	public void setCurrentAccount(MicrosoftAccount currentAccount) {
-		this.currentAccount = currentAccount;
+	public void setCurrentAccount(MicrosoftAccount account) {
+		currentAccount = account;
 	}
 
 	public String getGuestUsername() {
-		return this.guestUsername;
+		return guestUsername;
 	}
 
-	public void setGuestUsername(String guestUsername) {
-		this.guestUsername = guestUsername;
+	public void setGuestUsername(String username) {
+		guestUsername = username;
 	}
 
 	public String getLocale() {
-		return this.locale;
+		return locale;
 	}
 
 	public void setLocale(String locale) {
@@ -330,11 +330,11 @@ public class LauncherProfile {
 	}
 
 	public boolean getOnlineStatus() {
-		return this.onlineStatus;
+		return onlineStatus;
 	}
 
 	public void setOnlineStatus(boolean status) {
-		this.onlineStatus = status;
+		onlineStatus = status;
 	}
 
 	public boolean isGuest() {

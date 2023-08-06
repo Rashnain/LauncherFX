@@ -36,13 +36,13 @@ public class GameInstance {
 
 	/**
 	 * Create an instance with this profile
-	 * @param profile Directory the game will work with
+	 * @param gameProfile Directory the game will work with
 	 */
-	public GameInstance(GameProfile profile) {
-		this.command = new StringBuilder();
-		this.profile = profile;
-		this.loadingProgress = new SimpleDoubleProperty(0);
-		this.loadingVisibility = new SimpleBooleanProperty(true);
+	public GameInstance(GameProfile gameProfile) {
+		command = new StringBuilder();
+		profile = gameProfile;
+		loadingProgress = new SimpleDoubleProperty(0);
+		loadingVisibility = new SimpleBooleanProperty(true);
 	}
 
 	/**
@@ -223,7 +223,7 @@ public class GameInstance {
 	 * @throws IOException If an error occure when launching
 	 */
 	private void runInstance() throws IOException {
-		this.process = Runtime.getRuntime().exec(getCommand(), null, new File(profile.getGameDirOrDefault()));
+		process = Runtime.getRuntime().exec(getCommand(), null, new File(profile.getGameDirOrDefault()));
 		consumeStdIn();
 		consumeStdErr();
 	}
@@ -265,7 +265,7 @@ public class GameInstance {
 	 * @return the instance's command
 	 */
 	private String getCommand() {
-		return this.command.toString();
+		return command.toString();
 	}
 
 	/**
@@ -274,7 +274,7 @@ public class GameInstance {
 	 * @param lineEnd end of the command
 	 */
 	private void addCommand(String cmd, String lineEnd) {
-		this.command.append(cmd + lineEnd);
+		command.append(cmd + lineEnd);
 	}
 
 	/**
@@ -291,28 +291,28 @@ public class GameInstance {
 	 * @return the instance's game directory
 	 */
 	public String getGameDir() {
-		return this.profile.getGameDir();
+		return profile.getGameDir();
 	}
 
 	/**
 	 * @return instance's loading progress property
 	 */
 	public DoubleProperty getLoadingProgressProperty() {
-		return this.loadingProgress;
+		return loadingProgress;
 	}
 
 	/**
 	 * @return instance's loading visibility property
 	 */
 	public BooleanProperty getLoadingVisibilityProperty() {
-		return this.loadingVisibility;
+		return loadingVisibility;
 	}
 
 	/**
 	 * @return instance's process
 	 */
 	public Process getProcess() {
-		return this.process;
+		return process;
 	}
 
 }

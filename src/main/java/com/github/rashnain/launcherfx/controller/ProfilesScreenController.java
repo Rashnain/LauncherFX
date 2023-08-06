@@ -95,9 +95,9 @@ public class ProfilesScreenController {
 	 */
 	public void initializeView() {
 		if (!initialized) {
-			this.resources = Main.getResources();
-			this.launcher = LauncherProfile.getProfile();
-			this.instances = new ArrayList<>();
+			resources = Main.getResources();
+			launcher = LauncherProfile.getProfile();
+			instances = new ArrayList<>();
 
 			try {
 				FileUtility.download(Main.VERSION_MANIFEST, "version_manifest_v2.json", launcher.getVersionsDir());
@@ -175,8 +175,8 @@ public class ProfilesScreenController {
 		if (event.getButton().equals(MouseButton.PRIMARY)) {
 			if (event.getClickCount() > 1) {
 				if (!playButton.isDisabled()) {
-					GameProfile profile = this.listViewProfile.getSelectionModel().getSelectedItem();
-					this.choiceBoxProfile.getSelectionModel().select(profile);
+					GameProfile profile = listViewProfile.getSelectionModel().getSelectedItem();
+					choiceBoxProfile.getSelectionModel().select(profile);
 					loadGame(profile);
 				}
 			}
@@ -208,7 +208,7 @@ public class ProfilesScreenController {
 	 * And the bindings to save change in real time
 	 */
 	private void updateProfileEditor() {
-		GameProfile profile = this.listViewProfile.getSelectionModel().getSelectedItem();
+		GameProfile profile = listViewProfile.getSelectionModel().getSelectedItem();
 
 		if (profile != null) {
 			hideProfileEditor(false);
@@ -273,7 +273,7 @@ public class ProfilesScreenController {
 	 */
 	@FXML
 	private void onPlayButtonAction() throws Exception {
-		loadGame(this.choiceBoxProfile.getSelectionModel().getSelectedItem());
+		loadGame(choiceBoxProfile.getSelectionModel().getSelectedItem());
 	}
 
 	/**
@@ -290,7 +290,7 @@ public class ProfilesScreenController {
 			profile.setLastUsed(Instant.now());
 			launcher.saveProfile();
 			// checks if there is another instance running in the same directory
-			Iterator<GameInstance> it = this.instances.iterator();
+			Iterator<GameInstance> it = instances.iterator();
 			while (it.hasNext()) {
 				GameInstance gi = it.next();
 				if (!gi.getProcess().isAlive()) {
@@ -300,9 +300,9 @@ public class ProfilesScreenController {
 				if (gi.getGameDir().equals(profile.getGameDir())) {
 					Alert dialog = new Alert(AlertType.CONFIRMATION);
 					dialog.initOwner(Main.getPrimaryStage());
-					dialog.setTitle(this.resources.getString("launch.error.instance"));
-					dialog.setHeaderText(this.resources.getString("launch.error.instance.title"));
-					dialog.setContentText(this.resources.getString("launch.error.instance.desc"));
+					dialog.setTitle(resources.getString("launch.error.instance"));
+					dialog.setHeaderText(resources.getString("launch.error.instance.title"));
+					dialog.setContentText(resources.getString("launch.error.instance.desc"));
 					dialog.getButtonTypes().set(0, ButtonType.YES);
 					dialog.getButtonTypes().set(1, ButtonType.NO);
 					Optional<ButtonType> choice = dialog.showAndWait();
@@ -344,22 +344,22 @@ public class ProfilesScreenController {
 			if (manifestExists) {
 				GameInstance instance = new GameInstance(profile);
 
-				this.loadingBar.progressProperty().unbind();
-				this.loadingBar.visibleProperty().unbind();
-				this.playButton.disableProperty().unbind();
+				loadingBar.progressProperty().unbind();
+				loadingBar.visibleProperty().unbind();
+				playButton.disableProperty().unbind();
 
-				this.loadingBar.progressProperty().bind(instance.getLoadingProgressProperty());
-				this.loadingBar.visibleProperty().bind(instance.getLoadingVisibilityProperty());
-				this.playButton.disableProperty().bind(instance.getLoadingVisibilityProperty());
+				loadingBar.progressProperty().bind(instance.getLoadingProgressProperty());
+				loadingBar.visibleProperty().bind(instance.getLoadingVisibilityProperty());
+				playButton.disableProperty().bind(instance.getLoadingVisibilityProperty());
 
 				instance.startThread();
 
-				this.instances.add(instance);
+				instances.add(instance);
 			} else {
 				Alert dialog = new Alert(AlertType.ERROR);
 				dialog.initOwner(Main.getPrimaryStage());
-				dialog.setTitle(this.resources.getString("launch.error.manifest"));
-				dialog.setHeaderText(this.resources.getString("launch.error.manifest.desc"));
+				dialog.setTitle(resources.getString("launch.error.manifest"));
+				dialog.setHeaderText(resources.getString("launch.error.manifest.desc"));
 				dialog.show();
 			}
 		}
@@ -371,8 +371,8 @@ public class ProfilesScreenController {
 	private void showNoSelectionDialog() {
 		Alert dialog = new Alert(AlertType.ERROR);
 		dialog.initOwner(Main.getPrimaryStage());
-		dialog.setTitle(this.resources.getString("launch.error"));
-		dialog.setHeaderText(this.resources.getString("launch.error.desc"));
+		dialog.setTitle(resources.getString("launch.error"));
+		dialog.setHeaderText(resources.getString("launch.error.desc"));
 		dialog.showAndWait();
 	}
 
@@ -382,8 +382,8 @@ public class ProfilesScreenController {
 	private void showCantDownloadDialog() {
 		Alert dialog = new Alert(AlertType.ERROR);
 		dialog.initOwner(Main.getPrimaryStage());
-		dialog.setTitle(this.resources.getString("launch.error.connection"));
-		dialog.setHeaderText(this.resources.getString("launch.error.connection.desc"));
+		dialog.setTitle(resources.getString("launch.error.connection"));
+		dialog.setHeaderText(resources.getString("launch.error.connection.desc"));
 		dialog.showAndWait();
 	}
 
@@ -408,11 +408,11 @@ public class ProfilesScreenController {
 	private void newProfile() {
 		GameProfile profile = new GameProfile();
 
-		this.listViewProfile.getItems().add(profile);
+		listViewProfile.getItems().add(profile);
 
-		this.listViewProfile.getSelectionModel().select(profile);
+		listViewProfile.getSelectionModel().select(profile);
 		updateProfileEditor();
-		this.choiceBoxProfile.getSelectionModel().select(launcher.lastUsedProfile());
+		choiceBoxProfile.getSelectionModel().select(launcher.lastUsedProfile());
 		updateVersionLabel();
 		launcher.saveProfile();
 	}
@@ -422,22 +422,22 @@ public class ProfilesScreenController {
 	 */
 	@FXML
 	private void deleteProfile() {
-		GameProfile profile = this.listViewProfile.getSelectionModel().getSelectedItem();
+		GameProfile profile = listViewProfile.getSelectionModel().getSelectedItem();
 
 		if (profile != null) {
 			if (profile.getVersionType() == PROFILE_TYPE.CUSTOM) {
 				Alert dialog = new Alert(AlertType.CONFIRMATION);
 				dialog.initOwner(Main.getPrimaryStage());
-				dialog.setTitle(this.resources.getString("profile.delete.title"));
-				dialog.setHeaderText(this.resources.getString("profile.delete.header"));
-				dialog.setContentText(this.resources.getString("profile.delete.content"));
+				dialog.setTitle(resources.getString("profile.delete.title"));
+				dialog.setHeaderText(resources.getString("profile.delete.header"));
+				dialog.setContentText(resources.getString("profile.delete.content"));
 				dialog.getButtonTypes().set(0, ButtonType.YES);
 				dialog.getButtonTypes().set(1, ButtonType.NO);
 				Optional<ButtonType> choice = dialog.showAndWait();
 				if (choice.get() == ButtonType.YES) {
-					this.listViewProfile.getItems().remove(profile);
+					listViewProfile.getItems().remove(profile);
 					updateProfileEditor();
-					this.choiceBoxProfile.getSelectionModel().select(launcher.lastUsedProfile());
+					choiceBoxProfile.getSelectionModel().select(launcher.lastUsedProfile());
 					updateVersionLabel();
 					launcher.saveProfile();
 				}
@@ -452,7 +452,7 @@ public class ProfilesScreenController {
 	 */
 	@FXML
 	private void duplicateProfile() {
-		GameProfile profile = this.listViewProfile.getSelectionModel().getSelectedItem();
+		GameProfile profile = listViewProfile.getSelectionModel().getSelectedItem();
 
 		if (profile != null) {
 			GameProfile newProfile = new GameProfile(profile.getLastUsed(), profile.getVersion(), profile.toString()+" "+resources.getString("profile.editor.copy"), PROFILE_TYPE.CUSTOM);
@@ -461,8 +461,8 @@ public class ProfilesScreenController {
 			newProfile.setHeight(profile.getHeight());
 			newProfile.setExecutable(profile.getExecutable());
 			newProfile.setJvmArguments(profile.getJvmArguments());
-			this.listViewProfile.getItems().add(newProfile);
-			this.listViewProfile.getSelectionModel().select(newProfile);
+			listViewProfile.getItems().add(newProfile);
+			listViewProfile.getSelectionModel().select(newProfile);
 			updateProfileEditor();
 			launcher.saveProfile();
 		} else {
@@ -514,12 +514,12 @@ public class ProfilesScreenController {
 	 */
 	@FXML
 	private void updateListView() {
-		GameProfile editing = this.listViewProfile.getSelectionModel().getSelectedItem();
-		GameProfile selected = this.choiceBoxProfile.getSelectionModel().getSelectedItem();
-		int index = this.listViewProfile.getItems().indexOf(editing);
-		this.listViewProfile.getItems().set(index, editing);
+		GameProfile editing = listViewProfile.getSelectionModel().getSelectedItem();
+		GameProfile selected = choiceBoxProfile.getSelectionModel().getSelectedItem();
+		int index = listViewProfile.getItems().indexOf(editing);
+		listViewProfile.getItems().set(index, editing);
 		if (editing == selected) {
-			this.choiceBoxProfile.getSelectionModel().select(editing);
+			choiceBoxProfile.getSelectionModel().select(editing);
 		}
 	}
 
@@ -527,7 +527,7 @@ public class ProfilesScreenController {
 	 * Update the label showing the selected profile's version
 	 */
 	private void updateVersionLabel() {
-		GameProfile profile = this.choiceBoxProfile.getSelectionModel().getSelectedItem();
+		GameProfile profile = choiceBoxProfile.getSelectionModel().getSelectedItem();
 		if (profile != null) {
 			String version = profile.getVersion();
 			selectedProfileVersion.setText(version);
