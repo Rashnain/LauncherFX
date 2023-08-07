@@ -1,5 +1,7 @@
 package com.github.rashnain.launcherfx.model;
 
+import java.time.Instant;
+
 public class MicrosoftAccount {
 
     private String username;
@@ -8,14 +10,20 @@ public class MicrosoftAccount {
     private String refreshToken;
     private String clientId;
     private String xuid;
+    private Instant lastUsed;
 
-    public MicrosoftAccount(String username, String uuid, String accessToken, String refreshToken, String clientId, String xuid) {
+    public MicrosoftAccount(String username, String uuid, String accessToken, String refreshToken, String clientId, String xuid, Instant lastUsed) {
         this.username = username;
         this.uuid = uuid;
         this.accessToken = accessToken;
         this.refreshToken = refreshToken;
         this.clientId = clientId;
         this.xuid = xuid;
+        this.lastUsed = lastUsed;
+    }
+
+    public MicrosoftAccount() {
+        this("", "", "", "", "", "", null);
     }
 
     public String getUsername() {
@@ -64,6 +72,14 @@ public class MicrosoftAccount {
 
     public void setXuid(String xuid) {
         this.xuid = xuid;
+    }
+
+    public Instant getLastUsed() {
+        return lastUsed;
+    }
+
+    public void setLastUsed(Instant lastUsed) {
+        this.lastUsed = lastUsed;
     }
 
 }

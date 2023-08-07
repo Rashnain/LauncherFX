@@ -11,6 +11,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
 import java.time.Instant;
+import java.time.format.DateTimeParseException;
 import java.util.Locale;
 
 /**
@@ -84,7 +85,7 @@ public class LauncherProfile {
 				locale = "en";
 			}
 			guestUsername = "";
-			currentAccount = new MicrosoftAccount("", "", "", "", "", "");
+			currentAccount = new MicrosoftAccount();
 			rememberMe = true;
 		}
 	}
@@ -100,13 +101,19 @@ public class LauncherProfile {
 
 			String name = profile.get("name").getAsString();
 			String version = profile.get("lastVersionId").getAsString();
-			String lastUsed = profile.get("lastUsed").getAsString();
-			String versionType = profile.get("type").getAsString();
+			String lastUsedString = profile.get("lastUsed").getAsString();
+			String profileType = profile.get("type").getAsString();
 
-			Instant lastUsedInstant = Instant.parse(lastUsed);
-			PROFILE_TYPE type = PROFILE_TYPE.getAsType(versionType);
+			Instant lastUsed;
+			try {
+				lastUsed = Instant.parse(lastUsedString);
+			} catch (DateTimeParseException e) {
+				System.out.println("Couldn't parse instant '" + lastUsedString + "', " + e.getMessage());
+				lastUsed = Instant.EPOCH;
+			}
+			PROFILE_TYPE type = PROFILE_TYPE.getAsType(profileType);
 
-			GameProfile gameProfile = new GameProfile(key, lastUsedInstant, version, name, type);
+			GameProfile gameProfile = new GameProfile(key, lastUsed, version, name, type);
 
 			if (profile.keySet().contains("gameDir")) {
 				gameProfile.setGameDir(profile.get("gameDir").getAsString());
@@ -153,14 +160,23 @@ public class LauncherProfile {
 			String refreshToken = jsonAccount.get("refreshToken").getAsString();
 			String clientId = jsonAccount.get("clientId").getAsString();
 			String xuid = jsonAccount.get("xuid").getAsString();
+			String lastUsedString = jsonAccount.get("lastUsed").getAsString();
 
-			MicrosoftAccount account = new MicrosoftAccount(username, uuid, accessToken, refreshToken, clientId, xuid);
+			Instant lastUsed;
+			try {
+				lastUsed = Instant.parse(lastUsedString);
+			} catch (DateTimeParseException e) {
+				System.out.println("Couldn't parse instant '" + lastUsedString + "', " + e.getMessage());
+				lastUsed = Instant.EPOCH;
+			}
+
+			MicrosoftAccount account = new MicrosoftAccount(username, uuid, accessToken, refreshToken, clientId, xuid, lastUsed);
 			accounts.add(account);
 		}
 		if (!accounts.isEmpty())
-			currentAccount = accounts.get(0);
+			currentAccount = lastUsedAccount();
 		else
-			currentAccount = new MicrosoftAccount("", "", "", "", "", "");
+			currentAccount = new MicrosoftAccount();
 	}
 
 	/**
@@ -214,6 +230,7 @@ public class LauncherProfile {
 			jsonAccount.add("refreshToken", new JsonPrimitive(account.getRefreshToken()));
 			jsonAccount.add("clientId", new JsonPrimitive(account.getClientId()));
 			jsonAccount.add("xuid", new JsonPrimitive(account.getXuid()));
+			jsonAccount.add("lastUsed", new JsonPrimitive(account.getLastUsed().toString()));
 		}
 
 		return settings;
@@ -259,12 +276,24 @@ public class LauncherProfile {
 	 * @return Index of last used profile or null there is no profile
 	 */
 	public GameProfile lastUsedProfile() {
-		if (gameProfiles.size() == 0) { return null; };
-
+		if (gameProfiles.isEmpty())
+			return null;
 		GameProfile lastUsed = gameProfiles.get(0);
 		for (GameProfile gp : gameProfiles) {
 			if (gp.getLastUsed().isAfter(lastUsed.getLastUsed())) {
 				lastUsed = gp;
+			}
+		}
+		return lastUsed;
+	}
+
+	public MicrosoftAccount lastUsedAccount() {
+		if (accounts.isEmpty())
+			return null;
+		MicrosoftAccount lastUsed = accounts.get(0);
+		for (MicrosoftAccount ma : accounts) {
+			if (ma.getLastUsed().isAfter(lastUsed.getLastUsed())) {
+				lastUsed = ma;
 			}
 		}
 		return lastUsed;

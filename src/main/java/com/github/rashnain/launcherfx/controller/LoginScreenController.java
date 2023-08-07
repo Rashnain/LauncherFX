@@ -12,6 +12,7 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 
 import java.io.IOException;
+import java.time.Instant;
 import java.util.ResourceBundle;
 
 /**
@@ -114,7 +115,7 @@ public class LoginScreenController {
 			MicrosoftAuthenticator authenticator = new MicrosoftAuthenticator();
 			try {
 				MicrosoftAuthResult result = authenticator.loginWithCredentials(microsoftEmail.getText(), microsoftPassword.getText());
-				MicrosoftAccount account = new MicrosoftAccount(result.getProfile().getName(), result.getProfile().getId(), result.getAccessToken(), result.getRefreshToken(), result.getClientId(), result.getXuid());
+				MicrosoftAccount account = new MicrosoftAccount(result.getProfile().getName(), result.getProfile().getId(), result.getAccessToken(), result.getRefreshToken(), result.getClientId(), result.getXuid(), Instant.now());
 				launcher.setCurrentAccount(account);
 				if (launcher.isRememberMe()) {
 					int index = launcher.indexOfAccount(account.getUuid());
@@ -149,6 +150,7 @@ public class LoginScreenController {
 			launcher.getCurrentAccount().setRefreshToken(result.getRefreshToken());
 			launcher.getCurrentAccount().setClientId(result.getClientId());
 			launcher.getCurrentAccount().setXuid(result.getXuid());
+			launcher.getCurrentAccount().setLastUsed(Instant.now());
 			launcher.setGuestStatus(false);
 			Main.switchView();
 		} catch (Exception e) {

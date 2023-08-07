@@ -394,9 +394,9 @@ public class ProfilesScreenController {
 	private void goToLoginScreen() {
 		if (!launcher.isRememberMe()) {
 			if (launcher.getAccounts().isEmpty())
-				launcher.setCurrentAccount(new MicrosoftAccount("", "", "", "", "", ""));
+				launcher.setCurrentAccount(new MicrosoftAccount());
 			else
-				launcher.setCurrentAccount(launcher.getAccounts().get(0));
+				launcher.setCurrentAccount(launcher.lastUsedAccount());
 		}
 		Main.switchView();
 	}
