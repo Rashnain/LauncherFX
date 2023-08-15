@@ -12,6 +12,8 @@ import javafx.collections.ObservableList;
 
 import java.time.Instant;
 import java.time.format.DateTimeParseException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 
 /**
@@ -22,7 +24,7 @@ public class LauncherProfile {
 	private static final LauncherProfile instance = new LauncherProfile();
 
 	private final ObservableList<GameProfile> gameProfiles;
-	private final ObservableList<MicrosoftAccount> accounts;
+	private final List<MicrosoftAccount> accounts;
 
 	private String workDir;
 
@@ -46,7 +48,7 @@ public class LauncherProfile {
 
 	private LauncherProfile() {
 		gameProfiles = FXCollections.observableArrayList();
-		accounts = FXCollections.observableArrayList();
+		accounts = new ArrayList<>();
 	}
 
 	/**
@@ -261,7 +263,7 @@ public class LauncherProfile {
 		return gameProfiles;
 	}
 
-	public ObservableList<MicrosoftAccount> getAccounts() {
+	public List<MicrosoftAccount> getAccounts() {
 		return accounts;
 	}
 

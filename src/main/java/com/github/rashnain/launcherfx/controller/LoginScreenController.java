@@ -5,14 +5,18 @@ import com.github.rashnain.launcherfx.model.LauncherProfile;
 import com.github.rashnain.launcherfx.model.MicrosoftAccount;
 import fr.litarvan.openauth.microsoft.MicrosoftAuthResult;
 import fr.litarvan.openauth.microsoft.MicrosoftAuthenticator;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.layout.AnchorPane;
 
 import java.io.IOException;
 import java.time.Instant;
+import java.util.Optional;
 import java.util.ResourceBundle;
 
 /**
@@ -25,6 +29,8 @@ public class LoginScreenController {
 	private ResourceBundle resources;
 
 	private LauncherProfile launcher;
+
+	private int nextAccountButtonLayoutY;
 
 	@FXML
 	private TextField microsoftEmail;
@@ -48,7 +54,10 @@ public class LoginScreenController {
 	private Button microsoftAccountsButton;
 
 	@FXML
-	private ListView<Button> microsoftAccountList;
+	private AnchorPane microsoftAccountListAP;
+
+	@FXML
+	private ScrollPane microsoftAccountListSP;
 
 	@FXML
 	private Button microsoftRestoreButton;
@@ -142,16 +151,17 @@ public class LoginScreenController {
 	@FXML
 	private void microsoftReconnect() {
 		MicrosoftAuthenticator authenticator = new MicrosoftAuthenticator();
+		MicrosoftAccount account = launcher.getCurrentAccount();
         try {
-			MicrosoftAuthResult result = authenticator.loginWithRefreshToken(launcher.getCurrentAccount().getRefreshToken());
-			launcher.getCurrentAccount().setUsername(result.getProfile().getName());
-			launcher.getCurrentAccount().setUuid(result.getProfile().getId());
-			launcher.getCurrentAccount().setAccessToken(result.getAccessToken());
-			launcher.getCurrentAccount().setRefreshToken(result.getRefreshToken());
-			launcher.getCurrentAccount().setClientId(result.getClientId());
-			launcher.getCurrentAccount().setXuid(result.getXuid());
-			launcher.getCurrentAccount().setLastUsed(Instant.now());
 			launcher.setGuestStatus(false);
+			MicrosoftAuthResult result = authenticator.loginWithRefreshToken(account.getRefreshToken());
+			account.setUsername(result.getProfile().getName());
+			account.setUuid(result.getProfile().getId());
+			account.setAccessToken(result.getAccessToken());
+			account.setRefreshToken(result.getRefreshToken());
+			account.setClientId(result.getClientId());
+			account.setXuid(result.getXuid());
+			account.setLastUsed(Instant.now());
 			Main.switchView();
 		} catch (Exception e) {
 			Alert dialog = new Alert(AlertType.ERROR);
@@ -168,12 +178,13 @@ public class LoginScreenController {
 		microsoftEmail.setVisible(false);
 		microsoftPassword.setVisible(false);
 		microsoftLoginButton.setVisible(false);
-		microsoftReconnectButton.setText(launcher.getCurrentAccount().getUsername());
+		microsoftReconnectButton.setText(launcher.lastUsedAccount().getUsername());
 		microsoftReconnectButton.setVisible(true);
 		microsoftNewAccountButton.setVisible(true);
 		microsoftAccountsButton.setVisible(true);
 		microsoftRestoreButton.setVisible(false);
-		microsoftAccountList.setVisible(false);
+		microsoftAccountListSP.setVisible(false);
+		microsoftAccountListAP.getChildren().clear();
 		microsoftRememberMe.setVisible(false);
 		microsoftReconnectButton.requestFocus();
 	}
@@ -183,8 +194,23 @@ public class LoginScreenController {
 		microsoftReconnectButton.setVisible(false);
 		microsoftNewAccountButton.setVisible(false);
 		microsoftAccountsButton.setVisible(false);
-		microsoftAccountList.setVisible(true);
+		microsoftAccountListSP.setVisible(true);
 		microsoftRestoreButton.setVisible(true);
+
+		launcher.getAccounts().sort((one, two) -> {
+            if (one.getLastUsed().isAfter(two.getLastUsed()))
+                return -1;
+            else if (one.getLastUsed().isBefore(two.getLastUsed()))
+                return 1;
+            return 0;
+        });
+
+		nextAccountButtonLayoutY = 0;
+		for (MicrosoftAccount ma : launcher.getAccounts()) {
+			createAccountButtons(ma);
+		}
+		microsoftAccountListAP.setPrefHeight(nextAccountButtonLayoutY - 2);
+		microsoftAccountListSP.setHmax(nextAccountButtonLayoutY - 2);
 	}
 
 	@FXML
@@ -192,13 +218,83 @@ public class LoginScreenController {
 		microsoftReconnectButton.setVisible(false);
 		microsoftNewAccountButton.setVisible(false);
 		microsoftAccountsButton.setVisible(false);
-		microsoftAccountList.setVisible(false);
 		microsoftEmail.setVisible(true);
 		microsoftPassword.setVisible(true);
 		microsoftLoginButton.setVisible(true);
 		microsoftRestoreButton.setVisible(true);
 		microsoftRememberMe.setVisible(true);
 		microsoftEmail.requestFocus();
+	}
+
+	private void createAccountButtons(MicrosoftAccount account) {
+		Button accountButton = new Button();
+		accountButton.setText(account.getUsername());
+		accountButton.setLayoutX(1);
+		accountButton.setLayoutY(nextAccountButtonLayoutY);
+		accountButton.setPrefWidth(178);
+		accountButton.getStyleClass().add("buttonGreenMedium");
+		accountButton.setOnAction(e -> {
+			microsoftAccountListSP.setVisible(false);
+			microsoftAccountListAP.getChildren().clear();
+			launcher.setCurrentAccount(account);
+			launcher.getCurrentAccount().setLastUsed(Instant.now());
+			microsoftReconnect();
+		});
+
+		Button deleteButton = new Button();
+		deleteButton.setText("✖");
+		deleteButton.setLayoutX(181);
+		deleteButton.setLayoutY(nextAccountButtonLayoutY);
+		deleteButton.setPrefWidth(38);
+		deleteButton.getStyleClass().add("buttonGreenMedium");
+		deleteButton.setOnAction(e -> deleteAccount(deleteButton, account));
+
+		microsoftAccountListAP.getChildren().addAll(accountButton, deleteButton);
+		nextAccountButtonLayoutY += 37;
+	}
+
+	private void deleteAccount(Button source, MicrosoftAccount account) {
+		Alert dialog = new Alert(AlertType.CONFIRMATION);
+		dialog.initOwner(Main.getPrimaryStage());
+		dialog.setTitle(resources.getString("microsoft.accounts.delete"));
+		dialog.setHeaderText("");
+		dialog.setContentText(resources.getString("microsoft.accounts.delete.desc"));
+		dialog.getButtonTypes().set(0, ButtonType.YES);
+		dialog.getButtonTypes().set(1, ButtonType.NO);
+
+		Optional<ButtonType> response = dialog.showAndWait();
+		if (response.isPresent() && response.get() == ButtonType.YES) {
+			ObservableList<Node> children = microsoftAccountListAP.getChildren();
+			int indexBT = children.indexOf(source);
+			microsoftAccountListAP.getChildren().remove(indexBT - 1, indexBT + 1);
+
+			for (int i = 0, layoutY = 0; i < children.size(); i += 2, layoutY += 37) {
+				Node accountNode = children.get(i);
+				Node deleteNode = children.get(i + 1);
+				if (accountNode.getLayoutY() != layoutY) {
+					accountNode.setLayoutY(layoutY);
+					deleteNode.setLayoutY(layoutY);
+				}
+			}
+			nextAccountButtonLayoutY -= 37;
+			microsoftAccountListAP.setPrefHeight(nextAccountButtonLayoutY - 2);
+			microsoftAccountListSP.setHmax(nextAccountButtonLayoutY - 2);
+			launcher.getAccounts().remove(account);
+			MicrosoftAccount newCurrentAccount = launcher.lastUsedAccount();
+			if (newCurrentAccount == null) {
+				newCurrentAccount = new MicrosoftAccount();
+				microsoftAccountListSP.setVisible(false);
+				microsoftReconnectButton.setVisible(false);
+				microsoftNewAccountButton.setVisible(false);
+				microsoftAccountsButton.setVisible(false);
+				microsoftRestoreButton.setVisible(false);
+				microsoftEmail.setVisible(true);
+				microsoftPassword.setVisible(true);
+				microsoftLoginButton.setVisible(true);
+				microsoftRememberMe.setVisible(true);
+			}
+			launcher.setCurrentAccount(newCurrentAccount);
+		}
 	}
 
 	/**

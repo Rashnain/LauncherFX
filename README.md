@@ -6,6 +6,7 @@
 * Customize configurations (game dir, java exe, java args)
 * Microsoft account logging
 * Play without account
+* Multi-account support
 
 ## Screenshots
 

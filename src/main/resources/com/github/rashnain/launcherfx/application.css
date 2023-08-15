@@ -232,3 +232,14 @@
 .scroll-bar:vertical .thumb:hover {
 	-fx-background-color: rgba(25, 75, 18, 0.65);
 }
+
+/* ScrollPane */
+.scroll-pane {
+    -fx-background-color: none;
+    -fx-background: transparent;
+}
+
+/* AnchorPane */
+.accounts-pane {
+    -fx-background-color: none;
+}

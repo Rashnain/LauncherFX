@@ -4,8 +4,8 @@
 <?import javafx.scene.control.CheckBox?>
 <?import javafx.scene.control.ChoiceBox?>
 <?import javafx.scene.control.Label?>
-<?import javafx.scene.control.ListView?>
 <?import javafx.scene.control.PasswordField?>
+<?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
@@ -16,15 +16,19 @@
          <font>
             <Font size="14.0" />
          </font></Label>
-      <TextField fx:id="microsoftEmail" layoutX="750.0" layoutY="185.0" onKeyPressed="#onKeyPressedMicrosoft" prefWidth="225.0" promptText="%microsoft.login.email" />
-      <PasswordField fx:id="microsoftPassword" layoutX="750.0" layoutY="220.0" onKeyPressed="#onKeyPressedMicrosoft" prefWidth="225.0" promptText="%microsoft.login.password" />
-      <Button fx:id="microsoftLoginButton" layoutX="750.0" layoutY="255.0" maxWidth="-Infinity" mnemonicParsing="false" onAction="#microsoftLogging" prefWidth="225.0" styleClass="buttonGreenMedium" text="%microsoft.login.button" />
-      <CheckBox fx:id="microsoftRememberMe" layoutX="803.0" layoutY="295.0" mnemonicParsing="false" onAction="#rememberMeChanged" selected="true" text="%microsoft.login.remember" />
+      <TextField fx:id="microsoftEmail" layoutX="750.0" layoutY="187.0" onKeyPressed="#onKeyPressedMicrosoft" prefWidth="225.0" promptText="%microsoft.login.email" />
+      <PasswordField fx:id="microsoftPassword" layoutX="750.0" layoutY="223.0" onKeyPressed="#onKeyPressedMicrosoft" prefWidth="225.0" promptText="%microsoft.login.password" />
+      <Button fx:id="microsoftLoginButton" layoutX="750.0" layoutY="259.0" maxWidth="-Infinity" mnemonicParsing="false" onAction="#microsoftLogging" prefWidth="225.0" styleClass="buttonGreenMedium" text="%microsoft.login.button" />
+      <CheckBox fx:id="microsoftRememberMe" layoutX="803.0" layoutY="299.0" mnemonicParsing="false" onAction="#rememberMeChanged" selected="true" text="%microsoft.login.remember" />
       <Button fx:id="microsoftReconnectButton" layoutX="750.0" layoutY="185.0" maxWidth="-Infinity" mnemonicParsing="false" onAction="#microsoftReconnect" prefWidth="225.0" styleClass="buttonGreenMedium" visible="false" />
       <Button fx:id="microsoftAccountsButton" layoutX="750.0" layoutY="222.0" maxWidth="-Infinity" mnemonicParsing="false" onAction="#microsoftAnotherAccount" prefWidth="225.0" styleClass="buttonGreenMedium" text="%microsoft.accounts.button" visible="false" />
-      <ListView fx:id="microsoftAccountList" layoutX="750.0" layoutY="185.0" prefHeight="105.0" prefWidth="225.0" visible="false" />
+      <ScrollPane fx:id="microsoftAccountListSP" layoutX="748.0" layoutY="184.0" prefHeight="111.0" prefWidth="228.0" visible="false">
+        <content>
+          <AnchorPane fx:id="microsoftAccountListAP" styleClass="accounts-pane" />
+        </content>
+      </ScrollPane>
       <Button fx:id="microsoftNewAccountButton" layoutX="750.0" layoutY="259.0" maxWidth="-Infinity" mnemonicParsing="false" onAction="#microsoftNewAccount" prefWidth="225.0" styleClass="buttonGreenMedium" text="%microsoft.newaccount.button" visible="false" />
-      <Button fx:id="microsoftRestoreButton" layoutX="977.0" layoutY="255.0" maxWidth="-Infinity" mnemonicParsing="false" onAction="#microsoftRestore" prefHeight="34.0" prefWidth="41.0" styleClass="buttonGreenMedium" text="🢨" visible="false" />
+      <Button fx:id="microsoftRestoreButton" layoutX="977.0" layoutY="259.0" maxWidth="-Infinity" mnemonicParsing="false" onAction="#microsoftRestore" prefHeight="34.0" prefWidth="38.0" styleClass="buttonGreenMedium" text="🢨" visible="false" />
       <Label alignment="CENTER" contentDisplay="CENTER" layoutX="750.0" layoutY="345.0" maxWidth="-Infinity" prefWidth="225.0" styleClass="title" text="%guest.login.title" textAlignment="CENTER">
          <font>
             <Font size="14.0" />
